@@ -1,47 +1,49 @@
 require("dotenv").config();
 const express = require("express");
-const app = express();
 const path = require("path");
 const cors = require("cors");
-const corsOptions = require("./config/corsOptions.cjs");
-const { logger } = require("./middleware/logEvents.cjs");
-const errorHandler = require("./middleware/errorHandler.cjs");
-const verifyJWT = require("./middleware/verifyJWT.cjs");
+const corsOptions = require("./src/config/corsOptions.cjs");
+const { logger } = require("./src/middleware/logEvents.cjs");
+const errorHandler = require("./src/middleware/errorHandler.cjs");
+const verifyJWT = require("./src/middleware/verifyJWT.cjs");
 const cookieParser = require("cookie-parser");
-const credentials = require("./middleware/credentials.cjs");
+const credentials = require("./src/middleware/credentials.cjs");
 const mongoose = require("mongoose");
-const connectDB = require("./config/dbConn.cjs");
+const connectDB = require("./src/config/dbConn.cjs");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+
+const app = express();
 const PORT = process.env.PORT || 3500;
 
 mongoose.set("strictQuery", false);
 connectDB();
-
+app.use(helmet());
+app.use(limiter);
 app.use(logger);
-
 app.use(credentials);
-
 app.use(cors(corsOptions));
-
 app.use(express.urlencoded({ extended: false }));
-
 app.use(express.json());
-
 app.use(cookieParser());
-
 app.use("/", express.static(path.join(__dirname, "/public")));
 
 // routes
-app.use("/", require("./routes/root.cjs"));
-app.use("/register", require("./routes/register.cjs"));
-app.use("/auth", require("./routes/auth.cjs"));
-app.use("/refresh", require("./routes/refresh.cjs"));
-app.use("/logout", require("./routes/logout.cjs"));
-app.use("/reset-email", require("./routes/sendResetEmail.cjs"));
-app.use("/reset-password", require("./routes/resetPwd.cjs"));
-app.use("/submit-form", require("./routes/contactForm.cjs"));
+app.use("/", require("./src/routes/root.cjs"));
+app.use("/register", require("./src/routes/register.cjs"));
+app.use("/auth", require("./src/routes/auth.cjs"));
+app.use("/refresh", require("./src/routes/refresh.cjs"));
+app.use("/logout", require("./src/routes/logout.cjs"));
+app.use("/reset-email", require("./src/routes/sendResetEmail.cjs"));
+app.use("/reset-password", require("./src/routes/resetPwd.cjs"));
+app.use("/submit-form", require("./src/routes/contactForm.cjs"));
 
 app.use(verifyJWT);
-app.use("/users", require("./routes/api/users.cjs"));
+// app.use("/users", require("./src/routes/users.cjs"));
 
 app.all("*", (req, res) => {
   res.status(404);
