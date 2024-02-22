@@ -1,7 +1,7 @@
 import { useReducer, ChangeEvent, FormEvent } from "react";
 import InputItem from "./InputItem";
 import Button from "./Button";
-import { useSendContactFormMutation } from "../../services/api";
+import { useSendContactFormMutation } from "../../services/authApi";
 
 interface ContactFormState {
   userName: string;

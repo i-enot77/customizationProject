@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useRefreshMutation } from "../../services/api";
+import { useRefreshMutation } from "../../services/authApi";
 import { useAppSelector } from "../../services/hooks";
 
 const PersistLogin = () => {

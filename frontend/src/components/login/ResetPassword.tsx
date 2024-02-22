@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import InputItem from "../common/InputItem";
-import { useResetPasswordMutation } from "../../services/api";
+import { useResetPasswordMutation } from "../../services/authApi";
 
 const ResetPassword = () => {
   const { token } = useParams();

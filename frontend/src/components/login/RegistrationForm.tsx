@@ -4,7 +4,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import InputItem from "../common/InputItem";
 import { setAuth, setErrMsg } from "../../services/authenticationSlice";
-import { useRegisterUserMutation } from "../../services/api";
+import { useRegisterUserMutation } from "../../services/authApi";
 import Button from "../common/Button";
 import { useAppDispatch, useAppSelector } from "../../services/hooks";
 

@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
-import BottomNav from "../../navigation/footer/Footer";
 import SectionItem from "../../section/SectionItem";
 import MyPdf from "./toDownload.pdf";
+import Footer from "../../navigation/footer/Footer";
 
 const Returns = () => {
   const style = {
     header: `text-2xl font-semibold`,
     content: `font-medium text-center`,
+    sectionClass: `flex flex-col items-center px-4 mb-10 overflow-y-auto mt-20 lg:mt-0`,
   };
 
   return (
     <>
-      <SectionItem sectionClass="w-[1312px] h-[74%] px-4 flex-col items-center overflow-y-auto no-scrollbar">
+      <SectionItem className={style.sectionClass}>
         <h4 className={style.header}>Zwroty i reklamacje</h4>
         <div className={`${style.content} text-lg`}>
           <h4 className={`${style.header} uppercase `}>uwaga!</h4>
@@ -88,7 +89,7 @@ const Returns = () => {
           </p>
         </div>
       </SectionItem>
-      <BottomNav />
+      <Footer />
     </>
   );
 };

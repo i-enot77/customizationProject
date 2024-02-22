@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useResetPwdRequestMutation } from "../../services/api";
+import { useResetPwdRequestMutation } from "../../services/authApi";
 import InputItem from "../common/InputItem";
 
 const ResetPwdRequest = () => {

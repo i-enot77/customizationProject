@@ -1,19 +1,13 @@
 import React, { ReactNode } from "react";
+import clsx from "clsx";
 
 interface SectionItemProps {
-  sectionClass?: string;
+  className?: string;
   children: ReactNode;
 }
 
-const SectionItem: React.FC<SectionItemProps> = ({
-  sectionClass,
-  children,
-}) => {
-  return (
-    <section className={`flex justify-between flex-wrap ${sectionClass}`}>
-      {children}
-    </section>
-  );
+const SectionItem: React.FC<SectionItemProps> = (props) => {
+  return <section className={clsx(props.className)}>{props.children}</section>;
 };
 
 export default SectionItem;

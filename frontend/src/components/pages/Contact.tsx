@@ -5,7 +5,7 @@ import SectionItem from "../section/SectionItem";
 function Contact() {
   return (
     <>
-      <SectionItem sectionClass="w-[1312px] h-[93%] px-4 items-center overflow-y-auto no-scrollbar">
+      <SectionItem className="w-[1312px] h-[93%] px-4 items-center overflow-y-auto no-scrollbar">
         <div className="flex-initial w-[36%]">
           <p className="mb-4 text-lg font-medium">
             Zapraszamy do kontaktu z nami!

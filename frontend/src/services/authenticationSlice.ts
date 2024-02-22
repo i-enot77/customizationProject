@@ -11,11 +11,6 @@ interface AppState {
   errMsg: string | null;
 }
 
-// const getPersistFromLocalStorage = (): boolean => {
-//   const persistValue = localStorage.getItem("persist");
-//   return persistValue ? JSON.parse(persistValue) : false;
-// };
-
 const getPersistFromLocalStorage = (): boolean => {
   const persistValue = localStorage.getItem("persist");
 

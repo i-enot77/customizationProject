@@ -9,7 +9,7 @@ interface FooterItem {
 function Footer() {
   return (
     <div className="w-full bg-white  py-8 px-4 shadow-inner">
-      <div className="w-[704px] px-4 mx-auto grid grid-cols-3 grid-rows-1 gap-14 text-sm">
+      <div className="xlg:w-[704px] px-4 mx-auto grid grid-cols-3 grid-rows-1 gap-14 text-sm">
         <ul>
           <li className="mb-1 text-base">Logo</li>
           {contactData.map((item: FooterItem, index: number) => (
