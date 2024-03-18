@@ -38,9 +38,8 @@ const SummaryCheckout = ({ prevStep }: FormProps) => {
   };
 
   const makePayment = async (order: Order) => {
-    const stripe = await loadStripe(
-      "pk_test_51OnPvRJMIAkIvYTEhHCciutYRWM947T8xhKWcOIpC2BZq4Wn3FpVvJmlWZIXPn8NfkhQAIe2HE08KbfM9t6TJa20008aa2TEq2"
-    );
+    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_SECRET);
+    console.log(stripe);
     try {
       const response = await fetch(
         "http://localhost:3500/create-checkout-session",
