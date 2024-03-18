@@ -2,12 +2,24 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../services/store";
 import CartItem from "./CartItem";
 import Button from "../common/Button";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../services/hooks";
+import { setCartSummary, setShowCart } from "../../services/cartSlice";
 
 const Cart = () => {
-  const cartArr = useSelector((state: RootState) => state.products.cart);
+  const cartArr = useSelector((state: RootState) => state.cart.cart);
+  const cartSummary = useSelector((state: RootState) => state.cart.cartSummary);
   const cartTotalPrice = useSelector(
-    (state: RootState) => state.products.totalPrice
+    (state: RootState) => state.cart.totalPrice
   );
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    dispatch(setCartSummary(true));
+    dispatch(setShowCart(false));
+    navigate("/cart-sum");
+  };
 
   return (
     <div className="w-full">
@@ -16,9 +28,10 @@ const Cart = () => {
           <CartItem
             key={index}
             id={item.id}
+            category={item.category}
             name={item.name}
             price={item.price}
-            amount={item.amount}
+            quantity={item.quantity}
           />
         ))}
       </div>
@@ -27,9 +40,16 @@ const Cart = () => {
           <div>Wartość koszyka</div>
           <div>{cartTotalPrice}</div>
         </div>
-        <Button className="self-center bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white">
-          Dalej
-        </Button>
+        <div className="mt-10 self-center">
+          {!cartSummary && (
+            <Button
+              className="bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white"
+              onClick={() => handleClick()}
+            >
+              Dalej
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

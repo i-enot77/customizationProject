@@ -12,10 +12,13 @@ import Home from "../src/components/pages/home/Home";
 import Contact from "../src/components/pages/Contact";
 import Returns from "../src/components/pages/returns/Returns";
 
-import Scene from "./components/models/Scene";
+// import Scene from "./components/models/Scene";
 import Products from "./components/pages/Products";
 import ProductDescription from "./components/pages/ProductDescription";
 import CartModal from "./components/cart/CartModal";
+import CartSummaryForm from "./components/cart/CartSummaryForm";
+import Success from "./components/cart/Success";
+import Cancel from "./components/cart/Cancel";
 
 const App = () => {
   return (
@@ -32,9 +35,12 @@ const App = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/returns" element={<Returns />} />
-        {/* <Route path="/cart" element={<CartEmpty />} /> */}
         <Route path="/products" element={<Products />} />
         <Route path="/product-description" element={<ProductDescription />} />
+
+        <Route path="/cart-sum" element={<CartSummaryForm />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/cancel" element={<Cancel />} />
 
         <Route element={<PersistLogin />}></Route>
       </Routes>

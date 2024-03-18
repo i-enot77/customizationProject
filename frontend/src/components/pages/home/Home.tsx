@@ -4,7 +4,7 @@ import ResponsiveImg from "../../common/ResponsiveImg";
 import { aboutUs } from "./homePageData";
 import ContactForm from "../../common/ContactForm";
 import Footer from "../../navigation/footer/Footer";
-import Scene from "../../models/Scene";
+// import Scene from "../../models/Scene";
 
 const Home = () => {
   const style = {
@@ -77,7 +77,7 @@ const Home = () => {
             <ContactForm />
           </div>
         </SectionItem>
-        <Scene />
+        {/* <Scene /> */}
       </main>
       <Footer />
     </div>

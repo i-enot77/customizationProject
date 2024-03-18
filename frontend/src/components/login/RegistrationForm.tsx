@@ -48,28 +48,6 @@ const RegistrationForm = () => {
         console.log(errMsg);
       });
   };
-  // try {
-  //   const result: string = await registerUser({
-  //     user: emailValue,
-  //     pwd: passwordValue,
-  //   }).unwrap();
-  //   const parsedResult = JSON.parse(result);
-
-  //   if (parsedResult.accessToken) {
-  //     const accessToken = parsedResult.accessToken;
-  //     dispatch(setAuth({ user: emailValue, accessToken }));
-  //     setEmailValue("");
-  //     setPasswordValue("");
-  //     dispatch(setErrMsg(null));
-  //     navigate("/sended-email");
-  //   } else if (parsedResult.status === 409) {
-  //     dispatch(setErrMsg("Nazwa użytkownika zajęta"));
-  //   } else if (parsedResult.status === 400) {
-  //     dispatch(setErrMsg("Podaj poprawne dane użytkownika lub hasło"));
-  //   }
-  // } catch (error) {
-  //   dispatch(setErrMsg("Rejestracja nieudana"));
-  // }
 
   return (
     <div className="w-[80%]">

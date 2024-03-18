@@ -1,13 +1,13 @@
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../services/hooks";
 import { RootState } from "../../services/store";
-import { setShowCart } from "../../services/productSlice";
+import { setShowCart } from "../../services/cartSlice";
 import Cart from "./Cart";
 import CartEmpty from "./CartEmpty";
 
 const CartModal = () => {
-  const showCart = useSelector((state: RootState) => state.products.showCart);
-  const cart = useSelector((state: RootState) => state.products.cart);
+  const showCart = useSelector((state: RootState) => state.cart.showCart);
+  const cart = useSelector((state: RootState) => state.cart.cart);
   const dispatch = useAppDispatch();
   return (
     <>

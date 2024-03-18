@@ -5,7 +5,7 @@ import Button from "../common/Button";
 import { useState } from "react";
 import DropMenu from "./DropMenu";
 import { useAppDispatch } from "../../services/hooks";
-import { toggleShowCart } from "../../services/productSlice";
+import { toggleShowCart } from "../../services/cartSlice";
 
 const Header = () => {
   const [isOpen, setOpen] = useState(true);

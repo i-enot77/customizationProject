@@ -8,7 +8,7 @@ import product_1200w from "../../assets/img/productImg/productSmall_1200.png";
 import ResponsiveImg from "../common/ResponsiveImg";
 import ProductAmount from "./ProductAmount";
 import { useAppDispatch } from "../../services/hooks";
-import { addToCart } from "../../services/productSlice";
+import { addToCart } from "../../services/cartSlice";
 
 interface ProductItem {
   children: React.ReactNode;
@@ -20,7 +20,9 @@ const ProductItem: React.FC<ProductItem> = ({ children }) => {
   const dispatch = useAppDispatch();
 
   const handleAddToCart = () => {
-    dispatch(addToCart(selectedAmount));
+    if (product) {
+      dispatch(addToCart({ productItem: product, amount: selectedAmount }));
+    }
   };
 
   const style = {
