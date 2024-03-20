@@ -31,13 +31,12 @@ const CheckoutForm = ({ nextStep }: FormProps) => {
   const dispatch = useAppDispatch();
   const user = useSelector((state: RootState) => state.order.user);
   return (
-    <div className="bg-stone-300 w-full px-8 py-4">
+    <>
       <div className="mb-3">
         <h2 className={style.header}>Zaloguj się na koncie:</h2>
         <Button className="">Zaloguj się</Button>
+        <h2 className={style.header}>lub zaplać jako gość:</h2>
       </div>
-
-      <h2 className={style.header}>lub zaplać jako gość:</h2>
 
       <Formik
         initialValues={{
@@ -88,32 +87,30 @@ const CheckoutForm = ({ nextStep }: FormProps) => {
               ) : null}
             </div>
 
-            <div className="flex justify-between">
-              <div className={style.field}>
-                <label htmlFor="firstName">Imię:</label>
-                <Field
-                  id="firstName"
-                  type="text"
-                  name="firstName"
-                  className={style.input}
-                />
-                {errors.firstName && touched.firstName ? (
-                  <div className={style.error}>Pole jest wymagane</div>
-                ) : null}
-              </div>
+            <div className={style.field}>
+              <label htmlFor="firstName">Imię:</label>
+              <Field
+                id="firstName"
+                type="text"
+                name="firstName"
+                className={style.input}
+              />
+              {errors.firstName && touched.firstName ? (
+                <div className={style.error}>Pole jest wymagane</div>
+              ) : null}
+            </div>
 
-              <div className={style.field}>
-                <label htmlFor="lastName">Nazwisko:</label>
-                <Field
-                  id="lastName"
-                  type="text"
-                  name="lastName"
-                  className={style.input}
-                />
-                {errors.lastName && touched.lastName ? (
-                  <div className={style.error}>Pole jest wymagane</div>
-                ) : null}
-              </div>
+            <div className={style.field}>
+              <label htmlFor="lastName">Nazwisko:</label>
+              <Field
+                id="lastName"
+                type="text"
+                name="lastName"
+                className={style.input}
+              />
+              {errors.lastName && touched.lastName ? (
+                <div className={style.error}>Pole jest wymagane</div>
+              ) : null}
             </div>
 
             <div className={style.field}>
@@ -178,7 +175,7 @@ const CheckoutForm = ({ nextStep }: FormProps) => {
           </Form>
         )}
       </Formik>
-    </div>
+    </>
   );
 };
 

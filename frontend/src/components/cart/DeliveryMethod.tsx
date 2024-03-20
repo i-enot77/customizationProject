@@ -39,8 +39,8 @@ const DeliveryMethod = ({ prevStep, nextStep }: FormProps) => {
   };
 
   return (
-    <div className="bg-stone-300 w-full p-8 flex flex-col justify-between">
-      <div>
+    <>
+      <div className="px-4">
         <div>
           <div className="mb-2">
             <div className={style.header}>Kontakt</div>
@@ -109,7 +109,7 @@ const DeliveryMethod = ({ prevStep, nextStep }: FormProps) => {
           Przejdz do podsumowania
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 

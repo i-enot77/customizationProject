@@ -1,14 +1,23 @@
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setCartSummary, setShowCart } from "../../services/cartSlice";
 import { useAppDispatch } from "../../services/hooks";
 import { RootState } from "../../services/store";
-import { setShowCart } from "../../services/cartSlice";
 import Cart from "./Cart";
 import CartEmpty from "./CartEmpty";
+import Button from "../common/Button";
 
 const CartModal = () => {
   const showCart = useSelector((state: RootState) => state.cart.showCart);
   const cart = useSelector((state: RootState) => state.cart.cart);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    dispatch(setCartSummary(true));
+    dispatch(setShowCart(false));
+    navigate("/cart-sum");
+  };
   return (
     <>
       {showCart && (
@@ -20,7 +29,19 @@ const CartModal = () => {
             className="bg-[#f3ead2] w-[50%] h-full flex flex-col justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            {cart.length ? <Cart /> : <CartEmpty />}
+            {cart.length ? (
+              <>
+                <Cart />
+                <Button
+                  className="mt-10 self-center bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white"
+                  onClick={() => handleClick()}
+                >
+                  Dalej
+                </Button>
+              </>
+            ) : (
+              <CartEmpty />
+            )}
           </div>
         </div>
       )}

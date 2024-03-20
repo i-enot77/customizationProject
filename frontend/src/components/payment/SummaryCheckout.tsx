@@ -3,13 +3,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../services/store";
 import { FormProps } from "../cart/CartSummaryForm";
-import Cart from "../cart/Cart";
 import Button from "../common/Button";
 import { Order, useSaveOrderMutation } from "../../services/orderApi";
-
-const style = {
-  header: `text-lg font-medium my-1`,
-};
 
 const SummaryCheckout = ({ prevStep }: FormProps) => {
   const user = useSelector((state: RootState) => state.order.user);
@@ -39,7 +34,6 @@ const SummaryCheckout = ({ prevStep }: FormProps) => {
 
   const makePayment = async (order: Order) => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_SECRET);
-    console.log(stripe);
     try {
       const response = await fetch(
         "http://localhost:3500/create-checkout-session",
@@ -59,30 +53,33 @@ const SummaryCheckout = ({ prevStep }: FormProps) => {
     }
   };
 
+  const style = {
+    header: `text-lg font-medium my-1`,
+    btn: `flex justify-between px-10 py-5 text-xl font-medium lg:hidden`,
+  };
   return (
-    <div className="bg-stone-300 w-full px-8 py-4">
-      <h2 className={style.header}>Podsumowanie:</h2>
-
-      <div className="mb-4">
-        <div>
+    <>
+      <div>
+        <h2 className={style.header}>Podsumowanie:</h2>
+        <div className="mb-4">
           <div>
-            <div className={style.header}>Kontakt</div>
-            <div>{user.email}</div>
-          </div>
+            <div>
+              <div className={style.header}>Kontakt</div>
+              <div>{user.email}</div>
+            </div>
 
-          <div>
-            <div className={style.header}>Adres dostawy</div>
-            <div>{`${user.address} ${user.zipCode} ${user.city}`}</div>
-          </div>
+            <div>
+              <div className={style.header}>Adres dostawy</div>
+              <div>{`${user.address} ${user.zipCode} ${user.city}`}</div>
+            </div>
 
-          <div>
-            <div className={style.header}>Sposób dostawy</div>
-            <div>{shipping.method}</div>
+            <div>
+              <div className={style.header}>Sposób dostawy</div>
+              <div>{shipping.method}</div>
+            </div>
           </div>
         </div>
       </div>
-
-      <Cart />
 
       <div className="flex justify-around">
         <Button
@@ -98,7 +95,7 @@ const SummaryCheckout = ({ prevStep }: FormProps) => {
           Zapłać
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 export default SummaryCheckout;

@@ -65,43 +65,16 @@ export interface Lamp extends ProductWithDimensions<LampDimensions> {}
 
 export const productsApi = customizationApi.injectEndpoints({
   endpoints: (build) => ({
-    getSofaItems: build.mutation<Sofa[], void>({
-      query: () => ({
-        url: "api/sofa",
-        method: "GET",
-      }),
-    }),
-    getArmchairItems: build.mutation<Armchair[], void>({
-      query: () => ({
-        url: "api/armchair",
-        method: "GET",
-      }),
-    }),
-    getChairItems: build.mutation<Chair[], void>({
-      query: () => ({
-        url: "api/chair",
-        method: "GET",
-      }),
-    }),
-    getTableItems: build.mutation<Table[], void>({
-      query: () => ({
-        url: "api/table",
-        method: "GET",
-      }),
-    }),
-    getLampItems: build.mutation<Lamp[], void>({
-      query: () => ({
-        url: "api/lamp",
+    getItemsByCategory: build.query<
+      Sofa[] | Armchair[] | Chair[] | Table[] | Lamp[] | null,
+      string
+    >({
+      query: (category) => ({
+        url: `api/${category}`,
         method: "GET",
       }),
     }),
   }),
 });
 
-export const {
-  useGetSofaItemsMutation,
-  useGetArmchairItemsMutation,
-  useGetChairItemsMutation,
-  useGetTableItemsMutation,
-  useGetLampItemsMutation,
-} = productsApi;
+export const { useGetItemsByCategoryQuery } = productsApi;

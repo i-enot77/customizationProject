@@ -17,6 +17,7 @@ const limiter = rateLimit({
   max: 100,
 });
 
+const products = require("./src/routes/products.cjs");
 const paymentStatusRoute = require("./src/routes/paymentStatus.cjs");
 const saveOrderRoute = require("./src/routes/saveOrderController.cjs");
 
@@ -40,8 +41,8 @@ app.use("/api", paymentStatusRoute);
 app.use(express.json());
 // routes
 
-app.use("/api", require("./src/routes/products.cjs")); // Mount routes under /api
 app.use("/create-checkout-session", require("./src/routes/payment.cjs"));
+app.use("/api", products);
 app.use("/api", saveOrderRoute);
 
 app.use("/", require("./src/routes/root.cjs"));
