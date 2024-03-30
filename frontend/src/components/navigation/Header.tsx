@@ -49,7 +49,7 @@ const Header = () => {
                     className={style.btn}
                     onClick={() => {
                       dispatch(setCategory(item));
-                      navigate(`/products?category=${item}`);
+                      navigate(`/products/${item}`);
                     }}
                   >
                     {item}

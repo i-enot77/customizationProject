@@ -66,7 +66,7 @@ export interface Lamp extends ProductWithDimensions<LampDimensions> {}
 export const productsApi = customizationApi.injectEndpoints({
   endpoints: (build) => ({
     getItemsByCategory: build.query<
-      Sofa[] | Armchair[] | Chair[] | Table[] | Lamp[] | null,
+      Sofa[] | Armchair[] | Chair[] | Table[] | Lamp[],
       string
     >({
       query: (category) => ({
@@ -74,7 +74,18 @@ export const productsApi = customizationApi.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    getProductById: build.query<
+      Sofa | Armchair | Chair | Table | Lamp,
+      { category: string; _id: string }
+    >({
+      query: ({ category, _id }) => ({
+        url: `api/${category}/${_id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetItemsByCategoryQuery } = productsApi;
+export const { useGetItemsByCategoryQuery, useGetProductByIdQuery } =
+  productsApi;

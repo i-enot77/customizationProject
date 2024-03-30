@@ -18,8 +18,10 @@ const limiter = rateLimit({
 });
 
 const products = require("./src/routes/products.cjs");
+const productById = require("./src/routes/productById.cjs");
 const paymentStatusRoute = require("./src/routes/paymentStatus.cjs");
 const saveOrderRoute = require("./src/routes/saveOrderController.cjs");
+const sendContactForm = require("./src/routes/contactForm.cjs");
 
 const app = express();
 const PORT = process.env.PORT || 3500;
@@ -43,7 +45,9 @@ app.use(express.json());
 
 app.use("/create-checkout-session", require("./src/routes/payment.cjs"));
 app.use("/api", products);
+app.use("/api", productById);
 app.use("/api", saveOrderRoute);
+app.use("/api", sendContactForm);
 
 app.use("/", require("./src/routes/root.cjs"));
 app.use("/register", require("./src/routes/register.cjs"));
@@ -52,7 +56,6 @@ app.use("/refresh", require("./src/routes/refresh.cjs"));
 app.use("/logout", require("./src/routes/logout.cjs"));
 app.use("/reset-email", require("./src/routes/sendResetEmail.cjs"));
 app.use("/reset-password", require("./src/routes/resetPwd.cjs"));
-app.use("/submit-form", require("./src/routes/contactForm.cjs"));
 
 // app.use(verifyJWT);
 

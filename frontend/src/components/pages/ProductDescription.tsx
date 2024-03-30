@@ -1,5 +1,4 @@
 import Footer from "../navigation/footer/Footer";
-import Dimensions from "../products/Dimensions";
 import ProductItem from "../products/ProductItem";
 
 const ProductDescription = () => {
@@ -8,9 +7,7 @@ const ProductDescription = () => {
   };
   return (
     <div className={style.wrapper}>
-      <ProductItem>
-        <Dimensions />
-      </ProductItem>
+      <ProductItem />
       <Footer />
     </div>
   );

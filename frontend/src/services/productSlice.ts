@@ -14,21 +14,11 @@ export interface CartState {
 interface ProductState {
   category: string;
   productItem: Sofa | Armchair | Chair | Table | Lamp | null;
-  // sofaArr?: Sofa[] | null;
-  // armchairArr?: Armchair[] | null;
-  // chairArr?: Chair[] | null;
-  // tableArr?: Table[] | null;
-  // lampArr?: Lamp[] | null;
 }
 
 const initialState: ProductState = {
   category: "",
   productItem: null,
-  // sofaArr: null,
-  // armchairArr: null,
-  // chairArr: null,
-  // tableArr: null,
-  // lampArr: null,
 };
 
 const productSlice = createSlice({
@@ -44,32 +34,8 @@ const productSlice = createSlice({
     ) {
       state.productItem = action.payload;
     },
-
-    // setSofaArr(state, action: PayloadAction<Sofa[]>) {
-    //   state.sofaArr = action.payload;
-    // },
-    // setArmchairArr(state, action: PayloadAction<Armchair[]>) {
-    //   state.armchairArr = action.payload;
-    // },
-    // setChairArr(state, action: PayloadAction<Chair[]>) {
-    //   state.chairArr = action.payload;
-    // },
-    // setTableArr(state, action: PayloadAction<Table[]>) {
-    //   state.tableArr = action.payload;
-    // },
-    // setLampArr(state, action: PayloadAction<Lamp[]>) {
-    //   state.lampArr = action.payload;
-    // },
   },
 });
 
-export const {
-  setCategory,
-  setProductItem,
-  // setSofaArr,
-  // setArmchairArr,
-  // setChairArr,
-  // setTableArr,
-  // setLampArr,
-} = productSlice.actions;
+export const { setCategory, setProductItem } = productSlice.actions;
 export default productSlice;

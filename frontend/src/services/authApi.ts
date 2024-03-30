@@ -19,14 +19,14 @@ interface ResetPasswordArgs {
   newPassword: string;
 }
 
-interface ContactFormArgs {
-  userName: string;
-  lastName: string;
-  userEmail: string;
-  phoneNumber: string;
-  address: string;
-  message: string;
-}
+// interface ContactFormArgs {
+//   userName: string;
+//   lastName: string;
+//   userEmail: string;
+//   phoneNumber: string;
+//   address: string;
+//   message: string;
+// }
 
 export const authApi = customizationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -81,23 +81,23 @@ export const authApi = customizationApi.injectEndpoints({
       }),
     }),
 
-    sendContactForm: build.mutation<string, ContactFormArgs>({
-      query: ({
-        userName,
-        lastName,
-        userEmail,
-        phoneNumber,
-        address,
-        message,
-      }) => ({
-        url: "submit-form",
-        method: "POST",
-        body: { userName, lastName, userEmail, phoneNumber, address, message },
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }),
-    }),
+    // sendContactForm: build.mutation<string, ContactFormArgs>({
+    //   query: ({
+    //     userName,
+    //     lastName,
+    //     userEmail,
+    //     phoneNumber,
+    //     address,
+    //     message,
+    //   }) => ({
+    //     url: "submit-form",
+    //     method: "POST",
+    //     body: { userName, lastName, userEmail, phoneNumber, address, message },
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   }),
+    // }),
   }),
 });
 
@@ -107,5 +107,5 @@ export const {
   useRefreshMutation,
   useResetPwdRequestMutation,
   useResetPasswordMutation,
-  useSendContactFormMutation,
+  // useSendContactFormMutation,
 } = authApi;

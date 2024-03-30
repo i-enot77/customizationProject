@@ -1,20 +1,20 @@
-import { useSelector } from "react-redux";
 import { Armchair, Chair, Lamp, Sofa, Table } from "../../services/productsApi";
-import { RootState } from "../../services/store";
 
-const Dimensions = () => {
-  const isCategory = useSelector((state: RootState) => state.products.category);
-  const item = useSelector((state: RootState) => state.products.productItem);
+function isType<T>(item: unknown): item is T {
+  return typeof item === "object" && item !== null;
+}
 
-  function isType<T>(item: unknown): item is T {
-    return typeof item === "object" && item !== null;
-  }
-
+interface DimensionsProp {
+  isCategory: string;
+  item: Sofa | Chair | Armchair | Table | Lamp;
+}
+const Dimensions = ({ isCategory, item }: DimensionsProp) => {
   const style = {
     dmItem: `w-full grid grid-cols-2 grid-flow-row auto-rows-max gap-x-8 gap-y-1.5`,
   };
-
+  //extend not modificate?
   let dimensionFor;
+
   switch (isCategory) {
     case "sofy":
       if (isType<Sofa>(item)) {

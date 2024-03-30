@@ -1,90 +1,139 @@
-import { useReducer, ChangeEvent, FormEvent } from "react";
-import InputItem from "./InputItem";
-import Button from "./Button";
-import { useSendContactFormMutation } from "../../services/authApi";
+import { object, string, ObjectSchema } from "yup";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useSendContactFormMutation } from "../../services/contactFormApi";
+import { ContactFormArgs } from "../../services/contactFormApi";
 
-interface ContactFormState {
-  userName: string;
-  lastName: string;
-  userEmail: string;
-  phoneNumber: string;
-  address: string;
-  message: string;
-}
+const schema: ObjectSchema<ContactFormArgs> = object({
+  firstName: string().required(),
+  lastName: string().required(),
+  userEmail: string().email("Invalid email").required("Required"),
+  phoneNumber: string().required(),
+  city: string().required(),
+  message: string().default(""),
+});
 
-type ContactFormAction =
-  | { type: "updateField"; field: string; value: string }
-  | { type: "resetForm" };
-
-function reducer(
-  state: ContactFormState,
-  action: ContactFormAction
-): ContactFormState {
-  switch (action.type) {
-    case "updateField": {
-      return {
-        ...state,
-        [action.field]: action.value,
-      };
-    }
-    case "resetForm": {
-      return initialState;
-    }
-    default:
-      throw new Error("Unknown action type");
-  }
-}
-
-const initialState: ContactFormState = {
-  userName: "",
-  lastName: "",
-  userEmail: "",
-  phoneNumber: "",
-  address: "",
-  message: "",
+const style = {
+  header: `text-lg font-medium my-1`,
+  field: `flex flex-col mb-2 last:mb-0`,
+  input: `focus:outline-none p-1.5 mb-4 last:mb-0 border-b-2 border-black`,
+  error: `text-red-600 self-end text-sm pr-2`,
 };
 
-function ContactForm() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+const ContactForm = () => {
   const [sendForm] = useSendContactFormMutation();
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    dispatch({ type: "updateField", field: name, value });
-  };
+  // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      const result = await sendForm({
-        ...state,
-      }).unwrap();
-      const parsedResult = JSON.parse(result);
-      if (parsedResult.data) {
-        dispatch({ type: "resetForm" });
-      }
-    } catch (error) {
-      console.log("Brak odpowiedzi od serwera");
-    }
-  };
-
-  const style = {
-    inputClassName: `focus:outline-none p-1.5 mb-4 last:mb-0 border-b-2 border-black`,
-  };
-
-  const contactFormData = [
-    { inputId: "userName", placeholder: "Imię" },
-    { inputId: "lastName", placeholder: "Nazwisko" },
-    { inputId: "userEmail", placeholder: "Adres email" },
-    { inputId: "phoneNumber", placeholder: "Telefon" },
-    { inputId: "address", placeholder: "Twoja lokalizacja" },
-  ];
+  //   try {
+  //     const result = await sendForm({
+  //       ...state,
+  //     }).unwrap();
+  //     const parsedResult = JSON.parse(result);
+  //     if (parsedResult.data) {
+  //       dispatch({ type: "resetForm" });
+  //     }
+  //   } catch (error) {
+  //     console.log("Brak odpowiedzi od serwera");
+  //   }
+  // };
   return (
     <>
       <h3 className="text-2xl mb-3 text-center">Napisz do nas</h3>
+
+      <Formik
+        initialValues={{
+          firstName: "",
+          lastName: "",
+          userEmail: "",
+          phoneNumber: "",
+          city: "",
+          message: "",
+        }}
+        validationSchema={schema}
+        onSubmit={(values: ContactFormArgs, actions) => {
+          sendForm(values);
+          console.log(values);
+          actions.setSubmitting(false);
+        }}
+      >
+        {() => (
+          <Form className="flex flex-col w-[90%]">
+            <div className={style.field}>
+              <Field
+                id="firstName"
+                type="text"
+                name="firstName"
+                placeholder="Imię"
+                className={style.input}
+              />
+              <ErrorMessage name="firstName" component="div" />
+            </div>
+
+            <div className={style.field}>
+              <Field
+                id="lastName"
+                type="text"
+                name="lastName"
+                placeholder="Nazwisko"
+                className={style.input}
+              />
+              <ErrorMessage name="lastName" component="div" />
+            </div>
+            <div className={style.field}>
+              <Field
+                id="userEmail"
+                type="email"
+                name="userEmail"
+                placeholder="Adres e-mail"
+                className={style.input}
+              />
+              <ErrorMessage name="userEmail" component="div" />
+            </div>
+
+            <div className={style.field}>
+              <Field
+                id="phoneNumber"
+                type="tel"
+                name="phoneNumber"
+                placeholder="Numer telefonu"
+                className={style.input}
+              />
+            </div>
+
+            <div className={style.field}>
+              <Field
+                id="city"
+                type="text"
+                name="city"
+                placeholder="Twoja lokalizacja"
+                className={style.input}
+              />
+              <ErrorMessage name="city" component="div" />
+            </div>
+
+            <div className={style.field}>
+              <Field
+                as="textarea"
+                id="message"
+                name="message"
+                placeholder="Wiadomość"
+                className={style.input}
+              />
+            </div>
+
+            <div className="flex justify-between">
+              <button
+                type="submit"
+                className="bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white mx-auto mt-4"
+              >
+                wyślij
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+      {/* 
       <form className="flex flex-col w-[90%]" onSubmit={handleSubmit}>
         {contactFormData.map((item, index) => (
           <InputItem
@@ -110,9 +159,9 @@ function ContactForm() {
         <Button className="bg-[#2A254B] px-12 py-2 text-sm uppercase text-white rounded-md m-auto mt-3">
           wyślij
         </Button>
-      </form>
+      </form> */}
     </>
   );
-}
+};
 
 export default ContactForm;
