@@ -1,57 +1,14 @@
 import { useSelector } from "react-redux";
-import { loadStripe } from "@stripe/stripe-js";
-import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../services/store";
 import { FormProps } from "../cart/CartSummaryForm";
 import Button from "../common/Button";
-import { Order, useSaveOrderMutation } from "../../services/orderApi";
+import { summaryCheckout } from "../../functions/summaryCheckout";
 
 const SummaryCheckout = ({ prevStep }: FormProps) => {
   const user = useSelector((state: RootState) => state.order.user);
-  const products = useSelector((state: RootState) => state.cart.cart);
   const shipping = useSelector((state: RootState) => state.order.shipping);
 
-  const [sendOrder] = useSaveOrderMutation();
-
-  const handleOrder = async () => {
-    try {
-      await sendOrder({
-        id: uuidv4(),
-        customer: user,
-        products,
-        shipping,
-      });
-      await makePayment({
-        id: uuidv4(),
-        customer: user,
-        products,
-        shipping,
-      });
-    } catch (error) {
-      console.log("Error handling order:", error);
-    }
-  };
-
-  const makePayment = async (order: Order) => {
-    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_SECRET);
-    try {
-      const response = await fetch(
-        "http://localhost:3500/create-checkout-session",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(order),
-        }
-      );
-      const session = await response.json();
-
-      const result = stripe?.redirectToCheckout({
-        sessionId: session.id,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const handleOrder = summaryCheckout();
 
   const style = {
     header: `text-lg font-medium my-1`,

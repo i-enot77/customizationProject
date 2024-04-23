@@ -1,18 +1,24 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../services/store";
 import CartItem from "./CartItem";
+import { useEffect } from "react";
 
 const Cart = () => {
   const cartArr = useSelector((state: RootState) => state.cart.cart);
+
+  // useEffect(() => {
+  //   localStorage.setItem("cart", JSON.stringify(cartArr));
+  // }, [cartArr]);
+
   const cartTotalPrice = useSelector(
     (state: RootState) => state.cart.totalPrice
   );
   return (
     <div className="w-full">
       <div className="bg-white h-[72vh] overflow-y-auto">
-        {cartArr.map((item, index) => (
+        {cartArr.map((item) => (
           <CartItem
-            key={index}
+            key={item.id}
             id={item.id}
             category={item.category}
             name={item.name}

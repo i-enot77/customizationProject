@@ -2,6 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import Button from "../common/Button";
+import { useStorageCartUpdate } from "../../hooks/useStorageCartUpdate";
 
 interface AmountProps {
   amountProp: number;
@@ -12,6 +13,8 @@ const ProductAmount: React.FC<AmountProps> = ({
   amountProp,
   onAmountChange,
 }) => {
+  useStorageCartUpdate();
+
   const incrementAmount = () => {
     if (amountProp) {
       onAmountChange(amountProp + 1);

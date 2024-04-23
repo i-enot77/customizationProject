@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import SectionItem from "../../section/SectionItem";
 import MyPdf from "./toDownload.pdf";
 import Footer from "../../navigation/footer/Footer";
 
@@ -12,7 +11,7 @@ const Returns = () => {
 
   return (
     <>
-      <SectionItem className={style.sectionClass}>
+      <section className={style.sectionClass}>
         <h4 className={style.header}>Zwroty i reklamacje</h4>
         <div className={`${style.content} text-lg`}>
           <h4 className={`${style.header} uppercase `}>uwaga!</h4>
@@ -88,7 +87,7 @@ const Returns = () => {
             brakujące elementy najszybciej jak to możliwe.
           </p>
         </div>
-      </SectionItem>
+      </section>
       <Footer />
     </>
   );

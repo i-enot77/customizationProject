@@ -1,43 +1,16 @@
-import { useState, ChangeEvent, FormEvent } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import InputItem from "../common/InputItem";
-import { useResetPasswordMutation } from "../../services/authApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../services/store";
+import { useResetPwd } from "../../hooks/useResetPwd";
 
 const ResetPassword = () => {
-  const { token } = useParams();
-  const [newPassword, setNewPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [resetPassword] = useResetPasswordMutation();
-  const navigate = useNavigate();
+  const errMsg = useSelector((state: RootState) => state.auth.errMsg);
 
-  const handlePwdInput = (e: ChangeEvent<HTMLInputElement>) =>
-    setNewPassword(e.target.value);
-
-  const handleResetPassword = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (token) {
-      resetPassword({
-        token,
-        newPassword,
-      })
-        .unwrap()
-        .then((response) => {
-          if (response) {
-            setNewPassword("");
-            setMessage("");
-            navigate("/login");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          setMessage("Resetowania hasła nie powiodło się");
-        });
-    }
-  };
+  const { newPassword, handlePwdInput, handleResetPassword } = useResetPwd();
   return (
     <div>
       <h2>Ustaw nowe hasło</h2>
+      {errMsg && <div className="text-[#f45151] text-3xl">{errMsg}</div>}
       <form onSubmit={handleResetPassword}>
         <InputItem
           id="resetPwd"
@@ -48,7 +21,6 @@ const ResetPassword = () => {
         />
         <InputItem className="" type="submit" value="Zapisz" />
       </form>
-      <p>{message}</p>
     </div>
   );
 };

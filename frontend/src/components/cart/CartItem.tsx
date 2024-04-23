@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   CartState,
   calculateTotalPrice,
   deleteCartItem,
-  updateCartItemAmount,
 } from "../../services/cartSlice";
 import ProductAmount from "../products/ProductAmount";
 import product_400w from "../../assets/img/productImg/productSmall_400w.png";
@@ -15,21 +14,18 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../services/store";
+import { useCartItem } from "../../hooks/useCartItem";
+import { useStorageCartUpdate } from "../../hooks/useStorageCartUpdate";
 
 const CartItem = (props: CartState) => {
-  const [selectedAmount, setSelectedAmount] = useState(props.quantity);
-  const [itemPriceTotal, setItemPriceTotal] = useState(
-    selectedAmount * props.price
-  );
   const cartSummary = useSelector((state: RootState) => state.cart.cartSummary);
+  const [selectedAmount, setSelectedAmount] = useState(props.quantity);
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setItemPriceTotal(selectedAmount * props.price);
-    dispatch(updateCartItemAmount({ id: props.id, amount: selectedAmount }));
-    dispatch(calculateTotalPrice());
-  }, [selectedAmount]);
+  const itemPriceTotal = useCartItem(selectedAmount, props.price, props.id);
+  useStorageCartUpdate();
 
   const handleEdit = (id: string) => {
     //update cart item logic

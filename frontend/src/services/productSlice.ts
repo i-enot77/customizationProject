@@ -1,16 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Sofa, Armchair, Chair, Table, Lamp } from "./productsApi";
 
-export interface CartState {
-  id: string;
-  category: string;
-  name: string;
-  price: number;
-  amount: number;
-  // baseMaterial: string;
-  // legsMaterial: string;
-}
-
 interface ProductState {
   category: string;
   productItem: Sofa | Armchair | Chair | Table | Lamp | null;

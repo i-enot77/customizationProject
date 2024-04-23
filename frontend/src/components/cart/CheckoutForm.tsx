@@ -1,4 +1,3 @@
-import { object, string, ObjectSchema } from "yup";
 import { Field, Form, Formik } from "formik";
 import { User, setUserData } from "../../services/orderSlice";
 import { useAppDispatch } from "../../services/hooks";
@@ -6,6 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../services/store";
 import Button from "../common/Button";
 import { FormProps } from "./CartSummaryForm";
+import { schema } from "./checkoutFormScema";
 
 const style = {
   header: `text-lg font-medium my-1`,
@@ -15,17 +15,6 @@ const style = {
   error: `text-red-600 self-end text-sm pr-2`,
 };
 // const phoneRegExp = /^\+[0-9]{11}$/;
-
-const schema: ObjectSchema<User> = object({
-  email: string().email("Invalid email").required("Required"),
-  country: string().required(),
-  firstName: string().required(),
-  lastName: string().required(),
-  address: string().required(),
-  zipCode: string().nullable().required(),
-  city: string().required(),
-  phone: string().required(),
-});
 
 const CheckoutForm = ({ nextStep }: FormProps) => {
   const dispatch = useAppDispatch();

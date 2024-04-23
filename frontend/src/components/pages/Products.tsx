@@ -39,13 +39,12 @@ const Products = () => {
   }, [productItem]);
 
   const style = {
-    container: `w-full bg-white overflow-y-auto mx-auto px-8`,
     product: `flex-auto w-[50%] pr-8`,
     wrapper: `w-full grid grid-cols-2 xl:grid-cols-3 xxl:grid-cols-4 grid-flow-row auto-rows-fr  gap-6 justify-center content-stretch`,
   };
 
   return (
-    <div className={style.container}>
+    <div className="custom-container">
       <h2 className="text-4xl text-center uppercase my-6">{category}</h2>
 
       <div className={style.wrapper}>

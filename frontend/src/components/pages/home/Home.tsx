@@ -1,21 +1,19 @@
-import SectionItem from "../../section/SectionItem";
 import HeaderItem from "../../common/HeaderItem";
 import ResponsiveImg from "../../common/ResponsiveImg";
 import { aboutUs } from "./homePageData";
 import ContactForm from "../../common/ContactForm";
 import Footer from "../../navigation/footer/Footer";
-// import Scene from "../../models/Scene";
+import Scene from "../../models/Scene";
 
 const Home = () => {
   const style = {
     sectionClass: `flex flex-col justify-center items-center lg:flex-row lg:justify-between  lg:items-end flex-wrap mb-10`,
-    wrapper: ` bg-white overflow-y-auto mx-auto px-8`,
     main: `mb-4 mt-20`,
   };
   return (
-    <div className={style.wrapper}>
+    <div className="custom-container">
       <main className={style.main}>
-        <SectionItem className={style.sectionClass}>
+        <section className={style.sectionClass}>
           <HeaderItem
             headerWrapper="lg:w-[39%] w-full"
             headerContent="Minimalistyczne, dostosowane do twoich potrzeb meble do salonu, do
@@ -33,9 +31,9 @@ const Home = () => {
             medium=""
             large=""
           />
-        </SectionItem>
+        </section>
 
-        <SectionItem className={style.sectionClass}>
+        <section className={style.sectionClass}>
           <h2 className="flex-initial w-full lg:w-[39%] text-3xl">
             Nadaj uroku swoim wnętrzom dzięki meblom z materiałów organicznych
           </h2>
@@ -50,9 +48,9 @@ const Home = () => {
               />
             ))}
           </div>
-        </SectionItem>
+        </section>
 
-        <SectionItem className={style.sectionClass}>
+        <section className={style.sectionClass}>
           <ResponsiveImg
             className="flex-initial lg:w-[59%] w-full bg-amber-500"
             small=""
@@ -64,9 +62,9 @@ const Home = () => {
             headerContent="Meble na lata"
             content="Nietuzinkowe formy, starannie dobrane kolory oraz rzemieślnicze metody produkcji mebli tworzą jakość, która obroni się zarówno w futurystycznej, jak i tradycyjnej aranżacji. Unikalny design i szeroki wybór odcieni pozwala na skomponowanie wystroju skrojonego na miarę Twojego gustu i osobowości."
           />
-        </SectionItem>
+        </section>
 
-        <SectionItem className={style.sectionClass}>
+        <section className={style.sectionClass}>
           <HeaderItem
             headerWrapper="w-full lg:w-[40%]"
             headerContent="Zainteresowała Cię nasza oferta?"
@@ -76,8 +74,8 @@ const Home = () => {
           <div className="w-[80%] lg:w-[58%] flex flex-col justify-center items-center">
             <ContactForm />
           </div>
-        </SectionItem>
-        {/* <Scene /> */}
+        </section>
+        <Scene />
       </main>
       <Footer />
     </div>

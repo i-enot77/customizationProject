@@ -23,6 +23,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.18",
     "@mui/material": "^5.15.14",
+    "@react-three/drei": "^9.105.2",
     "@react-three/fiber": "^8.15.16",
     "@reduxjs/toolkit": "^2.0.1",
     "@stripe/react-stripe-js": "^2.5.0",

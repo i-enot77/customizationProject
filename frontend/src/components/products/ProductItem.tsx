@@ -11,6 +11,7 @@ import { addToCart } from "../../services/cartSlice";
 import { useGetProductByIdQuery } from "../../services/productsApi";
 import Dimensions from "./Dimensions";
 import ProductItemSkeleton from "./ProductItemSkeleton";
+import { useStorageCartUpdate } from "../../hooks/useStorageCartUpdate";
 
 const ProductItem = () => {
   const [selectedAmount, setSelectedAmount] = useState(1);
@@ -21,7 +22,6 @@ const ProductItem = () => {
     _id: string;
   };
 
-  console.log(category, _id);
   const {
     data: product,
     isLoading,
@@ -31,6 +31,11 @@ const ProductItem = () => {
   useEffect(() => {
     refetch();
   }, [category, _id, refetch]);
+  if (product) {
+    console.log(product);
+  }
+
+  // useStorageCartUpdate();
 
   const handleAddToCart = () => {
     if (product) {
@@ -75,17 +80,14 @@ const ProductItem = () => {
                     onAmountChange={setSelectedAmount}
                   />
                 </div>
-                <div>
-                  <Button
-                    className={`${style.btn} bg-[#2A254B] text-white mr-4`}
-                    onClick={handleAddToCart}
-                  >
-                    Dodaj do koszyka
-                  </Button>
-                  <Button className={`${style.btn} border border-slate-400`}>
-                    Skonfiguruj
-                  </Button>
-                </div>
+                <Button
+                  className={`${style.btn} bg-[#2A254B] text-white mr-4`}
+                  onClick={handleAddToCart}
+                >
+                  Dodaj do koszyka
+                </Button>
+                <div className="">Wybierz swój projekt</div>
+                <div></div>
               </>
             )}
           </div>

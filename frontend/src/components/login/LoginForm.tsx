@@ -1,71 +1,30 @@
-import { useEffect, useState, ChangeEvent, FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useAppSelector } from "../../services/hooks";
+import { useLoginForm } from "../../hooks/useLoginForm";
+import { useSelector } from "react-redux";
+import { RootState } from "../../services/store";
+import { usePersistLogin } from "../../hooks/usePersistLogin";
 import InputItem from "../common/InputItem";
-import { useLoginUserMutation } from "../../services/authApi";
-import {
-  setAuth,
-  setErrMsg,
-  setPersist,
-} from "../../services/authenticationSlice";
-import { useAppDispatch, useAppSelector } from "../../services/hooks";
 
 const LoginForm = () => {
-  const dispatch = useAppDispatch();
-  const persist = useAppSelector((state) => state.auth.persist);
+  const persist = useSelector((state: RootState) => state.auth.persist);
   const errMsg = useAppSelector((state) => state.auth.errMsg);
-  const auth = useAppSelector((state) => state.auth.auth);
-
-  const [loginUser] = useLoginUserMutation();
-  const navigate = useNavigate();
-
   const [isVisible, setIsVisible] = useState(false);
-  const [emailValue, setEmailValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
 
-  const togglePersist = () => {
-    dispatch(setPersist(!persist));
-  };
+  const setPersistValue = usePersistLogin(persist);
 
-  const handleEmailInput = (e: ChangeEvent<HTMLInputElement>) =>
-    setEmailValue(e.target.value);
-
-  const handlePwdInput = (e: ChangeEvent<HTMLInputElement>) =>
-    setPasswordValue(e.target.value);
-
-  useEffect(() => {
-    localStorage.setItem("persist", JSON.stringify(persist));
-  }, [persist]);
-
-  const loginSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    loginUser({
-      user: emailValue,
-      pwd: passwordValue,
-    })
-      .unwrap()
-      .then((response) => {
-        if (response) {
-          console.log(response);
-          dispatch(
-            setAuth({ user: emailValue, accessToken: response.accessToken })
-          );
-          setEmailValue("");
-          setPasswordValue("");
-          dispatch(setErrMsg(null));
-          navigate("/");
-          console.log(auth);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        dispatch(setErrMsg(error.data));
-        console.log(errMsg);
-      });
-  };
+  const {
+    emailValue,
+    passwordValue,
+    handleEmailInput,
+    handlePwdInput,
+    loginSubmit,
+  } = useLoginForm();
   return (
-    <div className="w-[80%]">
+    <div className="w-full">
       <h1 className="text-3xl font-semibold mb-3 text-center">Logowanie</h1>
       {errMsg && <div className="text-[#f45151] text-3xl">{errMsg}</div>}
 
@@ -117,7 +76,7 @@ const LoginForm = () => {
             id="persist"
             type="checkbox"
             name="persist"
-            onChange={togglePersist}
+            onChange={setPersistValue}
             className="mr-1 w-[15px] h-[15px]"
             checked={persist}
           />

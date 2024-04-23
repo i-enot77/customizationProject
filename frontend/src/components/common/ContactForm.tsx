@@ -22,21 +22,6 @@ const style = {
 const ContactForm = () => {
   const [sendForm] = useSendContactFormMutation();
 
-  // const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const result = await sendForm({
-  //       ...state,
-  //     }).unwrap();
-  //     const parsedResult = JSON.parse(result);
-  //     if (parsedResult.data) {
-  //       dispatch({ type: "resetForm" });
-  //     }
-  //   } catch (error) {
-  //     console.log("Brak odpowiedzi od serwera");
-  //   }
-  // };
   return (
     <>
       <h3 className="text-2xl mb-3 text-center">Napisz do nas</h3>
@@ -51,10 +36,11 @@ const ContactForm = () => {
           message: "",
         }}
         validationSchema={schema}
-        onSubmit={(values: ContactFormArgs, actions) => {
+        onSubmit={async (values: ContactFormArgs, actions) => {
           sendForm(values);
           console.log(values);
           actions.setSubmitting(false);
+          actions.resetForm();
         }}
       >
         {() => (

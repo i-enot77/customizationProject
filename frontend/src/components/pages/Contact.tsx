@@ -1,12 +1,11 @@
 import ContactForm from "../common/ContactForm";
 import Footer from "../navigation/footer/Footer";
-import SectionItem from "../section/SectionItem";
 
 function Contact() {
   return (
-    <>
-      <SectionItem className="w-[1312px] h-[93%] px-4 items-center overflow-y-auto no-scrollbar">
-        <div className="flex-initial w-[36%]">
+    <div className="custom-container xxl:w-[80%] h-[90%] grid grid-cols-1 grid-rows-[3fr_.5fr]">
+      <section className="self-center flex flex-col items-center lg:flex-row lg:justify-between lg:items-end">
+        <div className="flex-initial w-[80%] lg:w-[40%] text-center lg:text-start lg:pl-6 my-12 lg:my-0">
           <p className="mb-4 text-lg font-medium">
             Zapraszamy do kontaktu z nami!
           </p>
@@ -29,12 +28,12 @@ function Contact() {
             <a href="tel:+48 987 567 987">+48 987 567 987</a>
           </div>
         </div>
-        <div className="flex-initial w-[60%]">
+        <div className="flex-initial w-full md:w-[80%] lg:w-[55%] pl-6  pb-4 lg:pb-0">
           <ContactForm />
         </div>
-      </SectionItem>
+      </section>
       <Footer />
-    </>
+    </div>
   );
 }
 

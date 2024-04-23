@@ -1,54 +1,19 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 import InputItem from "../common/InputItem";
-import { setAuth, setErrMsg } from "../../services/authenticationSlice";
-import { useRegisterUserMutation } from "../../services/authApi";
 import Button from "../common/Button";
-import { useAppDispatch, useAppSelector } from "../../services/hooks";
+import { useSelector } from "react-redux";
+import { RootState } from "../../services/store";
+import { useRegistrationForm } from "../../hooks/useRegistrationForm";
 
 const RegistrationForm = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [emailValue, setEmailValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
-  const navigate = useNavigate();
-  const errMsg = useAppSelector((state) => state.auth.errMsg);
-  const [registerUser] = useRegisterUserMutation();
-  const dispatch = useAppDispatch();
-
-  const handleEmail = (e: ChangeEvent<HTMLInputElement>) =>
-    setEmailValue(e.target.value);
-  const handlePwd = (e: ChangeEvent<HTMLInputElement>) =>
-    setPasswordValue(e.target.value);
   const toggleVisible = () => setIsVisible(!isVisible);
+  const errMsg = useSelector((state: RootState) => state.auth.errMsg);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    registerUser({
-      user: emailValue,
-      pwd: passwordValue,
-    })
-      .unwrap()
-      .then((response) => {
-        if (response) {
-          dispatch(
-            setAuth({ user: emailValue, accessToken: response.accessToken })
-          );
-          setEmailValue("");
-          setPasswordValue("");
-          dispatch(setErrMsg(null));
-          navigate("/sended-email");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        dispatch(setErrMsg(error.data));
-        console.log(errMsg);
-      });
-  };
-
+  const { emailValue, passwordValue, handleEmail, handlePwd, handleSubmit } =
+    useRegistrationForm();
   return (
     <div className="w-[80%]">
       <h1 className="text-3xl font-semibold mb-3 text-center">

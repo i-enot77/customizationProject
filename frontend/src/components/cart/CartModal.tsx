@@ -1,3 +1,5 @@
+import { useEffect, useLayoutEffect } from "react";
+import { setCart } from "../../services/cartSlice";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCartSummary, setShowCart } from "../../services/cartSlice";
@@ -13,6 +15,17 @@ const CartModal = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  useLayoutEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    console.log(savedCart);
+
+    dispatch(setCart(savedCart ? JSON.parse(savedCart) : []));
+  }, []);
+
+  useEffect(() => {
+    console.log(cart);
+  }, [cart]);
+
   const handleClick = () => {
     dispatch(setCartSummary(true));
     dispatch(setShowCart(false));
@@ -23,10 +36,10 @@ const CartModal = () => {
       {showCart && (
         <div
           onClick={() => dispatch(setShowCart(false))}
-          className="fixed z-100 inset-0  w-full h-screen bg-[#adadad6b] flex justify-end items-center "
+          className="fixed z-100 inset-0  w-full h-screen bg-[#6e6e6eab] flex justify-end items-center "
         >
           <div
-            className="bg-[#f3ead2] w-[50%] h-full flex flex-col justify-center"
+            className="bg-white w-[50%] h-full flex flex-col justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             {cart.length ? (

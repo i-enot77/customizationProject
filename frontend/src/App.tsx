@@ -22,7 +22,7 @@ import Cancel from "./components/cart/Cancel";
 
 const App = () => {
   return (
-    <div className="App container">
+    <div className="App">
       <Header />
       <CartModal />
       <Routes>

@@ -9,7 +9,35 @@ const PersistLogin = () => {
   const auth = useAppSelector((state) => state.auth.auth);
   const [refresh, { error }] = useRefreshMutation();
 
+  // useEffect(() => {
+  //   const handleRefresh = async () => {
+  //     try {
+  //       await refresh();
+  //     } catch (error) {
+  //       console.error("Error refreshing token", error);
+  //       navigate("/login");
+  //     }
+  //   };
+
+  //   if (persist) {
+  //     if (error || !auth) {
+  //       console.error("Error refreshing token");
+  //       navigate("/login");
+  //     } else if (auth) {
+  //       auth.accessToken ? handleRefresh() : navigate("/login");
+  //     }
+  //   }
+  // }, [navigate, persist, auth, error, refresh]);
+
   useEffect(() => {
+    if (!persist) return;
+
+    if (error || !auth || !auth.accessToken) {
+      console.error("Error refreshing token");
+      navigate("/login");
+      return;
+    }
+
     const handleRefresh = async () => {
       try {
         await refresh();
@@ -19,14 +47,7 @@ const PersistLogin = () => {
       }
     };
 
-    if (persist) {
-      if (error || !auth) {
-        console.error("Error refreshing token");
-        navigate("/login");
-      } else if (auth) {
-        auth.accessToken ? handleRefresh() : navigate("/login");
-      }
-    }
+    handleRefresh();
   }, [navigate, persist, auth, error, refresh]);
 
   return <Outlet />;

@@ -20,13 +20,39 @@ type GLTFResult = GLTF & {
 const Stol = (props: JSX.IntrinsicElements["group"]) => {
   const lightRef = useRef<THREE.DirectionalLight>(null!);
 
-  const marble = useTexture({
-    map: "/materials/marble01/color.jpg",
-    displacementMap: "/materials/marble01/displacement.jpg",
-    normalMap: "/materials/marble01/normal.jpg",
-    roughnessMap: "/materials/marble01/roughness.jpg",
-    aoMap: "/materials/marble01/ambientOcclusion.jpg",
+  const fabric10 = useTexture({
+    map: "/materials/fabric/fabric10/color.png",
+    displacementMap: "/materials/fabric/fabric10/displacement.png",
+    normalMap: "/materials/fabric/fabric10/normal.png",
+    roughnessMap: "/materials/fabric/fabric10/roughness.png",
+    aoMap: "/materials/fabric/fabric10/ambientOcclusion.png",
   });
+
+  fabric10.map.repeat.set(12, 12);
+  fabric10.displacementMap.repeat.set(12, 12);
+  fabric10.normalMap.repeat.set(12, 12);
+  fabric10.roughnessMap.repeat.set(12, 12);
+  fabric10.aoMap.repeat.set(12, 12);
+
+  fabric10.map.wrapS =
+    fabric10.map.wrapT =
+    fabric10.displacementMap.wrapS =
+    fabric10.displacementMap.wrapT =
+    fabric10.normalMap.wrapS =
+    fabric10.normalMap.wrapT =
+    fabric10.roughnessMap.wrapS =
+    fabric10.roughnessMap.wrapT =
+    fabric10.aoMap.wrapS =
+    fabric10.aoMap.wrapT =
+      THREE.RepeatWrapping;
+
+  // const marble = useTexture({
+  //   map: "/materials/marble01/color.jpg",
+  //   displacementMap: "/materials/marble01/displacement.jpg",
+  //   normalMap: "/materials/marble01/normal.jpg",
+  //   roughnessMap: "/materials/marble01/roughness.jpg",
+  //   aoMap: "/materials/marble01/ambientOcclusion.jpg",
+  // });
 
   const { nodes, materials } = useGLTF(
     "/model/stol-transformed.glb"
@@ -39,7 +65,7 @@ const Stol = (props: JSX.IntrinsicElements["group"]) => {
       <OrbitControls />
       <group {...props} dispose={null}>
         <mesh geometry={nodes.AM_138_006_obj_03.geometry}>
-          <meshStandardMaterial {...marble} />
+          <meshStandardMaterial {...fabric10} />
         </mesh>
         <mesh
           geometry={nodes.AM_138_006_obj_02.geometry}

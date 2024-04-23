@@ -3,13 +3,14 @@ const Schema = mongoose.Schema;
 
 const materialSchema = new Schema({
   id: { type: String, required: true },
-  name: {
-    type: String,
-    required: true,
-  },
+  name: { type: String, required: true },
   ref: {
-    type: String,
-    required: true,
+    map: { type: String, required: true },
+    displacementMap: { type: String, required: true },
+    normalMap: { type: String, required: true },
+    roughnessMap: { type: String, required: true },
+    aoMap: { type: String, default: null },
+    metalnessMap: { type: String, default: null },
   },
 });
 
