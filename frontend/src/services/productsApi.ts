@@ -1,3 +1,4 @@
+import { Material } from "./materialSlice";
 import { customizationApi } from "./api";
 
 export interface ProductWithDimensions<T> {
@@ -8,8 +9,8 @@ export interface ProductWithDimensions<T> {
   category: string;
   modelPath: string;
   dimensions: T;
-  baseMaterial: [];
-  legsMaterial?: [];
+  baseMaterial: Material;
+  legsMaterial?: Material;
 }
 
 export interface SofaDimensions {
@@ -77,10 +78,15 @@ export const productsApi = customizationApi.injectEndpoints({
 
     getProductById: build.query<
       Sofa | Armchair | Chair | Table | Lamp,
-      { category: string; _id: string }
+      {
+        category: string;
+        _id: string;
+        baseMaterial: string;
+        legsMaterial: string;
+      }
     >({
-      query: ({ category, _id }) => ({
-        url: `api/${category}/${_id}`,
+      query: ({ category, _id, baseMaterial, legsMaterial }) => ({
+        url: `api/${category}/${_id}/${baseMaterial}/${legsMaterial}`,
         method: "GET",
       }),
     }),

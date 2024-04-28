@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Button from "../common/Button";
 import product_400w from "../../assets/img/productImg/productSmall_400w.png";
 import product_800w from "../../assets/img/productImg/productSmall_800.png";
 import product_1200w from "../../assets/img/productImg/productSmall_1200.png";
-import ResponsiveImg from "../common/ResponsiveImg";
-import ProductAmount from "./ProductAmount";
 import { useAppDispatch } from "../../services/hooks";
 import { addToCart } from "../../services/cartSlice";
 import { useGetProductByIdQuery } from "../../services/productsApi";
-import Dimensions from "./Dimensions";
-import ProductItemSkeleton from "./ProductItemSkeleton";
 import { useStorageCartUpdate } from "../../hooks/useStorageCartUpdate";
+import ProductItemSkeleton from "../../features/product/components/ProductItemSkeleton";
+import ResponsiveImg from "../ResponsiveImg";
+import Dimensions from "../../features/product/components/Dimensions";
+import ProductAmount from "../../features/product/components/ProductAmount";
+import Button from "../Button";
 
 const ProductItem = () => {
   const [selectedAmount, setSelectedAmount] = useState(1);
@@ -25,6 +25,7 @@ const ProductItem = () => {
   const {
     data: product,
     isLoading,
+    //isSuccess - When true, indicates that the query has data from a successful request.
     refetch,
   } = useGetProductByIdQuery({ category, _id });
 
@@ -36,10 +37,17 @@ const ProductItem = () => {
   }
 
   // useStorageCartUpdate();
-
   const handleAddToCart = () => {
     if (product) {
       dispatch(addToCart({ productItem: product, amount: selectedAmount }));
+    }
+  };
+
+  const checkCategory = (category: string) => {
+    switch (category) {
+      case "sofy":
+      case "kresła":
+        break;
     }
   };
 

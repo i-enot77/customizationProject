@@ -16,8 +16,8 @@ const chairSchema = new Schema({
     seatHeight: { type: Number, required: true },
     armsrestHeight: { type: Number, required: true },
   },
-  baseMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
-  legsMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
+  baseMaterial: { type: Schema.Types.ObjectId, ref: Material },
+  legsMaterial: { type: Schema.Types.ObjectId, ref: Material },
 });
 
 module.exports = mongoose.model("Chair", chairSchema);

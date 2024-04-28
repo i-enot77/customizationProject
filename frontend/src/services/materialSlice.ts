@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Material {
-  id: string;
+  _id: string;
   name: string;
+  category: string;
   ref: {
     map: string;
     displacementMap: string;
@@ -13,24 +14,31 @@ export interface Material {
   };
 }
 
+export interface MaterialMenuData {
+  modelPart: string;
+  material: Material;
+}
+
 export interface MaterialState {
-  baseMaterial: Material[];
-  legsMaterial: Material[];
+  baseMaterial: Material | null;
+  legsMaterial?: Material | null;
+  materialMenuData: MaterialMenuData[];
 }
 
 const initialState: MaterialState = {
-  baseMaterial: [],
-  legsMaterial: [],
+  baseMaterial: null,
+  legsMaterial: null,
+  materialMenuData: [],
 };
 
 const materialSlice = createSlice({
   name: "materials",
   initialState,
   reducers: {
-    baseMaterialsArr(state, action: PayloadAction<Material[]>) {
+    setBaseMaterial(state, action: PayloadAction<Material>) {
       state.baseMaterial = action.payload;
     },
-    legsMaterialsArr(state, action: PayloadAction<Material[]>) {
+    setLegsMaterial(state, action: PayloadAction<Material>) {
       state.baseMaterial = action.payload;
     },
   },

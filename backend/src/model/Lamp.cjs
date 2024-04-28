@@ -15,7 +15,7 @@ const lapmSchema = new Schema({
     cableLength: { type: Number, required: true },
     diameter: { type: Number, required: true },
   },
-  baseMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
+  baseMaterial: { type: Schema.Types.ObjectId, ref: Material },
 });
 
 module.exports = mongoose.model("Lamp", lapmSchema);

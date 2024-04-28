@@ -1,24 +1,22 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import RegistrationForm from "../src/components/login/RegistrationForm";
-import LoginForm from "../src/components/login/LoginForm";
-import Account from "../src/components/pages/Account";
-import Header from "../src/components/navigation/Header";
-import PersistLogin from "../src/components/login/PersistLogin";
-import SendEmailInfo from "../src/components/login/SendEmailInfo";
-import ResetPwdRequest from "../src/components/login/ResetPwdRequest";
-import ResetPassword from "../src/components/login/ResetPassword";
-import Home from "../src/components/pages/home/Home";
-import Contact from "../src/components/pages/Contact";
-import Returns from "../src/components/pages/returns/Returns";
-
-// import Scene from "./components/models/Scene";
-import Products from "./components/pages/Products";
-import ProductDescription from "./components/pages/ProductDescription";
-import CartModal from "./components/cart/CartModal";
-import CartSummaryForm from "./components/cart/CartSummaryForm";
-import Success from "./components/cart/Success";
-import Cancel from "./components/cart/Cancel";
+import Header from "./components/Header";
+import CartModal from "./features/cart/components/CartModal";
+import ResetPwdRequest from "./features/auth/pages/ResetPwdRequest";
+import ResetPassword from "./features/auth/pages/ResetPassword";
+import SendEmailInfo from "./features/auth/pages/SendEmailInfo";
+import Account from "./pages/Account";
+import Home from "./pages/Home";
+import RegistrationForm from "./features/auth/pages/RegistrationForm";
+import LoginForm from "./features/auth/pages/LoginForm";
+import Contact from "./pages/Contact";
+import Returns from "./pages/Returns";
+import Products from "./features/product/pages/Products";
+import CartSummaryForm from "./features/cart/pages/CartSummaryForm";
+import ProductDescription from "./features/product/pages/ProductDescription";
+import Success from "./features/cart/pages/Success";
+import Cancel from "./features/cart/pages/Cancel";
+import PersistLogin from "./features/auth/pages/PersistLogin";
 
 const App = () => {
   return (
@@ -39,7 +37,7 @@ const App = () => {
         <Route path="/products/:category" element={<Products />} />
 
         <Route
-          path="/products/:category/:_id"
+          path="/products/:category/:_id/:baseMaterial/:legsMaterial"
           element={<ProductDescription />}
         />
         <Route path="/cart-sum" element={<CartSummaryForm />} />

@@ -22,6 +22,7 @@ const productById = require("./src/routes/productById.cjs");
 const paymentStatusRoute = require("./src/routes/paymentStatus.cjs");
 const saveOrderRoute = require("./src/routes/saveOrderController.cjs");
 const sendContactForm = require("./src/routes/contactForm.cjs");
+// const FileAploadRoute = require("./src/routes/fileAploadRoute.cjs");
 
 const app = express();
 const PORT = process.env.PORT || 3500;
@@ -42,12 +43,14 @@ app.use("/api", paymentStatusRoute);
 
 app.use(express.json());
 // routes
+app.use("/materials", express.static(path.join(__dirname, "materials")));
 
 app.use("/create-checkout-session", require("./src/routes/payment.cjs"));
 app.use("/api", products);
 app.use("/api", productById);
 app.use("/api", saveOrderRoute);
 app.use("/api", sendContactForm);
+// app.use("/api", FileAploadRoute);
 
 app.use("/", require("./src/routes/root.cjs"));
 app.use("/register", require("./src/routes/register.cjs"));

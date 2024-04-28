@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const Material = require("./Material.cjs");
 
 const armchairSchema = new Schema({
-  id: { type: String, required: true },
+  _id: { type: String, required: true },
   name: { type: String, required: true },
   price: { type: Number, required: true },
   description: { type: String, required: true },
@@ -18,8 +18,9 @@ const armchairSchema = new Schema({
     legHeight: { type: Number, required: true },
     weight: { type: Number, required: true },
   },
-  baseMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
-  legsMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
+  baseMaterial: { type: Schema.Types.ObjectId, ref: Material },
+  legsMaterial: { type: Schema.Types.ObjectId, ref: Material },
 });
-
+// baseMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
+// legsMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
 module.exports = mongoose.model("Armchair", armchairSchema);

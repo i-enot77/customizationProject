@@ -18,8 +18,8 @@ const tableSchema = new Schema({
     countertopThickness: { type: Number, required: true },
     length: { type: Number, required: true },
   },
-  baseMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
-  legsMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
+  baseMaterial: { type: Schema.Types.ObjectId, ref: Material },
+  legsMaterial: { type: Schema.Types.ObjectId, ref: Material },
 });
 
 module.exports = mongoose.model("Table", tableSchema);

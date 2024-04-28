@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const materialSchema = new Schema({
   id: { type: String, required: true },
+  category: { type: String, required: true },
   name: { type: String, required: true },
   ref: {
     map: { type: String, required: true },

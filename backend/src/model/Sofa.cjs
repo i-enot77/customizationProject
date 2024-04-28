@@ -19,8 +19,8 @@ const sofaSchema = new Schema({
     weight: { type: Number, required: true },
     seats: { type: Number, required: true },
   },
-  baseMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
-  legsMaterial: [{ type: Schema.Types.ObjectId, ref: Material }],
+  baseMaterial: { type: Schema.Types.ObjectId, ref: Material },
+  legsMaterial: { type: Schema.Types.ObjectId, ref: Material },
 });
 
 module.exports = mongoose.model("Sofa", sofaSchema);
