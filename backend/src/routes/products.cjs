@@ -14,27 +14,28 @@ router.get("/:category", async (req, res) => {
   try {
     switch (category) {
       case "sofy":
-        items = await Sofa.find()
-          .populate("baseMaterial")
-          .populate("legsMaterial");
+        items = await Sofa.find();
+        // .populate("baseMaterial")
+        // .populate("legsMaterial");
         break;
       case "fotele":
-        items = await Armchair.find()
-          .populate("baseMaterial")
-          .populate("legsMaterial");
+        items = await Armchair.find();
+        // .populate("baseMaterial")
+        // .populate("legsMaterial");
         break;
       case "krzesła":
-        items = await Chair.find()
-          .populate("baseMaterial")
-          .populate("legsMaterial");
+        items = await Chair.find();
+        // .populate("baseMaterial")
+        // .populate("legsMaterial");
         break;
       case "stoły":
-        items = await Table.find()
-          .populate("baseMaterial")
-          .populate("legsMaterial");
+        items = await Table.find();
+        // .populate("baseMaterial")
+        // .populate("legsMaterial");
         break;
       case "lampy":
-        items = await Lamp.find().populate("baseMaterial");
+        items = await Lamp.find();
+        // .populate("baseMaterial");
         break;
       default:
         return res.status(400).json({ message: "Invalid category" });

@@ -9,8 +9,10 @@ export interface ProductWithDimensions<T> {
   category: string;
   modelPath: string;
   dimensions: T;
-  baseMaterial: Material;
-  legsMaterial?: Material;
+  baseMaterial: string;
+  legsMaterial?: string;
+  assignedBaseMtl: string[];
+  assignedLegsMtl?: string[];
 }
 
 export interface SofaDimensions {
@@ -64,6 +66,12 @@ export interface Chair extends ProductWithDimensions<ChairDimensions> {}
 export interface Table extends ProductWithDimensions<TableDimensions> {}
 export interface Lamp extends ProductWithDimensions<LampDimensions> {}
 
+export interface ProductById {
+  product: Sofa | Armchair | Chair | Table | Lamp;
+  baseMtl: Material;
+  legsMtl?: Material;
+}
+
 export const productsApi = customizationApi.injectEndpoints({
   endpoints: (build) => ({
     getItemsByCategory: build.query<
@@ -77,7 +85,7 @@ export const productsApi = customizationApi.injectEndpoints({
     }),
 
     getProductById: build.query<
-      Sofa | Armchair | Chair | Table | Lamp,
+      ProductById,
       {
         category: string;
         _id: string;

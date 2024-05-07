@@ -4,6 +4,7 @@ export interface Material {
   _id: string;
   name: string;
   category: string;
+  repeat?: number;
   ref: {
     map: string;
     displacementMap: string;
@@ -39,10 +40,10 @@ const materialSlice = createSlice({
       state.baseMaterial = action.payload;
     },
     setLegsMaterial(state, action: PayloadAction<Material>) {
-      state.baseMaterial = action.payload;
+      state.legsMaterial = action.payload;
     },
   },
 });
 
-export const {} = materialSlice.actions;
+export const { setBaseMaterial, setLegsMaterial } = materialSlice.actions;
 export default materialSlice;

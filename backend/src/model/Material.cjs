@@ -5,6 +5,7 @@ const materialSchema = new Schema({
   id: { type: String, required: true },
   category: { type: String, required: true },
   name: { type: String, required: true },
+  repeat: { type: Number, default: null },
   ref: {
     map: { type: String, required: true },
     displacementMap: { type: String, required: true },

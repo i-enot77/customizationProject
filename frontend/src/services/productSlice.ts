@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Sofa, Armchair, Chair, Table, Lamp } from "./productsApi";
+import { Material } from "./materialSlice";
 
 interface ProductState {
   category: string;
@@ -24,8 +25,24 @@ const productSlice = createSlice({
     ) {
       state.productItem = action.payload;
     },
+    //dispatch(setProductItem({ fieldName: updatedValue }));
+    setPartialProductItem(
+      state,
+      action: PayloadAction<{
+        baseMaterial?: Material;
+        legsMaterial?: Material;
+      }>
+    ) {
+      if (state.productItem) {
+        state.productItem = {
+          ...state.productItem,
+          ...action.payload,
+        };
+      }
+    },
   },
 });
 
-export const { setCategory, setProductItem } = productSlice.actions;
+export const { setCategory, setProductItem, setPartialProductItem } =
+  productSlice.actions;
 export default productSlice;

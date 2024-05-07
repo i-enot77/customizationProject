@@ -56,8 +56,8 @@ const Products = () => {
                 // dispatch(setProductItem(item));
                 console.log(item);
                 navigate(
-                  `/products/${category}/${item._id}/${item.baseMaterial._id}/${item.legsMaterial?._id}`
-                ); // add to route baseMaterial._idId and legsMaterialId ids from item....
+                  `/products/${category}/${item._id}/${item.baseMaterial}/${item.legsMaterial}`
+                );
               }}
             >
               <ThumbnailProduct

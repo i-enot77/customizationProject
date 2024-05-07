@@ -7,8 +7,8 @@ import { useTexture } from "@react-three/drei";
 import { Material } from "../../../services/materialSlice";
 
 interface ModelTextures {
-  baseMaterialTextures: Material["ref"];
-  legsMaterialTextures?: Material["ref"];
+  baseMaterial: Material;
+  legsMaterial?: Material;
 }
 
 type GLTFResult = GLTF & {
@@ -25,7 +25,10 @@ type GLTFResult = GLTF & {
 const New = (props: JSX.IntrinsicElements["group"] & ModelTextures) => {
   const lightRef = useRef<THREE.DirectionalLight>(null!);
 
-  const createTexture = (materialTextures: Material["ref"]) => {
+  const createTexture = (
+    materialTextures: Material["ref"],
+    repeat: number | undefined
+  ) => {
     const textureParams: Record<string, string> = {};
     if (materialTextures) {
       if (materialTextures.map) textureParams.map = materialTextures.map;
@@ -42,11 +45,13 @@ const New = (props: JSX.IntrinsicElements["group"] & ModelTextures) => {
     const texture = useTexture(textureParams);
 
     // Set texture repeat and wrapping
-    texture.map?.repeat.set(12, 12);
-    texture.displacementMap?.repeat.set(12, 12);
-    texture.normalMap?.repeat.set(12, 12);
-    texture.roughnessMap?.repeat.set(12, 12);
-    texture.aoMap?.repeat.set(12, 12);
+    if (repeat) {
+      texture.map?.repeat.set(repeat, repeat);
+      texture.displacementMap?.repeat.set(repeat, repeat);
+      texture.normalMap?.repeat.set(repeat, repeat);
+      texture.roughnessMap?.repeat.set(repeat, repeat);
+      texture.aoMap?.repeat.set(repeat, repeat);
+    }
 
     texture.map.wrapS =
       texture.map.wrapT =
@@ -63,16 +68,16 @@ const New = (props: JSX.IntrinsicElements["group"] & ModelTextures) => {
     return texture;
   };
 
-  const baseMtl = props.baseMaterialTextures
-    ? createTexture(props.baseMaterialTextures)
+  const baseMtl = props.baseMaterial.ref
+    ? createTexture(props.baseMaterial.ref, props.baseMaterial.repeat)
     : undefined;
-  const legsMtl = props.legsMaterialTextures
-    ? createTexture(props.legsMaterialTextures)
+  const legsMtl = props.legsMaterial
+    ? createTexture(props.legsMaterial.ref, props.legsMaterial.repeat)
     : undefined;
 
   const { nodes } = useGLTF("/new/112_098.gltf") as GLTFResult;
   return (
-    props.baseMaterialTextures && (
+    props.baseMaterial && (
       <>
         <color args={["gray"]} attach="background" />
         <ambientLight intensity={2} />
