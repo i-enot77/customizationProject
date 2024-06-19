@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Suspense, useEffect, useState, useTransition } from "react";
+import { Params, useParams, useSearchParams } from "react-router-dom";
 import ProductAmount from "./ProductAmount";
 import Dimensions from "./Dimensions";
 import ProductItemSkeleton from "./ProductItemSkeleton";
@@ -11,82 +11,87 @@ import Button from "../../../components/Button";
 import Scene from "../../model/components/Scene";
 import MaterialMenu from "./MaterialMenu";
 import { createBrowserHistory } from "history";
+import { Material } from "../../../services/materialSlice";
+import CircularProgress from "@mui/material/CircularProgress";
+import { checkCategory } from "../../../utils/checkCategory";
 
 const ProductItem = () => {
   const [selectedAmount, setSelectedAmount] = useState(1);
   const dispatch = useAppDispatch();
+  const [isPending, startTransition] = useTransition();
   const history = createBrowserHistory();
+  const { category, _id, baseMaterial, legsMaterial } = useParams();
 
-  const {
-    category,
-    _id,
-    baseMaterial,
-    legsMaterial,
-  }: {
-    category: string;
-    _id: string;
-    baseMaterial: string;
-    legsMaterial: string;
-  } = useParams() as {
-    category: string;
-    _id: string;
-    baseMaterial: string;
-    legsMaterial: string;
-  };
+  if (!category || !_id || !baseMaterial) {
+    return;
+  }
 
-  const [baseMtlID, setBaseMtlID] = useState(baseMaterial);
-  const [legsMtlID, setLegsMtlID] = useState(legsMaterial);
-
-  const changeBaseMtlID = (materialID: string) => {
-    setBaseMtlID(materialID);
-    console.log(materialID);
-    history.replace(
-      `/products/${category}/${_id}/${materialID}/${legsMaterial}`
-    );
-  };
-
-  const changeLegsMtlID = (materialID: string) => {
-    setLegsMtlID(materialID);
-    history.replace(
-      `/products/${category}/${_id}/${baseMaterial}/${materialID}`
-    );
-  };
-
-  const { data, isLoading, isSuccess, refetch } = useGetProductByIdQuery({
-    category,
-    _id,
-    baseMaterial: baseMtlID,
-    legsMaterial: legsMtlID,
-  });
-
+  const { data, isLoading, isSuccess, isError, refetch } =
+    useGetProductByIdQuery({
+      category,
+      _id,
+      baseMaterial,
+      legsMaterial,
+    });
   const { product, baseMtl, legsMtl } = data || {};
+
+  const [baseMtlTextures, setBaseMtlTextures] = useState<Material | null>(
+    baseMtl || null
+  );
+  const [legsMtlTextures, setLegsMtlTextures] = useState<Material | null>(
+    legsMtl || null
+  );
+
+  useEffect(() => {
+    if (baseMtl) setBaseMtlTextures(baseMtl);
+    if (legsMtl) setLegsMtlTextures(legsMtl);
+  }, [baseMtl, legsMtl]);
+
+  const changeBaseMtl = (material: Material) => {
+    startTransition(() => {
+      setBaseMtlTextures(material);
+      console.log(material);
+      history.replace(
+        `/products/${category}/${_id}/${material._id}/${legsMaterial}`
+      );
+    });
+  };
+
+  // // https://reactrouter.com/en/main/hooks/use-search-params
+
+  // let [searchParams, setSearchParams] = useSearchParams();
+
+  // Object.values({});
+
+  // const newParams = new URLSearchParams("");
+
+  // // 1
+  // newParams.set("material", "wood");
+
+  // // 2
+  // newParams.set("material", "glass");
+
+  // // ?material=glass
+
+  // history.replace(`/products?category=${category}&id=132213&`);
+
+  // setSearchParams(newParams);
+
+  const changeLegsMtl = (material: Material) => {
+    startTransition(() => {
+      setLegsMtlTextures(material);
+      history.replace(
+        `/products/${category}/${_id}/${baseMaterial}/${material._id}`
+      );
+    });
+  };
 
   useEffect(() => {
     refetch();
     console.log(baseMaterial, legsMaterial);
-  }, [category, _id, baseMtlID, legsMtlID, refetch]);
+  }, [category, _id, refetch]);
 
-  if (product) {
-    console.log(product);
-  }
-
-  const checkCategory = () => {
-    let modelPart = "";
-    switch (product?.category) {
-      case "sofy":
-      case "fotele":
-        return (modelPart = "Tapicerka");
-      case "krzesła":
-        return (modelPart = "Siedzenie");
-      case "stoły":
-        return (modelPart = "Blat");
-      case "lampy":
-        return (modelPart = "Lampa");
-      default:
-        return (modelPart = "");
-    }
-  };
-  const modelPart = checkCategory();
+  const modelPart = checkCategory(product?.category);
 
   // useStorageCartUpdate();
 
@@ -103,9 +108,14 @@ const ProductItem = () => {
   return (
     <>
       {isLoading && <ProductItemSkeleton />}
-      {isSuccess && product && baseMtl ? (
+      {isSuccess && product && baseMtlTextures && (
         <div className="w-full grid grid-cols-[minmax(320px,_2fr)_minmax(320px,_1fr)] grid-rows-1 gap-6 justify-center content-stretch my-6">
-          <Scene baseMaterial={baseMtl} legsMaterial={legsMtl} />
+          <Scene
+            baseMtlTextures={baseMtlTextures}
+            legsMtlTextures={legsMtlTextures ?? null}
+            glbUrl={product.modelPath}
+          />
+
           <div className="mt-4 w-full">
             <div>
               <h2 className="text-4xl">{product.name}</h2>
@@ -136,24 +146,24 @@ const ProductItem = () => {
               <div className="">Wybierz swój projekt</div>
               <MaterialMenu
                 modelPart={modelPart}
-                mtlName={baseMtl.name}
+                mtlName={baseMtlTextures.name}
                 assignedMtl={product.assignedBaseMtl}
-                handleChange={changeBaseMtlID}
+                isChecked={baseMtlTextures._id}
+                handleChange={changeBaseMtl}
               />
 
-              {legsMtl && (
+              {legsMtlTextures && (
                 <MaterialMenu
                   modelPart="Noga"
-                  mtlName={legsMtl?.name}
+                  mtlName={legsMtlTextures?.name}
                   assignedMtl={product.assignedLegsMtl}
-                  handleChange={changeLegsMtlID}
+                  isChecked={legsMtlTextures._id}
+                  handleChange={changeLegsMtl}
                 />
               )}
             </div>
           </div>
         </div>
-      ) : (
-        <div></div>
       )}
     </>
   );

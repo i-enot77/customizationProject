@@ -15,7 +15,7 @@ const Header = () => {
 
   const style = {
     item: `mr-7 last:mr-0 uppercase font-semibold text-lg`,
-    nav: `relative w-full bg-white shadow-sm px-8 py-7 fixed top-0 left-[50%] -translate-x-[50%] z-50`,
+    nav: `relative w-full bg-white shadow-sm px-8 py-7 fixed top-0 left-[50%] -translate-x-[50%] z-[9]`,
     productMenu: `absolute left-0 top-[4rem] w-full bg-white z-10 py-2 px-24 oveflow-hidden transition-all duration-700 ease-in-out`,
     btn: `uppercase font-medium cursor-pointer`,
   };

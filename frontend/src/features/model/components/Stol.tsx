@@ -16,24 +16,32 @@ type GLTFResult = GLTF & {
     Material__26: THREE.MeshStandardMaterial;
   };
 };
+// type GLTFResult = GLTF & {
+//   nodes: {
+//     Archmodels_112_054_002: THREE.Mesh;
+//   };
+//   materials: {
+//     Table_2: THREE.MeshStandardMaterial;
+//   };
+// };
 
 const Stol = (props: JSX.IntrinsicElements["group"]) => {
   const lightRef = useRef<THREE.DirectionalLight>(null!);
 
   const fabric10 = useTexture({
-    map: "/materials/metal/metal08/color.jpg",
-    displacementMap: "/materials/metal/metal08/displacement.jpg",
-    normalMap: "/materials/metal/metal08/normal.jpg",
-    roughnessMap: "/materials/metal/metal08/roughness.jpg",
-    // aoMap: "/materials/wood/wood09/ambientOcclusion.jpg",
-    metalnessMap: "/materials/metal/metal08/normal.jpg",
+    map: "/materials/wood/wood11/color.jpg",
+    displacementMap: "/materials/wood/wood11/displacement.jpg",
+    normalMap: "/materials/wood/wood11/normal.jpg",
+    roughnessMap: "/materials/wood/wood11/roughness.jpg",
+    aoMap: "/materials/wood/wood11/ambientOcclusion.jpg",
+    // metalnessMap: "/materials/wood/wood11/metalness.jpg",
   });
 
-  fabric10.map.repeat.set(20, 20);
-  fabric10.displacementMap.repeat.set(20, 20);
-  fabric10.normalMap.repeat.set(20, 20);
-  fabric10.roughnessMap.repeat.set(20, 20);
-  // fabric10.aoMap.repeat.set(18, 18);
+  fabric10.map.repeat.set(1, 1);
+  fabric10.displacementMap.repeat.set(1, 1);
+  fabric10.normalMap.repeat.set(1, 1);
+  fabric10.roughnessMap.repeat.set(1, 1);
+  fabric10.aoMap.repeat.set(1, 1);
 
   fabric10.map.wrapS =
     fabric10.map.wrapT =
@@ -43,11 +51,14 @@ const Stol = (props: JSX.IntrinsicElements["group"]) => {
     fabric10.normalMap.wrapT =
     fabric10.roughnessMap.wrapS =
     fabric10.roughnessMap.wrapT =
-      // fabric10.aoMap.wrapS =
-      // fabric10.aoMap.wrapT =
+    fabric10.aoMap.wrapS =
+    fabric10.aoMap.wrapT =
       THREE.RepeatWrapping;
 
   const { nodes } = useGLTF("/model/stol-transformed.glb") as GLTFResult;
+  // const { nodes, materials } = useGLTF(
+  //   "/models/112_054_table-transformed.glb"
+  // ) as GLTFResult;
   return (
     <>
       <color args={["gray"]} attach="background" />
@@ -66,11 +77,16 @@ const Stol = (props: JSX.IntrinsicElements["group"]) => {
           <meshStandardMaterial {...fabric10} displacementScale={0.1} />
         </mesh>
       </group>
+      {/* <group {...props} dispose={null}>
+        <mesh geometry={nodes.Archmodels_112_054_002.geometry}>
+          <meshStandardMaterial {...fabric10} displacementScale={0.1} />
+        </mesh>
+      </group> */}
     </>
   );
 };
 
-useGLTF.preload("/model/stol-transformed.glb");
+useGLTF.preload("/models/112_054_table-transformed.glb");
 
 export default Stol;
 // const marble = useTexture({

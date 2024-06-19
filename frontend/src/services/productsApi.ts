@@ -90,7 +90,7 @@ export const productsApi = customizationApi.injectEndpoints({
         category: string;
         _id: string;
         baseMaterial: string;
-        legsMaterial: string;
+        legsMaterial?: string;
       }
     >({
       query: ({ category, _id, baseMaterial, legsMaterial }) => ({

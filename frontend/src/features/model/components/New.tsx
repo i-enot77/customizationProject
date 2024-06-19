@@ -1,179 +1,101 @@
 import * as THREE from "three";
-import { useRef } from "react";
-import { useGLTF } from "@react-three/drei";
-import { GLTF } from "three-stdlib";
-import { OrbitControls } from "@react-three/drei";
-import { useTexture } from "@react-three/drei";
-import { Material } from "../../../services/materialSlice";
+import { useFrame } from "@react-three/fiber";
+import { useEffect, useRef, useState } from "react";
 
-interface ModelTextures {
-  baseMaterial: Material;
-  legsMaterial?: Material;
+interface NewProps {
+  baseMaterial: THREE.MeshStandardMaterial;
+  legsMaterial?: THREE.MeshStandardMaterial | null;
+  gltf: THREE.Group;
 }
 
-type GLTFResult = GLTF & {
-  nodes: {
-    Archmodels_112_098_005: THREE.Mesh;
-    Archmodels_112_098_003: THREE.Mesh;
-  };
-  materials: {
-    Material__26: THREE.MeshStandardMaterial;
-    Material__25: THREE.MeshStandardMaterial;
-  };
-};
+const New = ({ baseMaterial, legsMaterial, gltf, ...props }: NewProps) => {
+  const ref = useRef<THREE.Group>(null);
+  const [rotate, setRotate] = useState(false);
 
-const New = (props: JSX.IntrinsicElements["group"] & ModelTextures) => {
-  const lightRef = useRef<THREE.DirectionalLight>(null!);
+  useEffect(() => {
+    gltf.traverse((child: any) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        // child.receiveShadow = true;
+        if (child.name.includes("Base")) {
+          child.material = baseMaterial;
+          child.material.displacementScale = 0.1;
+        } else if (legsMaterial) {
+          child.material = legsMaterial;
+          child.material.displacementScale = 0.1;
+        }
+      }
+    });
 
-  const createTexture = (
-    materialTextures: Material["ref"],
-    repeat: number | undefined
-  ) => {
-    const textureParams: Record<string, string> = {};
-    if (materialTextures) {
-      if (materialTextures.map) textureParams.map = materialTextures.map;
-      if (materialTextures.displacementMap)
-        textureParams.displacementMap = materialTextures.displacementMap;
-      if (materialTextures.normalMap)
-        textureParams.normalMap = materialTextures.normalMap;
-      if (materialTextures.roughnessMap)
-        textureParams.roughnessMap = materialTextures.roughnessMap;
-      if (materialTextures.aoMap) textureParams.aoMap = materialTextures.aoMap;
-      if (materialTextures.metalnessMap)
-        textureParams.metalnessMap = materialTextures.metalnessMap;
-    }
-    const texture = useTexture(textureParams);
+    const timer = setTimeout(() => {
+      setRotate(true);
+    }, 2000); //value for a longer or shorter delay
 
-    // Set texture repeat and wrapping
-    if (repeat) {
-      texture.map?.repeat.set(repeat, repeat);
-      texture.displacementMap?.repeat.set(repeat, repeat);
-      texture.normalMap?.repeat.set(repeat, repeat);
-      texture.roughnessMap?.repeat.set(repeat, repeat);
-      texture.aoMap?.repeat.set(repeat, repeat);
-    }
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [gltf, baseMaterial, legsMaterial]);
 
-    texture.map.wrapS =
-      texture.map.wrapT =
-      texture.displacementMap.wrapS =
-      texture.displacementMap.wrapT =
-      texture.normalMap.wrapS =
-      texture.normalMap.wrapT =
-      texture.roughnessMap.wrapS =
-      texture.roughnessMap.wrapT =
-        THREE.RepeatWrapping;
-    if (texture.aoMap)
-      texture.aoMap.wrapS = texture.aoMap.wrapT = THREE.RepeatWrapping;
+  // useFrame(() => {
+  //   if (ref.current && rotate) {
+  //     ref.current.rotation.y += 0.001; //value for slower or faster rotation
+  //   }
+  // });
 
-    return texture;
-  };
-
-  const baseMtl = props.baseMaterial.ref
-    ? createTexture(props.baseMaterial.ref, props.baseMaterial.repeat)
-    : undefined;
-  const legsMtl = props.legsMaterial
-    ? createTexture(props.legsMaterial.ref, props.legsMaterial.repeat)
-    : undefined;
-
-  const { nodes } = useGLTF("/new/112_098.gltf") as GLTFResult;
   return (
-    props.baseMaterial && (
-      <>
-        <color args={["gray"]} attach="background" />
-        <ambientLight intensity={2} />
-        <directionalLight ref={lightRef} position={[5, 5, 5]} intensity={7} />
-        <OrbitControls />
-
-        <group {...props} dispose={null}>
-          <mesh geometry={nodes.Archmodels_112_098_005.geometry}>
-            <meshStandardMaterial {...legsMtl} />
-          </mesh>
-          <mesh geometry={nodes.Archmodels_112_098_003.geometry}>
-            <meshStandardMaterial {...baseMtl} />
-          </mesh>
-        </group>
-      </>
-    )
+    <group ref={ref} scale={[0.2, 0.2, 0.2]} position={[0, 0, 0]} {...props}>
+      <primitive object={gltf} />
+    </group>
   );
 };
 
-useGLTF.preload("/112_098.gltf");
 export default New;
-// const fabric10 = useTexture({
-//   map: "/materials/fabric/fabric10/color.png",
-//   displacementMap: "/materials/fabric/fabric10/displacement.png",
-//   normalMap: "/materials/fabric/fabric10/normal.png",
-//   roughnessMap: "/materials/fabric/fabric10/roughness.png",
-//   aoMap: "/materials/fabric/fabric10/ambientOcclusion.png",
-// });
 
-// fabric10.map.repeat.set(12, 12);
-// fabric10.displacementMap.repeat.set(12, 12);
-// fabric10.normalMap.repeat.set(12, 12);
-// fabric10.roughnessMap.repeat.set(12, 12);
-// fabric10.aoMap.repeat.set(12, 12);
+// interface ModelTextures {
+//   baseMtlTextures: Material;
+//   legsMtlTextures?: Material | null;
+//   glbUrl: string;
+// }
 
-// fabric10.map.wrapS =
-//   fabric10.map.wrapT =
-//   fabric10.displacementMap.wrapS =
-//   fabric10.displacementMap.wrapT =
-//   fabric10.normalMap.wrapS =
-//   fabric10.normalMap.wrapT =
-//   fabric10.roughnessMap.wrapS =
-//   fabric10.roughnessMap.wrapT =
-//   fabric10.aoMap.wrapS =
-//   fabric10.aoMap.wrapT =
-//     THREE.RepeatWrapping;
+// type GLTFResult = GLTF & {
+//   nodes: Record<string, THREE.Mesh>;
+//   materials: Record<string, THREE.MeshStandardMaterial>;
+// };
 
-// const leather06 = useTexture({
-//   map: "/materials/leather/leather06/color.jpg",
-//   displacementMap: "/materials/leather/leather06/displacement.jpg",
-//   normalMap: "/materials/leather/leather06/normal.jpg",
-//   roughnessMap: "/materials/leather/leather06/roughness.jpg",
-//   aoMap: "/materials/leather/leather06/ambientOcclusion.jpg",
-// });
+// const New = (props: JSX.IntrinsicElements["group"] & ModelTextures) => {
+//   const gltf = useLoader(GLTFLoader, props.glbUrl, (loader) => {
+//     const dracoLoader = new DRACOLoader();
+//     dracoLoader.setDecoderPath("/draco/");
+//     loader.setDRACOLoader(dracoLoader);
+//     dracoLoader.setDecoderConfig({ type: "js" });
+//   });
 
-// leather06.map.repeat.set(6, 6);
-// leather06.displacementMap.repeat.set(6, 6);
-// leather06.normalMap.repeat.set(6, 6);
-// leather06.roughnessMap.repeat.set(6, 6);
-// leather06.aoMap.repeat.set(6, 6);
+//   const baseMtl = useCreateMaterial(
+//     props.baseMtlTextures.ref,
+//     props.baseMtlTextures.repeat
+//   );
+//   const legsMtl = props.legsMtlTextures
+//     ? useCreateMaterial(props.legsMtlTextures.ref, props.legsMtlTextures.repeat)
+//     : null;
 
-// leather06.map.wrapS =
-//   leather06.map.wrapT =
-//   leather06.displacementMap.wrapS =
-//   leather06.displacementMap.wrapT =
-//   leather06.normalMap.wrapS =
-//   leather06.normalMap.wrapT =
-//   leather06.roughnessMap.wrapS =
-//   leather06.roughnessMap.wrapT =
-//   leather06.aoMap.wrapS =
-//   leather06.aoMap.wrapT =
-//     THREE.RepeatWrapping;
+//   return (
+//     <group {...props} dispose={null}>
+//       {gltf.scene.children.map((child: THREE.Object3D) => {
+//         if (child instanceof THREE.Mesh) {
+//           const material = child.name.includes("Base") ? baseMtl : legsMtl;
+//           return (
+//             <mesh
+//               key={child.uuid}
+//               geometry={child.geometry}
+//               rotation={child.rotation}
+//             >
+//               <meshStandardMaterial {...material} displacementScale={0.1} />
+//             </mesh>
+//           );
+//         }
+//       })}
+//     </group>
+//   );
+// };
 
-// const metal07 = useTexture({
-//   map: "/materials/metal/metal07/color.png",
-//   displacementMap: "/materials/metal/metal07/displacement.png",
-//   normalMap: "/materials/metal/metal07/normal.png",
-//   roughnessMap: "/materials/metal/metal07/roughness.png",
-//   metalnessMap: "/materials/metal/metal07/metalness.png",
-//   // aoMap: "/materials/marble01/ambientOcclusion.jpg",
-// });
-
-// metal07.map.repeat.set(1, 1);
-// metal07.displacementMap.repeat.set(1, 1);
-// metal07.normalMap.repeat.set(1, 1);
-// metal07.roughnessMap.repeat.set(1, 1);
-// marble.aoMap.repeat.set(4, 4);
-
-// metal07.map.wrapS =
-//   metal07.map.wrapT =
-//   metal07.displacementMap.wrapS =
-//   metal07.displacementMap.wrapT =
-//   metal07.normalMap.wrapS =
-//   metal07.normalMap.wrapT =
-//   metal07.roughnessMap.wrapS =
-//   metal07.roughnessMap.wrapT =
-//   marble.aoMap.wrapS =
-//   marble.aoMap.wrapT =
-// THREE.RepeatWrapping;
+// export default New;

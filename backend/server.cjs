@@ -19,7 +19,7 @@ const limiter = rateLimit({
 
 const products = require("./src/routes/products.cjs");
 const productById = require("./src/routes/productById.cjs");
-const materials = require("./src/routes/materials.cjs");
+const textures = require("./src/routes/textures.cjs");
 const paymentStatusRoute = require("./src/routes/paymentStatus.cjs");
 const saveOrderRoute = require("./src/routes/saveOrderController.cjs");
 const sendContactForm = require("./src/routes/contactForm.cjs");
@@ -49,7 +49,7 @@ app.use(express.json());
 app.use("/create-checkout-session", require("./src/routes/payment.cjs"));
 app.use("/api", products);
 app.use("/api", productById);
-app.use("/api", materials);
+app.use("/api", textures);
 app.use("/api", saveOrderRoute);
 app.use("/api", sendContactForm);
 // app.use("/api", FileAploadRoute);

@@ -11,6 +11,7 @@ const Material = require("../model/Material.cjs");
 router.get("/:category/:id/:baseMaterial/:legsMaterial", async (req, res) => {
   const { category, id, baseMaterial, legsMaterial } = req.params;
   console.log(req.params);
+
   try {
     let product, baseMtl, legsMtl;
 
@@ -24,32 +25,47 @@ router.get("/:category/:id/:baseMaterial/:legsMaterial", async (req, res) => {
         product = await Armchair.findById(id)
           .populate(baseMaterial ? "baseMaterial" : "")
           .populate(legsMaterial ? "legsMaterial" : "");
+        baseMtl = product ? product.baseMaterial : null;
+        legsMtl = product ? product.legsMaterial : null;
         break;
       case "krzesła":
         product = await Chair.findById(id)
           .populate(baseMaterial ? "baseMaterial" : "")
           .populate(legsMaterial ? "legsMaterial" : "");
+        baseMtl = product ? product.baseMaterial : null;
+        legsMtl = product ? product.legsMaterial : null;
         break;
       case "stoły":
         product = await Table.findById(id)
           .populate(baseMaterial ? "baseMaterial" : "")
           .populate(legsMaterial ? "legsMaterial" : "");
+        baseMtl = product ? product.baseMaterial : null;
+        legsMtl = product ? product.legsMaterial : null;
         break;
       case "lampy":
         product = await Lamp.findById(id).populate(
           baseMaterial ? "baseMaterial" : ""
         );
+        baseMtl = product ? product.baseMaterial : null;
         break;
       default:
         return res.status(400).json({ message: "Invalid category" });
     }
 
-    if (!product && !baseMtl) {
-      return res.status(404).json({ message: "Document not found" });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    res.json({ product, baseMtl, legsMtl });
-    console.log(product);
+    if (!baseMtl) {
+      return res.status(404).json({ message: "Base material not found" });
+    }
+
+    if (category !== "lampy" && !legsMtl) {
+      return res.status(404).json({ message: "Legs material not found" });
+    }
+
+    // Only return product, baseMtl, and legsMtl if all are defined
+    return res.status(200).json({ product, baseMtl, legsMtl });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
