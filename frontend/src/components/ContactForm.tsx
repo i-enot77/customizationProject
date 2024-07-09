@@ -42,7 +42,7 @@ const ContactForm = () => {
 
   return (
     <>
-      <h3 className="text-2xl mb-3 text-center">Napisz do nas</h3>
+      <h3 className="text-2xl font-medium mb-4">Napisz do nas</h3>
 
       <Formik
         initialValues={initialValues}
@@ -50,7 +50,7 @@ const ContactForm = () => {
         onSubmit={onSubmit}
       >
         {() => (
-          <Form className="flex flex-col w-[90%]">
+          <Form className="flex flex-col justify-center  w-full">
             <div className={style.field}>
               <Field
                 id="firstName"
@@ -117,7 +117,7 @@ const ContactForm = () => {
             <div className="flex justify-between">
               <button
                 type="submit"
-                className="bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white mx-auto mt-4"
+                className="bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white mx-auto mt-6"
               >
                 wyślij
               </button>
@@ -125,33 +125,6 @@ const ContactForm = () => {
           </Form>
         )}
       </Formik>
-      {/* 
-      <form className="flex flex-col w-[90%]" onSubmit={handleSubmit}>
-        {contactFormData.map((item, index) => (
-          <InputItem
-            key={index}
-            id={item.inputId}
-            type="text"
-            value={state[item.inputId as keyof ContactFormState]}
-            onChange={handleChange}
-            placeholder={item.placeholder}
-            className={style.inputClassName}
-          />
-        ))}
-
-        <textarea
-          name="message"
-          id="message"
-          placeholder="Wiadomość"
-          value={state.message}
-          onChange={handleChange}
-          maxLength={100}
-          className={`resize-none ${style.inputClassName}`}
-        ></textarea>
-        <Button className="bg-[#2A254B] px-12 py-2 text-sm uppercase text-white rounded-md m-auto mt-3">
-          wyślij
-        </Button>
-      </form> */}
     </>
   );
 };

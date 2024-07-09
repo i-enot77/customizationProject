@@ -9,10 +9,15 @@ export interface ProductWithDimensions<T> {
   category: string;
   modelPath: string;
   dimensions: T;
-  baseMaterial: string;
-  legsMaterial?: string;
+  baseMaterial: Material;
+  legsMaterial?: Material;
   assignedBaseMtl: string[];
   assignedLegsMtl?: string[];
+  img: {
+    small: "";
+    medium: "";
+    large: "";
+  };
 }
 
 export interface SofaDimensions {
@@ -89,14 +94,21 @@ export const productsApi = customizationApi.injectEndpoints({
       {
         category: string;
         _id: string;
-        baseMaterial: string;
-        legsMaterial?: string;
+        baseMtl: string;
+        legsMtl?: string | null;
       }
     >({
-      query: ({ category, _id, baseMaterial, legsMaterial }) => ({
-        url: `api/${category}/${_id}/${baseMaterial}/${legsMaterial}`,
-        method: "GET",
-      }),
+      query: ({ category, _id, baseMtl, legsMtl }) => {
+        const queryParams = new URLSearchParams({ base: baseMtl });
+        if (legsMtl) {
+          queryParams.append("legs", legsMtl);
+        }
+
+        return {
+          url: `api/${category}/${_id}?${queryParams.toString()}`,
+          method: "GET",
+        };
+      },
     }),
   }),
 });

@@ -1,9 +1,9 @@
 import { Field, Form, Formik } from "formik";
-import { FormProps } from "../pages/CartSummaryForm";
-import { useAppDispatch } from "../../../services/hooks";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../services/store";
 import { User, setUserData } from "../../../services/orderSlice";
-import Button from "../../../components/Button";
 import { schema } from "../schema";
+import Button from "../../../components/Button";
 
 const style = {
   header: `text-lg font-medium my-1`,
@@ -12,25 +12,13 @@ const style = {
   input: `px-2 py-1 rounded border border-stone-400 mt-1`,
   error: `text-red-600 self-end text-sm pr-2`,
 };
-// const phoneRegExp = /^\+[0-9]{11}$/;
 
-const initialValues = {
-  email: "",
-  country: "",
-  firstName: "",
-  lastName: "",
-  address: "",
-  zipCode: "",
-  city: "",
-  phone: "",
-};
-
-const CheckoutForm = ({ nextStep }: FormProps) => {
-  const dispatch = useAppDispatch();
+const CheckoutForm = ({ nextStep }: { nextStep?: () => void }) => {
+  const userData = useSelector((state: RootState) => state.order.user);
+  const dispatch = useDispatch();
 
   const onSubmit = (values: User, actions: any) => {
     dispatch(setUserData(values));
-
     actions.setSubmitting(false);
     if (nextStep) {
       nextStep();
@@ -39,14 +27,10 @@ const CheckoutForm = ({ nextStep }: FormProps) => {
 
   return (
     <>
-      <div className="mb-3">
-        <h2 className={style.header}>Zaloguj się na koncie:</h2>
-        <Button className="">Zaloguj się</Button>
-        <h2 className={style.header}>lub zaplać jako gość:</h2>
-      </div>
+      <h2 className={`${style.header} mb-3`}>Podaj dane do płatności:</h2>
 
       <Formik
-        initialValues={initialValues}
+        initialValues={userData}
         validationSchema={schema}
         onSubmit={onSubmit}
       >

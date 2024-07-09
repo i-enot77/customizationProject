@@ -6,8 +6,8 @@ function ProductSkeleton({ products }: { products: number }) {
     .fill(0)
     .map((_, index) => (
       <div key={index} className="">
-        <Skeleton width={"100%"} height={"12.5rem"} />
-        <Skeleton className="mt-3" height={"2rem"} />
+        <Skeleton width={"25rem"} height={"15rem"} />
+        <Skeleton className="mt-3" width={"25rem"} height={"2rem"} />
       </div>
     ));
 }

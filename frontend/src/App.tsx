@@ -35,19 +35,14 @@ const App = () => {
         <Route path="/returns" element={<Returns />} />
 
         <Route path="/products/:category" element={<Products />} />
+        <Route path="/:category/:_id" element={<ProductDescription />} />
 
-        <Route
-          path="/products/:category/:_id/:baseMaterial/:legsMaterial"
-          element={<ProductDescription />}
-        />
         <Route path="/cart-sum" element={<CartSummaryForm />} />
         <Route path="/success" element={<Success />} />
         <Route path="/cancel" element={<Cancel />} />
 
         <Route element={<PersistLogin />}></Route>
       </Routes>
-
-      {/* <Scene /> */}
     </div>
   );
 };

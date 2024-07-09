@@ -1,7 +1,5 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ChangeEvent } from "react";
-import { FormProps } from "../pages/CartSummaryForm";
-import { useAppDispatch } from "../../../services/hooks";
 import { RootState } from "../../../services/store";
 import { setShipping } from "../../../services/orderSlice";
 import { setCartSummary } from "../../../services/cartSlice";
@@ -12,9 +10,16 @@ const style = {
   header: `text-lg font-medium my-1`,
 };
 
-const DeliveryMethod = ({ prevStep, nextStep }: FormProps) => {
-  const dispatch = useAppDispatch();
+const DeliveryMethod = ({
+  prevStep,
+  nextStep,
+}: {
+  prevStep?: () => void;
+  nextStep?: () => void;
+}) => {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.order.user);
+  const shipping = useSelector((state: RootState) => state.order.shipping);
 
   const toPrevStep = () => {
     if (prevStep) {
@@ -73,6 +78,7 @@ const DeliveryMethod = ({ prevStep, nextStep }: FormProps) => {
                   data-cost="200"
                   onChange={handleChange}
                   className="mr-1.5 w-4 h-4"
+                  checked={shipping.method === "Transport z wniesieniem"}
                 />
                 Transport z wniesieniem i ustawieniem mebla
               </label>
@@ -87,6 +93,7 @@ const DeliveryMethod = ({ prevStep, nextStep }: FormProps) => {
                   data-cost="300"
                   onChange={handleChange}
                   className="mr-1.5 w-4 h-4"
+                  checked={shipping.method === "Wysyłka paletowa"}
                 />
                 Wysyłka paletowa
               </label>

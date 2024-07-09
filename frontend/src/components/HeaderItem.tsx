@@ -16,9 +16,9 @@ const HeaderItem: React.FC<HeaderItemProps> = ({
   contentClass = "",
 }) => {
   return (
-    <div className={`flex-initial ${headerWrapper}`}>
+    <div className={`flex-initial py-4 lg:px-5 ${headerWrapper}`}>
       {/* get width and order from wrapper prop */}
-      <h2 className={`text-3xl mb-4 ${headerClass}`}>{headerContent}</h2>
+      <h2 className={`text-3xl ${headerClass}`}>{headerContent}</h2>
       <p className={`w-full ${contentClass}`}>{content}</p>
     </div>
   );

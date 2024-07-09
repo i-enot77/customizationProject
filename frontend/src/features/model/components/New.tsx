@@ -20,8 +20,11 @@ const New = ({ baseMaterial, legsMaterial, gltf, ...props }: NewProps) => {
         if (child.name.includes("Base")) {
           child.material = baseMaterial;
           child.material.displacementScale = 0.1;
-        } else if (legsMaterial) {
+        } else if (child.name.includes("Legs") && legsMaterial) {
           child.material = legsMaterial;
+          child.material.displacementScale = 0.1;
+        } else {
+          //  default material from .glb file
           child.material.displacementScale = 0.1;
         }
       }
@@ -29,7 +32,7 @@ const New = ({ baseMaterial, legsMaterial, gltf, ...props }: NewProps) => {
 
     const timer = setTimeout(() => {
       setRotate(true);
-    }, 2000); //value for a longer or shorter delay
+    }, 0.5); //value for a longer or shorter delay of model rotation (after init load)
 
     return () => {
       clearTimeout(timer);
@@ -43,59 +46,10 @@ const New = ({ baseMaterial, legsMaterial, gltf, ...props }: NewProps) => {
   // });
 
   return (
-    <group ref={ref} scale={[0.2, 0.2, 0.2]} position={[0, 0, 0]} {...props}>
+    <group ref={ref} scale={[0.2, 0.2, 0.2]} {...props}>
       <primitive object={gltf} />
     </group>
   );
 };
 
 export default New;
-
-// interface ModelTextures {
-//   baseMtlTextures: Material;
-//   legsMtlTextures?: Material | null;
-//   glbUrl: string;
-// }
-
-// type GLTFResult = GLTF & {
-//   nodes: Record<string, THREE.Mesh>;
-//   materials: Record<string, THREE.MeshStandardMaterial>;
-// };
-
-// const New = (props: JSX.IntrinsicElements["group"] & ModelTextures) => {
-//   const gltf = useLoader(GLTFLoader, props.glbUrl, (loader) => {
-//     const dracoLoader = new DRACOLoader();
-//     dracoLoader.setDecoderPath("/draco/");
-//     loader.setDRACOLoader(dracoLoader);
-//     dracoLoader.setDecoderConfig({ type: "js" });
-//   });
-
-//   const baseMtl = useCreateMaterial(
-//     props.baseMtlTextures.ref,
-//     props.baseMtlTextures.repeat
-//   );
-//   const legsMtl = props.legsMtlTextures
-//     ? useCreateMaterial(props.legsMtlTextures.ref, props.legsMtlTextures.repeat)
-//     : null;
-
-//   return (
-//     <group {...props} dispose={null}>
-//       {gltf.scene.children.map((child: THREE.Object3D) => {
-//         if (child instanceof THREE.Mesh) {
-//           const material = child.name.includes("Base") ? baseMtl : legsMtl;
-//           return (
-//             <mesh
-//               key={child.uuid}
-//               geometry={child.geometry}
-//               rotation={child.rotation}
-//             >
-//               <meshStandardMaterial {...material} displacementScale={0.1} />
-//             </mesh>
-//           );
-//         }
-//       })}
-//     </group>
-//   );
-// };
-
-// export default New;

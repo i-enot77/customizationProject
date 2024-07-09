@@ -16,6 +16,7 @@ const lapmSchema = new Schema({
     diameter: { type: Number, required: true },
   },
   baseMaterial: { type: Schema.Types.ObjectId, ref: Material },
+  assignedBaseMtl: [{ type: Schema.Types.ObjectId, ref: Material }],
 });
 
 module.exports = mongoose.model("Lamp", lapmSchema);

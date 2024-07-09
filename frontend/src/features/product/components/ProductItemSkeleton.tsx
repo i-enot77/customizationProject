@@ -1,10 +1,13 @@
+import { CircularProgress } from "@mui/material";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const ProductItemSkeleton = () => {
   return (
     <div className="w-full grid grid-cols-2 grid-rows-1 gap-6 justify-center content-stretch my-6">
-      <Skeleton width={200} height={200} />
+      <div className="justify-self-center self-center">
+        <CircularProgress />
+      </div>
       <div className="mt-4">
         <div>
           <Skeleton height={40} width={200} />

@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Transition, Disclosure } from "@headlessui/react";
+import {
+  Transition,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
@@ -8,11 +13,6 @@ import Cart from "../components/Cart";
 import CheckoutForm from "../components/CheckoutForm";
 import DeliveryMethod from "../components/DeliveryMethod";
 import SummaryCheckout from "../components/SummaryCheckout";
-
-export interface FormProps {
-  nextStep?: () => void;
-  prevStep?: () => void;
-}
 
 const CartSummaryForm = () => {
   const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
@@ -29,12 +29,12 @@ const CartSummaryForm = () => {
     btn: `w-full flex justify-between px-6 py-5 text-xl font-medium lg:hidden`,
   };
   return (
-    <div className="flex flex-col lg:flex-row lg:justify-between bg-stone-300 w-full h-full px-4 overflow-hidden">
+    <div className="flex flex-col lg:flex-row lg:justify-between bg-white w-full h-full ml-4 pr-4 py-4 overflow-hidden">
       <div className="w-full lg:hidden">
         <Disclosure>
           {({ open }) => (
             <>
-              <Disclosure.Button className={style.btn}>
+              <DisclosureButton className={style.btn}>
                 <div>
                   <span>Podsumowanie</span>
                   <FontAwesomeIcon
@@ -48,7 +48,7 @@ const CartSummaryForm = () => {
                   />
                 </div>
                 <span>{totalPrice} zł</span>
-              </Disclosure.Button>
+              </DisclosureButton>
 
               <Transition
                 show={open}
@@ -59,9 +59,9 @@ const CartSummaryForm = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Disclosure.Panel>
+                <DisclosurePanel>
                   <Cart />
-                </Disclosure.Panel>
+                </DisclosurePanel>
               </Transition>
             </>
           )}
@@ -72,7 +72,7 @@ const CartSummaryForm = () => {
         <Cart />
       </div>
 
-      <div className="h-full w-full py-6 flex flex-col justify-between lg:w-[49%]">
+      <div className="h-full w-[90%] md:w-[80%] p-6 flex flex-col justify-around mx-auto lg:w-[49%]">
         {step === 1 && <CheckoutForm nextStep={nextStep} />}
         {step === 2 && (
           <DeliveryMethod prevStep={prevStep} nextStep={nextStep} />

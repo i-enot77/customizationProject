@@ -9,6 +9,8 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { grey } from "@mui/material/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 interface MaterialMenuProps {
   modelPart: string;
@@ -44,18 +46,22 @@ const MaterialMenu = ({
   const closeModal = () => setIsOpen(false);
 
   const style = {
-    inner: `bg-[#d5d5d5] w-[35%] h-full flex flex-col p-10`,
+    inner: `bg-[#e2e2e2] w-[35%] h-screen flex flex-col px-10 overflow-y-auto`,
+    border: `rounded-lg border-2 border-[#9a9a9a] mb-6`,
   };
 
   return (
     <>
-      <div>
+      <div className={`flex justify-between items-center p-3 ${style.border}`}>
         <div>
-          <div>{modelPart}</div>
+          <div className="font-semibold">{modelPart}</div>
           <div>{mtlName}</div>
         </div>
         {assignedMtl && assignedMtl.length > 0 && (
-          <Button onClick={() => handleClick(assignedMtl)}>Zmień</Button>
+          <Button onClick={() => handleClick(assignedMtl)}>
+            <span className="font-semibold pr-2">Zmień</span>
+            <FontAwesomeIcon icon={faChevronRight} />
+          </Button>
         )}
       </div>
       {materialsArr && handleChange && (
@@ -67,24 +73,32 @@ const MaterialMenu = ({
           onClick={closeModal}
           className="fixed z-10 inset-0 w-full h-screen flex justify-end items-center"
         >
-          <h2 className="text-3xl font-semibold pb-6">Zmień material</h2>
+          <div className="flex justify-between items-center px-1 py-7">
+            <h2 className="text-3xl font-semibold ">Zmień material</h2>
+            <Button onClick={closeModal}>
+              <FontAwesomeIcon icon={faXmark} size="2xl" />
+            </Button>
+          </div>
+
           <FormGroup
             sx={{
               width: "max-content",
+              flexWrap: "nowrap",
+              paddingBottom: "1rem",
             }}
           >
             {materialsArr.map((item) => (
               <div
                 key={item._id}
-                className="rounded-lg border-2 border-[#9a9a9a] mb-6 last:mb-0"
+                className={`${style.border} bg-white last:mb-0`}
               >
-                <div>
+                <div className="w-full ">
                   <img
                     srcSet={`${mtlSmall} 244w, ${mtlMedium} 600w`}
-                    sizes="(max-width: 768px) 100vw, (min-width: 769px) 244px"
+                    sizes="(max-width: 768px) 50vw, (min-width: 769px) 20vw"
                     src={mtlSmall}
                     alt="material"
-                    className="lazyload rounded-t-lg"
+                    className="lazyload rounded-t-lg w-full object-cover"
                   />
                 </div>
                 <FormControlLabel
@@ -110,7 +124,6 @@ const MaterialMenu = ({
                     },
                     padding: ".5rem",
                     paddingLeft: "3rem",
-
                     // textAlign: "center",
                     // width: "100%",
                     // display: "inline-block",

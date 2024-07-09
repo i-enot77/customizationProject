@@ -2,7 +2,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faBagShopping } from "@fortawesome/free-solid-svg-icons";
 import { Fragment } from "react";
-import { Menu, Transition } from "@headlessui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
 import { toggleShowCart } from "../services/cartSlice";
 import { useAppDispatch } from "../services/hooks";
 import { setCategory } from "../services/productSlice";
@@ -29,7 +35,7 @@ const Header = () => {
           </Link>
 
           <Menu>
-            <Menu.Button className={style.item}>produkty</Menu.Button>
+            <MenuButton className={style.item}>produkty</MenuButton>
 
             <Transition
               as={Fragment}
@@ -40,9 +46,9 @@ const Header = () => {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className={style.productMenu}>
+              <MenuItems className={style.productMenu}>
                 {menuConfig.map((item, index) => (
-                  <Menu.Item
+                  <MenuItem
                     as="li"
                     key={index}
                     className={style.btn}
@@ -52,9 +58,9 @@ const Header = () => {
                     }}
                   >
                     {item}
-                  </Menu.Item>
+                  </MenuItem>
                 ))}
-              </Menu.Items>
+              </MenuItems>
             </Transition>
           </Menu>
 

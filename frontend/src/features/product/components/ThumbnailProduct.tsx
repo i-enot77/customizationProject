@@ -1,5 +1,3 @@
-// import ResponsiveImg, { ResponsiveImgProps } from "../common/ResponsiveImg";
-
 import ResponsiveImg, {
   ResponsiveImgProps,
 } from "../../../components/ResponsiveImg";
@@ -18,9 +16,9 @@ const ThumbnailProduct: React.FC<ProductProps> = (props) => {
         medium={props.medium}
         large={props.large}
       />
-      <div className="flex justify-around items-center py-4">
+      <div className="flex justify-around items-center py-1 text-lg font-medium">
         <span>{props.productName}</span>
-        <span>{props.productPrice}</span>
+        <span>{props.productPrice} zł</span>
       </div>
     </>
   );

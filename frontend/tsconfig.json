@@ -18,8 +18,13 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
     /* Visit https://aka.ms/tsconfig to read more about this file */
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
 
     /* Projects */
     // "incremental": true,                              /* Save .tsbuildinfo files to allow for incremental compilation of projects. */

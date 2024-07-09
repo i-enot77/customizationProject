@@ -3,12 +3,14 @@ import { Sofa, Armchair, Chair, Lamp, Table } from "./productsApi";
 
 export interface CartState {
   id: string;
+  small: string;
+  medium: string;
   category: string;
   name: string;
   price: number;
   quantity: number;
-  // baseMaterial: string;
-  // legsMaterial: string;
+  baseMaterial: string;
+  legsMaterial?: string;
 }
 
 interface Cart {
@@ -36,10 +38,12 @@ const cartSlice = createSlice({
       state,
       action: PayloadAction<{
         productItem: Sofa | Armchair | Chair | Table | Lamp;
+        baseMtl: string;
+        legsMtl?: string;
         amount: number;
       }>
     ) {
-      const { productItem, amount } = action.payload;
+      const { productItem, baseMtl, legsMtl, amount } = action.payload;
 
       const existingItem = state.cart.find(
         (cartItem) => cartItem.id === productItem._id
@@ -49,9 +53,13 @@ const cartSlice = createSlice({
       } else {
         state.cart.push({
           id: productItem._id,
+          small: productItem.img.small,
+          medium: productItem.img.medium,
           category: productItem.category,
           name: productItem.name,
           price: productItem.price,
+          baseMaterial: baseMtl,
+          legsMaterial: legsMtl,
           quantity: amount,
         });
       }

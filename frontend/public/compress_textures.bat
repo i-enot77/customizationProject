@@ -2,8 +2,8 @@
 setlocal enabledelayedexpansion
 
 :: Set the input and output directories
-set "INPUT_DIR=C:\Users\maiko\Desktop\materials\metal\metal10"
-set "OUTPUT_DIR=C:\Users\maiko\Desktop\materials\metal\compressed10"
+set "INPUT_DIR=C:\Users\maiko\Desktop\materials\fabric\fabric09"
+set "OUTPUT_DIR=C:\Users\maiko\Desktop\materials\fabric\compressed09"
 
 :: Full path to the basisu executable installed by vcpkg
 set "BASISU_PATH=C:\Users\maiko\Desktop\vcpkg\installed\x64-windows\tools\basisu\basisu.exe"

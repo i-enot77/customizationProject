@@ -39,7 +39,7 @@ const initialState: OrderState = {
 };
 
 const orderSlice = createSlice({
-  name: "user",
+  name: "order",
   initialState,
   reducers: {
     setUserData(state, action: PayloadAction<User>) {

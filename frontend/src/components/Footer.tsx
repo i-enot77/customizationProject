@@ -8,8 +8,8 @@ interface FooterItem {
 
 function Footer() {
   return (
-    <div className="w-full bg-white  py-8 px-4 shadow-inner">
-      <div className="xlg:w-[704px] px-4 mx-auto grid grid-cols-3 grid-rows-1 gap-14 text-sm">
+    <footer className="w-[70%] justify-self-end mx-auto bg-white  py-8 px-4 shadow-inner">
+      <div className="px-4  grid grid-cols-3 grid-rows-1 gap-14 text-sm items-end">
         <ul>
           <li className="mb-1 text-base">Logo</li>
           {contactData.map((item: FooterItem, index: number) => (
@@ -38,7 +38,7 @@ function Footer() {
           ))}
         </ul>
       </div>
-    </div>
+    </footer>
   );
 }
 
