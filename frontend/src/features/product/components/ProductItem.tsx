@@ -27,7 +27,7 @@ const ProductItem = () => {
   const baseMtlParam = searchParams.get("base") as string;
   const legsMtlParam = searchParams.get("legs");
 
-  const { data, isFetching, isSuccess, isError, refetch } =
+  const { data, isLoading, isFetching, isSuccess, isError, refetch } =
     useGetProductByIdQuery({
       category,
       _id,
@@ -88,15 +88,16 @@ const ProductItem = () => {
 
   return (
     <>
-      {isFetching && <ProductItemSkeleton />}
+      {isLoading && <ProductItemSkeleton />}
       {isSuccess && data && baseMtlTextures && (
         <div className="w-full grid grid-cols-[minmax(320px,_2fr)_minmax(320px,_1fr)] grid-rows-1 gap-6 justify-center content-stretch m3-6">
-          <Scene
-            baseMtlTextures={baseMtlTextures}
-            legsMtlTextures={legsMtlTextures ?? null}
-            glbUrl={data.product.modelPath}
-          />
-
+          <div className="relative">
+            <Scene
+              baseMtlTextures={baseMtlTextures}
+              legsMtlTextures={legsMtlTextures ?? null}
+              glbUrl={data.product.modelPath}
+            />
+          </div>
           <div className="mt-4 w-full px-8">
             <div>
               <h2 className="text-4xl">{data.product.name}</h2>

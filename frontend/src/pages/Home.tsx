@@ -62,13 +62,12 @@ const Home = () => {
                   navigate(`/products/${item.category.toLowerCase()}`);
                 }}
               >
-                <div>
-                  <ResponsiveImg
-                    small={item.small}
-                    medium={item.medium}
-                    large={item.large}
-                  />
-                </div>
+                <ResponsiveImg
+                  small={item.small}
+                  medium={item.medium}
+                  large={item.large}
+                />
+
                 <div className={style.cardText}>{item.category}</div>
               </CarouselItem>
             ))}

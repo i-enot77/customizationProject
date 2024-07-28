@@ -17,6 +17,7 @@ import ProductDescription from "./features/product/pages/ProductDescription";
 import Success from "./features/cart/pages/Success";
 import Cancel from "./features/cart/pages/Cancel";
 import PersistLogin from "./features/auth/pages/PersistLogin";
+import Inspirations from "./pages/Inspirations";
 
 const App = () => {
   return (
@@ -29,6 +30,8 @@ const App = () => {
         <Route path="/sended-email" element={<SendEmailInfo />} />
         <Route path="/account" element={<Account />} />
         <Route path="/" element={<Home />} />
+        <Route path="/inspiration" element={<Inspirations />} />
+
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/contact" element={<Contact />} />

@@ -1,13 +1,13 @@
 import { Canvas } from "@react-three/fiber";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import {
   Center,
   ContactShadows,
+  Loader,
   OrbitControls,
   Preload,
   useProgress,
 } from "@react-three/drei";
-import CircularProgress from "@mui/material/CircularProgress";
 import New from "./New";
 import * as THREE from "three";
 import { Material } from "../../../services/materialSlice";
@@ -20,19 +20,20 @@ interface ModelMaterials {
   glbUrl: string;
 }
 
+const defaultMaterial = new THREE.MeshStandardMaterial();
+const defaultGlb = new THREE.Group();
+
 const Scene = ({
   baseMtlTextures,
   legsMtlTextures,
   glbUrl,
 }: ModelMaterials) => {
-  const { progress } = useProgress();
-  const [gltf, setGLTF] = useState<THREE.Group | null>(null);
+  const { progress, active } = useProgress();
+  const [gltf, setGLTF] = useState<THREE.Group>(defaultGlb);
   const [baseMaterial, setBaseMaterial] =
-    useState<THREE.MeshStandardMaterial | null>(null);
+    useState<THREE.MeshStandardMaterial>(defaultMaterial);
   const [legsMaterial, setLegsMaterial] =
     useState<THREE.MeshStandardMaterial | null>(null);
-
-  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     const loadGroup = async () => {
@@ -54,18 +55,15 @@ const Scene = ({
   }, [glbUrl]);
 
   useEffect(() => {
-    startTransition(() => {
-      const loadMaterial = async () => {
-        if (baseMtlTextures) {
-          const baseMtl = await createMaterial(
-            baseMtlTextures.ref,
-            baseMtlTextures.repeat
-          );
-          setBaseMaterial(baseMtl);
-        }
-      };
-      loadMaterial();
-    });
+    if (baseMtlTextures) {
+      createMaterial(baseMtlTextures.ref, baseMtlTextures.repeat)
+        .then((baseMtl) => {
+          if (baseMtl) setBaseMaterial(baseMtl);
+        })
+        .catch((error) => {
+          console.error("Error creating base material:", error);
+        });
+    }
 
     return () => {
       if (baseMaterial) baseMaterial.dispose();
@@ -73,18 +71,15 @@ const Scene = ({
   }, [baseMtlTextures]);
 
   useEffect(() => {
-    startTransition(() => {
-      const loadMaterial = async () => {
-        if (legsMtlTextures) {
-          const legsMtl = await createMaterial(
-            legsMtlTextures.ref,
-            legsMtlTextures.repeat
-          );
+    if (legsMtlTextures) {
+      createMaterial(legsMtlTextures.ref, legsMtlTextures.repeat)
+        .then((legsMtl) => {
           setLegsMaterial(legsMtl);
-        }
-      };
-      loadMaterial();
-    });
+        })
+        .catch((error) => {
+          console.error("Error creating legs material:", error);
+        });
+    }
 
     return () => {
       if (legsMaterial) legsMaterial.dispose();
@@ -96,67 +91,86 @@ const Scene = ({
     canvas: `transition-[filter] duration-300 ease-in-out `,
   };
 
+  const loaderStyles = {
+    containerStyles: {
+      position: "absolute" as "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      zIndex: 10,
+    },
+    innerStyles: {
+      display: "flex" as "flex",
+      flexDirection: "column" as "column",
+      justifyContent: "center" as "center",
+      alignItems: "center" as "center",
+      height: "100%",
+    },
+    barStyles: {
+      width: "50%",
+      height: "4px",
+      backgroundColor: "#fff",
+      margin: "16px 0",
+    },
+    dataStyles: {
+      color: "#fff",
+      fontSize: "16px",
+    },
+  };
+
   return (
     <>
-      {(!gltf || !baseMaterial) && (
-        <div className="flex justify-center items-center">
-          <CircularProgress />
-        </div>
+      {active && (
+        <Loader
+          containerStyles={loaderStyles.containerStyles}
+          innerStyles={loaderStyles.innerStyles}
+          barStyles={loaderStyles.barStyles}
+          dataStyles={loaderStyles.dataStyles}
+          dataInterpolation={(p) => `Loading ${p.toFixed(2)}%`}
+          initialState={(active) => active}
+        />
       )}
-      {gltf && baseMaterial && (
-        <>
-          {isPending && (
-            <div className="absolute inset-0 flex justify-center items-center">
-              <CircularProgress />
-            </div>
-          )}
-          <Canvas
-            shadows
-            camera={{
-              position: [0, 16, 50],
-              fov: 45,
-              near: 0.1,
-              far: 150,
-            }}
-            className={`${progress < 100 && style.canvasBlured} ${
-              style.canvas
-            }`}
-          >
-            <Preload all />
-            <ambientLight intensity={4} />
-            <directionalLight
-              scale={[2, 2, 2]}
-              position={[10, 15, 10]}
-              intensity={5}
-              castShadow
-            />
-            <directionalLight
-              position={[-11, 15, -10]}
-              intensity={5}
-              castShadow
-            />
-            <OrbitControls minDistance={0} maxDistance={80} makeDefault />
-            <axesHelper args={[5]} />
-            <Center position={[0, 0, 0]}>
-              <New
-                baseMaterial={baseMaterial}
-                legsMaterial={legsMaterial}
-                gltf={gltf}
-              />
-              <ContactShadows
-                frames={1}
-                position={[0, -0.01, 0]}
-                opacity={0.25}
-                scale={[50, 50]}
-                blur={3}
-                far={20}
-                resolution={256}
-                color="#000000"
-              />
-            </Center>
-          </Canvas>
-        </>
-      )}
+      <Canvas
+        shadows
+        camera={{
+          position: [0, 16, 50],
+          fov: 45,
+          near: 0.1,
+          far: 150,
+        }}
+        className={`${active && style.canvasBlured} ${style.canvas}`}
+      >
+        <Preload all />
+        <ambientLight intensity={4} />
+        <directionalLight
+          scale={[2, 2, 2]}
+          position={[10, 15, 10]}
+          intensity={5}
+          castShadow
+        />
+        <directionalLight position={[-11, 15, -10]} intensity={5} castShadow />
+        <OrbitControls minDistance={0} maxDistance={80} makeDefault />
+        {/* <axesHelper args={[5]} /> */}
+        <Center position={[0, 0, 0]}>
+          <New
+            baseMaterial={baseMaterial}
+            legsMaterial={legsMaterial}
+            gltf={gltf}
+          />
+          <ContactShadows
+            frames={1}
+            position={[0, -0.01, 0]}
+            opacity={0.25}
+            scale={[50, 50]}
+            blur={3}
+            far={20}
+            resolution={256}
+            color="#000000"
+          />
+        </Center>
+      </Canvas>
     </>
   );
 };

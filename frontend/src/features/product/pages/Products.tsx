@@ -54,7 +54,7 @@ const Products = () => {
 
   return (
     <>
-      <div className="flex-grow">
+      <div className="w-full grow">
         <h2 className="text-4xl text-center uppercase my-8">{category}</h2>
         <div className={style.wrapper}>
           {isFetching ? (

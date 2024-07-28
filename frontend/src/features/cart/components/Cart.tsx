@@ -1,14 +1,11 @@
 import { useSelector } from "react-redux";
 import CartItem from "./CartItem";
 import { RootState } from "../../../services/store";
+import { useStorageCartUpdate } from "@/hooks/useStorageCartUpdate";
 
 const Cart = () => {
   const cartArr = useSelector((state: RootState) => state.cart.cart);
-
-  // useEffect(() => {
-  //   localStorage.setItem("cart", JSON.stringify(cartArr));
-  // }, [cartArr]);
-  console.log(cartArr);
+  useStorageCartUpdate();
 
   const cartTotalPrice = useSelector(
     (state: RootState) => state.cart.totalPrice

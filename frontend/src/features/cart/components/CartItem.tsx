@@ -23,12 +23,12 @@ const CartItem = (props: CartState) => {
   const navigate = useNavigate();
 
   const itemPriceTotal = useCartItem(selectedAmount, props.price, props.id);
-  useStorageCartUpdate();
+  // useStorageCartUpdate();
 
-  const handleEdit = (id: string) => {
-    //update cart item logic
-    navigate("/product-description");
-  };
+  // const handleEdit = (id: string) => {
+  //   //update cart item logic
+  //   navigate("/product-description");
+  // };
 
   const handleDelete = (id: string) => {
     dispatch(deleteCartItem(id));
@@ -92,12 +92,12 @@ const CartItem = (props: CartState) => {
             {props.legsMaterial && <div>Noga: {props.legsMaterial}</div>}
           </div>
           <div className="flex justify-between items-end pb-6">
-            <Button
+            {/* <Button
               onClick={() => handleEdit(props.id)}
               className="font-medium underline underline-offset-2"
             >
               Edytuj
-            </Button>
+            </Button> */}
             <div className="text-lg">{itemPriceTotal}</div>
           </div>
         </>

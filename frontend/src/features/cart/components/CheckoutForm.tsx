@@ -1,9 +1,8 @@
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../services/store";
 import { User, setUserData } from "../../../services/orderSlice";
 import { schema } from "../schema";
-import Button from "../../../components/Button";
 
 const style = {
   header: `text-lg font-medium my-1`,
@@ -17,7 +16,7 @@ const CheckoutForm = ({ nextStep }: { nextStep?: () => void }) => {
   const userData = useSelector((state: RootState) => state.order.user);
   const dispatch = useDispatch();
 
-  const onSubmit = (values: User, actions: any) => {
+  const onSubmit = (values: User, actions: FormikHelpers<User>) => {
     dispatch(setUserData(values));
     actions.setSubmitting(false);
     if (nextStep) {

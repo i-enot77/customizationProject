@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Cart from "./Cart";
@@ -14,6 +14,7 @@ import Button from "../../../components/Button";
 import Modal from "../../../components/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useCartFromLocalStorage } from "@/hooks/useCartFromLocalStorage";
 
 const CartModal = () => {
   const isOpen = useSelector((state: RootState) => state.cart.showCart);
@@ -21,12 +22,11 @@ const CartModal = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  useLayoutEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    console.log(savedCart);
-
-    dispatch(setCart(savedCart ? JSON.parse(savedCart) : []));
-  }, []);
+  useCartFromLocalStorage();
+  // useEffect(() => {
+  //   const savedCart = localStorage.getItem("cart");
+  //   dispatch(setCart(savedCart ? JSON.parse(savedCart) : []));
+  // }, []);
 
   const handleClick = () => {
     dispatch(setCartSummary(true));
