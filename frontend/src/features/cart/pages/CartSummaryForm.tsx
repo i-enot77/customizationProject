@@ -10,9 +10,9 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../services/store";
 import Cart from "../components/Cart";
-import CheckoutForm from "../components/CheckoutForm";
 import DeliveryMethod from "../components/DeliveryMethod";
 import SummaryCheckout from "../components/SummaryCheckout";
+import UserCheckout from "../components/UserCheckout";
 
 const CartSummaryForm = () => {
   const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
@@ -72,8 +72,8 @@ const CartSummaryForm = () => {
         <Cart />
       </div>
 
-      <div className="h-full w-[90%] md:w-[80%] p-6 flex flex-col justify-around mx-auto lg:w-[49%]">
-        {step === 1 && <CheckoutForm nextStep={nextStep} />}
+      <div className="h-full w-[90%] md:w-[80%] p-2 flex flex-col justify-around mx-auto lg:w-[49%]">
+        {step === 1 && <UserCheckout nextStep={nextStep} />}
         {step === 2 && (
           <DeliveryMethod prevStep={prevStep} nextStep={nextStep} />
         )}

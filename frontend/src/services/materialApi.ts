@@ -9,7 +9,7 @@ export const materialApi = customizationApi.injectEndpoints({
   endpoints: (build) => ({
     getAssignedMtl: build.mutation<Material[], MaterialsArr>({
       query: ({ materialIds }) => ({
-        url: "api/textures",
+        url: "/textures",
         method: "POST",
         body: { materialIds },
         headers: {

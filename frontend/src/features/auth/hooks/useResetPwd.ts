@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "../../../services/hooks";
 import { useResetPasswordMutation } from "../../../services/authApi";
-import { setErrMsg } from "../../../services/authenticationSlice";
 
 export const useResetPwd = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -28,13 +27,11 @@ export const useResetPwd = () => {
       .then((response) => {
         if (response) {
           setNewPassword("");
-          dispatch(setErrMsg(""));
           navigate("/login");
         }
       })
       .catch((error) => {
         console.log(error);
-        dispatch(setErrMsg("Resetowania hasła nie powiodło się"));
       });
   };
 

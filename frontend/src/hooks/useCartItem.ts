@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch } from "../services/hooks";
 import {
   calculateTotalPrice,
-  updateCartItemAmount,
+  updateCartItemQuantity,
 } from "../services/cartSlice";
 
 export const useCartItem = (
@@ -16,7 +16,7 @@ export const useCartItem = (
 
   useEffect(() => {
     setItemPriceTotal(selectedAmount * price);
-    dispatch(updateCartItemAmount({ id: id, amount: selectedAmount }));
+    dispatch(updateCartItemQuantity({ id: id, quantity: selectedAmount }));
     dispatch(calculateTotalPrice());
   }, [selectedAmount]);
   return itemPriceTotal;

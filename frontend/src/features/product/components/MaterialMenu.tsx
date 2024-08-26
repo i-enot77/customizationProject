@@ -3,8 +3,8 @@ import Button from "../../../components/Button";
 import { Material } from "../../../services/materialSlice";
 import Modal from "../../../components/Modal";
 import { useGetAssignedMtlMutation } from "../../../services/materialApi";
-import mtlSmall from "../../../assets/img/productImg/small.jpg";
-import mtlMedium from "../../../assets/img/productImg/medium.jpg";
+import mtlSmall from "/img/productImg/small.jpg";
+import mtlMedium from "/img/productImg/medium.jpg";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -49,10 +49,11 @@ const MaterialMenu = ({
     inner: `bg-[#e2e2e2] w-[35%] h-screen flex flex-col px-10 overflow-y-auto`,
     border: `rounded-lg border-2 border-[#9a9a9a] mb-6`,
   };
-
   return (
     <>
-      <div className={`flex justify-between items-center p-3 ${style.border}`}>
+      <div
+        className={`w-full flex justify-between items-center flex-wrap md:w-[70%] lg:w-full p-3 ${style.border}`}
+      >
         <div>
           <div className="font-semibold">{modelPart}</div>
           <div>{mtlName}</div>
@@ -73,7 +74,7 @@ const MaterialMenu = ({
           onClick={closeModal}
           className="fixed z-10 inset-0 w-full h-screen flex justify-end items-center"
         >
-          <div className="flex justify-between items-center px-1 py-7">
+          <div className="flex justify-between items-center px-1 py-7 sticky top-0 bg-[#e2e2e2] z-10">
             <h2 className="text-3xl font-semibold ">Zmień material</h2>
             <Button onClick={closeModal}>
               <FontAwesomeIcon icon={faXmark} size="2xl" />
@@ -94,9 +95,9 @@ const MaterialMenu = ({
               >
                 <div className="w-full ">
                   <img
-                    srcSet={`${mtlSmall} 244w, ${mtlMedium} 600w`}
+                    srcSet={`${item.mtlThumbnail.small} 244w, ${item.mtlThumbnail.medium} 600w`}
                     sizes="(max-width: 768px) 50vw, (min-width: 769px) 20vw"
-                    src={mtlSmall}
+                    src={item.mtlThumbnail.small}
                     alt="material"
                     className="lazyload rounded-t-lg w-full object-cover"
                   />
@@ -124,9 +125,6 @@ const MaterialMenu = ({
                     },
                     padding: ".5rem",
                     paddingLeft: "3rem",
-                    // textAlign: "center",
-                    // width: "100%",
-                    // display: "inline-block",
                   }}
                 />
               </div>

@@ -48,9 +48,10 @@ const ContactForm = () => {
         initialValues={initialValues}
         validationSchema={schema}
         onSubmit={onSubmit}
+        data-testid="form"
       >
         {() => (
-          <Form className="flex flex-col justify-center  w-full">
+          <Form className="flex flex-col justify-center  w-full" role="form">
             <div className={style.field}>
               <Field
                 id="firstName"
@@ -59,7 +60,10 @@ const ContactForm = () => {
                 placeholder="Imię"
                 className={style.input}
               />
-              <ErrorMessage name="firstName" component="div" />
+              <ErrorMessage
+                name="firstName"
+                render={(error) => <div data-testid="validation">{error}</div>}
+              />
             </div>
 
             <div className={style.field}>
@@ -70,7 +74,10 @@ const ContactForm = () => {
                 placeholder="Nazwisko"
                 className={style.input}
               />
-              <ErrorMessage name="lastName" component="div" />
+              <ErrorMessage
+                name="lastName"
+                render={(error) => <div data-testid="validation">{error}</div>}
+              />
             </div>
             <div className={style.field}>
               <Field
@@ -80,7 +87,10 @@ const ContactForm = () => {
                 placeholder="Adres e-mail"
                 className={style.input}
               />
-              <ErrorMessage name="userEmail" component="div" />
+              <ErrorMessage
+                name="userEmail"
+                render={(error) => <div data-testid="validation">{error}</div>}
+              />
             </div>
 
             <div className={style.field}>
@@ -101,7 +111,10 @@ const ContactForm = () => {
                 placeholder="Twoja lokalizacja"
                 className={style.input}
               />
-              <ErrorMessage name="city" component="div" />
+              <ErrorMessage
+                name="city"
+                render={(error) => <div data-testid="validation">{error}</div>}
+              />
             </div>
 
             <div className={style.field}>
@@ -118,6 +131,7 @@ const ContactForm = () => {
               <button
                 type="submit"
                 className="bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white mx-auto mt-6"
+                data-testid="submit_btn"
               >
                 wyślij
               </button>

@@ -1,57 +1,59 @@
-import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../../../services/authApi";
 import { useAppDispatch } from "../../../services/hooks";
-import { setAuth, setErrMsg } from "../../../services/authenticationSlice";
+import { setAuth, setPersist } from "../../../services/authenticationSlice";
+import { FormikHelpers } from "formik";
+import { useSelector } from "react-redux";
+import { RootState } from "@/services/store";
+import {
+  setDeliveryData,
+  setFullName,
+  setUserEmail,
+} from "@/services/userSlice";
 
 export const useLoginForm = () => {
-  const [emailValue, setEmailValue] = useState("");
-  const [passwordValue, setPasswordValue] = useState("");
-
-  const handleEmailInput = (e: ChangeEvent<HTMLInputElement>) =>
-    setEmailValue(e.target.value);
-
-  const handlePwdInput = (e: ChangeEvent<HTMLInputElement>) =>
-    setPasswordValue(e.target.value);
-
   const [loginUser] = useLoginUserMutation();
   const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
 
-  const loginSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    loginUser({
-      user: emailValue,
-      pwd: passwordValue,
-    })
-      .unwrap()
-      .then((response) => {
-        if (response) {
-          console.log(response);
+  const auth = useSelector((state: RootState) => state.auth.auth);
 
-          dispatch(
-            setAuth({ user: emailValue, accessToken: response.accessToken })
-          );
+  const loginSubmit = async (
+    values: { email: string; password: string; persist: boolean },
+    actions: FormikHelpers<{
+      email: string;
+      password: string;
+      persist: boolean;
+    }>
+  ) => {
+    try {
+      const response = await loginUser({
+        userEmail: values.email,
+        pwd: values.password,
+        persist: values.persist,
+      }).unwrap();
 
-          setEmailValue("");
-          setPasswordValue("");
+      console.log(response);
 
-          dispatch(setErrMsg(null));
+      dispatch(
+        setAuth({
+          userData: response.userData,
+          isAuthenticated: true,
+        })
+      );
+      dispatch(setUserEmail(response.userData._id));
+      dispatch(setFullName(response.fullName));
+      dispatch(setDeliveryData(response.deliveryData));
+      actions.resetForm();
 
-          navigate("/");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        dispatch(setErrMsg(error.data));
-      });
+      dispatch(setPersist(values.persist));
+      console.log(auth, "login");
+      // navigate("/");
+    } catch (error) {
+      console.error("Login failed", error);
+      actions.setSubmitting(false);
+    }
   };
-  return {
-    emailValue,
-    passwordValue,
-    handleEmailInput,
-    handlePwdInput,
-    loginSubmit,
-  };
+
+  return { loginSubmit };
 };

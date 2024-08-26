@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CartState } from "./cartSlice";
+import { FullName } from "./userSlice";
 
-export interface User {
-  email: string;
+export interface DeliveryData {
   country: string;
-  firstName: string;
-  lastName: string;
   address: string;
   zipCode: string;
   city: string;
@@ -12,29 +11,39 @@ export interface User {
 }
 
 export interface Shipping {
-  method: string;
-  cost: number;
+  shippingMethod: string;
+  shippingCost: number;
 }
 
-export interface OrderState {
-  user: User;
+export interface Order {
+  _id?: string;
+  userId: string | null; // For logged-in users
+  email: string;
+  fullName: FullName;
+  deliveryData: DeliveryData;
+  products: CartState[];
   shipping: Shipping;
 }
 
-const initialState: OrderState = {
-  user: {
-    email: "",
-    country: "",
+const initialState: Order = {
+  _id: "",
+  userId: null,
+  email: "",
+  fullName: {
     firstName: "",
     lastName: "",
+  },
+  deliveryData: {
+    country: "",
     address: "",
     zipCode: "",
     city: "",
     phone: "",
   },
+  products: [],
   shipping: {
-    method: "",
-    cost: 0,
+    shippingMethod: "",
+    shippingCost: 0,
   },
 };
 
@@ -42,14 +51,18 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    setUserData(state, action: PayloadAction<User>) {
-      state.user = { ...state.user, ...action.payload };
-    },
     setShipping(state, action: PayloadAction<Shipping>) {
       state.shipping = action.payload;
+    },
+    setInitShipping(state) {
+      state.shipping = initialState.shipping;
+    },
+    setOrderUserEmail(state, action: PayloadAction<string>) {
+      state.email = action.payload;
     },
   },
 });
 
-export const { setUserData, setShipping } = orderSlice.actions;
+export const { setShipping, setInitShipping, setOrderUserEmail } =
+  orderSlice.actions;
 export default orderSlice;

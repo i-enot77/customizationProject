@@ -42,6 +42,7 @@ router.get("/:category", async (req, res) => {
     }
 
     res.json(items);
+    console.log(items);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });

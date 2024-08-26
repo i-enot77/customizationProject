@@ -13,6 +13,10 @@ export interface Material {
     aoMap?: string;
     metalnessMap?: string;
   };
+  mtlThumbnail: {
+    small: string;
+    medium: string;
+  };
 }
 
 export interface MaterialMenuData {

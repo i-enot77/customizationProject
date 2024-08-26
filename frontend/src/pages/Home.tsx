@@ -22,7 +22,7 @@ const Home = () => {
 
   const style = {
     sectionClass: `w-full flex flex-col lg:flex-row lg:justify-center lg:items-end flex-wrap my-10`,
-    main: `my-4 bg-white`,
+    main: `w-full my-4 bg-white`,
     cardText: `text-2xl font-medium py-2 pl-10`,
   };
   return (
@@ -30,7 +30,7 @@ const Home = () => {
       <main className={`${style.main}`}>
         <section className={style.sectionClass}>
           <HeaderItem
-            headerWrapper="lg:w-[39%] w-full"
+            headerWrapper="lg:w-[39%] w-full flex-initial"
             headerClass="mb-4"
             headerContent="Minimalistyczne, dostosowane do twoich potrzeb meble do salonu, do
         sypialni oraz do przedpokoju."

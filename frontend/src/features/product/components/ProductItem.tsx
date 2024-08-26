@@ -14,6 +14,7 @@ import Scene from "../../model/components/Scene";
 import MaterialMenu from "./MaterialMenu";
 import { Material } from "../../../services/materialSlice";
 import { checkCategory } from "../../../utils/checkCategory";
+import { useStorageCartUpdate } from "@/hooks/useStorageCartUpdate";
 
 const ProductItem = () => {
   const [selectedAmount, setSelectedAmount] = useState(1);
@@ -70,35 +71,31 @@ const ProductItem = () => {
 
   const handleAddToCart = () => {
     if (data && baseMtlTextures) {
+      console.log("test");
       dispatch(
         addToCart({
-          productItem: data.product,
-          baseMtl: baseMtlTextures.name,
-          legsMtl: legsMtlTextures?.name,
-          amount: selectedAmount,
+          product: data.product,
+          baseMaterial: baseMtlTextures,
+          legsMaterial: legsMtlTextures && legsMtlTextures,
+          quantity: selectedAmount,
         })
       );
     }
   };
 
+  useStorageCartUpdate();
+
   const style = {
     header: `text-lg font-medium uppercase mb-3`,
-    btn: `w-full flex justify-center items-center py-3 rounded-md bg-[#2A254B] text-white `,
+    btn: `w-full md:w-[70%] lg:w-full flex justify-center items-center py-3 rounded-md bg-[#2A254B] text-white mx-auto`,
   };
 
   return (
     <>
       {isLoading && <ProductItemSkeleton />}
       {isSuccess && data && baseMtlTextures && (
-        <div className="w-full grid grid-cols-[minmax(320px,_2fr)_minmax(320px,_1fr)] grid-rows-1 gap-6 justify-center content-stretch m3-6">
-          <div className="relative">
-            <Scene
-              baseMtlTextures={baseMtlTextures}
-              legsMtlTextures={legsMtlTextures ?? null}
-              glbUrl={data.product.modelPath}
-            />
-          </div>
-          <div className="mt-4 w-full px-8">
+        <div className="w-full lg:grid lg:grid-cols-2 lg:grid-rows-1 min-[1120px]:grid-cols-[2fr_1fr]  gap-6 justify-center items-stretch">
+          <div className="mt-4 w-full p-6 lg:order-2">
             <div>
               <h2 className="text-4xl">{data.product.name}</h2>
               <div className="text-xl my-4">{data.product.price} zł</div>
@@ -144,6 +141,13 @@ const ProductItem = () => {
                 Dodaj do koszyka
               </Button>
             </div>
+          </div>
+          <div className="relative w-full h-full lg:order-1">
+            <Scene
+              baseMtlTextures={baseMtlTextures}
+              legsMtlTextures={legsMtlTextures ?? null}
+              glbUrl={data.product.modelPath}
+            />
           </div>
         </div>
       )}

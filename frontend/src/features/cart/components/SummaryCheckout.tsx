@@ -4,11 +4,15 @@ import { summaryCheckout } from "../../../utils/summaryCheckout";
 import Button from "../../../components/Button";
 
 const SummaryCheckout = ({ prevStep }: { prevStep?: () => void }) => {
-  const user = useSelector((state: RootState) => state.order.user);
+  const userEmail = useSelector((state: RootState) => state.order.email);
+  const fullName = useSelector((state: RootState) => state.user.fullName);
+  const deliveryData = useSelector(
+    (state: RootState) => state.user.userDeliveryData
+  );
   const shipping = useSelector((state: RootState) => state.order.shipping);
   const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
 
-  const handleOrder = summaryCheckout();
+  const makePayment = summaryCheckout();
 
   const style = {
     header: `text-lg font-medium mt-2`,
@@ -20,29 +24,35 @@ const SummaryCheckout = ({ prevStep }: { prevStep?: () => void }) => {
         <h2 className={style.header}>Podsumowanie:</h2>
         <div className="py-4">
           <div>
+            {userEmail && (
+              <>
+                <div>
+                  <h2 className={style.header}>Dane odbiorcy:</h2>
+                  <div>{userEmail}</div>
+                  <div>{fullName?.firstName}</div>
+                  <div>{fullName?.lastName}</div>
+                </div>
+                {deliveryData && (
+                  <div>
+                    <h2 className={style.header}>Adres dostawy</h2>
+                    <div>{`${deliveryData.address} ${deliveryData.zipCode} ${deliveryData.city}`}</div>
+                  </div>
+                )}
+              </>
+            )}
             <div>
-              <div className={style.header}>Kontakt</div>
-              <div>{user.email}</div>
-            </div>
-
-            <div>
-              <div className={style.header}>Adres dostawy</div>
-              <div>{`${user.address} ${user.zipCode} ${user.city}`}</div>
-            </div>
-
-            <div>
-              <div className={style.header}>Sposób dostawy</div>
-              <div>{shipping.method}</div>
+              <h2 className={style.header}>Sposób dostawy</h2>
+              <div>{shipping.shippingMethod}</div>
             </div>
           </div>
 
           <div className="py-2 mt-4">
-            <div className={style.header}>
+            <h2 className={style.header}>
               Wartość zamówienia: {totalPrice} zł
-            </div>
-            <div className={style.header}>
-              Koszt dostawy: {shipping.cost} zł
-            </div>
+            </h2>
+            <h2 className={style.header}>
+              Koszt dostawy: {shipping.shippingCost} zł
+            </h2>
           </div>
         </div>
       </div>
@@ -56,7 +66,7 @@ const SummaryCheckout = ({ prevStep }: { prevStep?: () => void }) => {
         </Button>
         <Button
           className="bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white"
-          onClick={handleOrder}
+          onClick={makePayment}
         >
           Zapłać
         </Button>

@@ -16,9 +16,10 @@ interface DimensionsProp {
 }
 const Dimensions = ({ isCategory, item }: DimensionsProp) => {
   const style = {
-    dmItem: `w-full grid grid-cols-2 grid-flow-row auto-rows-max gap-x-8 gap-y-1.5`,
+    dmItem: `w-full grid gap-x-8 gap-y-1.5`,
+    // dmItem: `w-full grid auto-cols-max  grid-flow-row auto-rows-max gap-x-8 gap-y-1.5`,
   };
-  //extend not modificate?
+
   let dimensionFor;
 
   switch (isCategory) {
@@ -101,7 +102,14 @@ const Dimensions = ({ isCategory, item }: DimensionsProp) => {
     default:
       break;
   }
-  return <div className={style.dmItem}>{dimensionFor}</div>;
+  return (
+    <div
+      style={{ gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))" }}
+      className={style.dmItem}
+    >
+      {dimensionFor}
+    </div>
+  );
 };
 
 export default Dimensions;

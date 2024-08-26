@@ -17,11 +17,16 @@ const limiter = rateLimit({
   max: 100,
 });
 
+const auth = require("./src/routes/auth.cjs");
+const register = require("./src/routes/register.cjs");
+const refreshToken = require("./src/routes/refreshToken.cjs");
+const logout = require("./src/routes/logout.cjs");
+const payment = require("./src/routes/payment.cjs");
+
 const products = require("./src/routes/products.cjs");
 const productById = require("./src/routes/productById.cjs");
 const textures = require("./src/routes/textures.cjs");
-const paymentStatusRoute = require("./src/routes/paymentStatus.cjs");
-const saveOrderRoute = require("./src/routes/saveOrderController.cjs");
+const paymentStatus = require("./src/routes/paymentStatus.cjs");
 const sendContactForm = require("./src/routes/contactForm.cjs");
 // const FileAploadRoute = require("./src/routes/fileAploadRoute.cjs");
 
@@ -40,25 +45,26 @@ app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "/public")));
 
 //stripe webhook
-app.use("/api", paymentStatusRoute);
+app.use("/api", paymentStatus);
 
 app.use(express.json());
 // routes
 // app.use("/materials", express.static(path.join(__dirname, "materials")));
 
-app.use("/create-checkout-session", require("./src/routes/payment.cjs"));
+app.use("/api", auth);
+app.use("/api", register);
+app.use("/api", refreshToken);
+app.use("/api", logout);
+
+app.use("/api", payment);
 app.use("/api", products);
 app.use("/api", productById);
 app.use("/api", textures);
-app.use("/api", saveOrderRoute);
 app.use("/api", sendContactForm);
 // app.use("/api", FileAploadRoute);
 
 app.use("/", require("./src/routes/root.cjs"));
 app.use("/register", require("./src/routes/register.cjs"));
-app.use("/auth", require("./src/routes/auth.cjs"));
-app.use("/refresh", require("./src/routes/refresh.cjs"));
-app.use("/logout", require("./src/routes/logout.cjs"));
 app.use("/reset-email", require("./src/routes/sendResetEmail.cjs"));
 app.use("/reset-password", require("./src/routes/resetPwd.cjs"));
 

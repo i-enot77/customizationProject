@@ -20,7 +20,7 @@ export const contactFormApi = customizationApi.injectEndpoints({
         city,
         message,
       }) => ({
-        url: "api/submit-form",
+        url: "/submit-form",
         method: "POST",
         body: { firstName, lastName, userEmail, phoneNumber, city, message },
         headers: {

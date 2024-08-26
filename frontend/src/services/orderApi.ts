@@ -1,32 +1,15 @@
 import { customizationApi } from "./api";
-import { CartState } from "./cartSlice";
-import { Shipping, User } from "./orderSlice";
-
-export interface Order {
-  id: string;
-  customer: User;
-  products: CartState[];
-  shipping: Shipping;
-}
+import { DeliveryData } from "./orderSlice";
 
 export const orderApi = customizationApi.injectEndpoints({
   endpoints: (build) => ({
-    saveOrder: build.mutation<string, Order>({
-      query: ({ id, customer, products, shipping }) => ({
-        url: "api/save-order",
-        method: "POST",
-        body: {
-          id,
-          customer,
-          products,
-          shipping,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
+    getDeliveryData: build.query<DeliveryData | string, string>({
+      query: (_id) => ({
+        url: `/user/${_id}/address`,
+        method: "GET",
       }),
     }),
   }),
 });
 
-export const { useSaveOrderMutation } = orderApi;
+export const { useLazyGetDeliveryDataQuery } = orderApi;

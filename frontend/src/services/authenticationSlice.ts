@@ -1,46 +1,53 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { getPersistFromLocalStorage } from "@/features/auth/utils/persistFromLocalStorage";
+
+interface Auth {
+  userData: {
+    _id: string;
+    email: string;
+  } | null;
+  isAuthenticated: boolean;
+}
 
 interface AuthState {
-  user: string | null;
-  accessToken: string | null;
-}
-
-interface AppState {
-  auth: AuthState;
+  auth: Auth;
   persist: boolean;
-  errMsg: string | null;
 }
 
-const getPersistFromLocalStorage = (): boolean => {
-  const persistValue = localStorage.getItem("persist");
-
-  // Check if the value is a string and not "undefined"
-  return typeof persistValue === "string" && persistValue !== "undefined"
-    ? JSON.parse(persistValue)
-    : false;
-};
-
-const initialState: AppState = {
-  auth: { user: null, accessToken: null },
+const initialState: AuthState = {
+  auth: {
+    userData: null,
+    isAuthenticated: false,
+  },
   persist: getPersistFromLocalStorage(),
-  errMsg: null,
 };
 
 const authenticationSlice = createSlice({
-  name: "authauthentication",
+  name: "auth",
   initialState,
   reducers: {
-    setAuth(state, action: PayloadAction<AuthState>) {
-      state.auth = { ...state.auth, ...action.payload };
+    setAuth(state, action: PayloadAction<Auth>) {
+      state.auth = action.payload;
     },
     setPersist(state, action: PayloadAction<boolean>) {
+      const expiration = action.payload
+        ? Date.now() + 24 * 60 * 60 * 1000
+        : null;
+      const persistData = {
+        value: action.payload,
+        expiration: expiration,
+      };
       state.persist = action.payload;
+      localStorage.setItem("persist", JSON.stringify(persistData));
     },
-    setErrMsg(state, action: PayloadAction<string | null>) {
-      state.errMsg = action.payload;
+
+    clearUserData(state) {
+      state.auth = { userData: null, isAuthenticated: false };
+      localStorage.removeItem("persist"); // Clear persist flag on logout
     },
   },
 });
 
-export const { setAuth, setPersist, setErrMsg } = authenticationSlice.actions;
+export const { setAuth, setPersist, clearUserData } =
+  authenticationSlice.actions;
 export default authenticationSlice;

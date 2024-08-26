@@ -4,7 +4,7 @@
   "type": "commonjs",
   "private": true,
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon server.cjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^2.5.0",

@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
-import { ChangeEvent } from "react";
 import { RootState } from "../../../services/store";
 import { setShipping } from "../../../services/orderSlice";
 import { setCartSummary } from "../../../services/cartSlice";
 import Button from "../../../components/Button";
-import InputItem from "../../../components/InputItem";
+import { Formik, Field, Form, FormikHelpers } from "formik";
+import { shippingSchema } from "../schemaYup/shippingSchema";
 
 const style = {
   header: `text-lg font-medium my-1`,
@@ -18,7 +18,11 @@ const DeliveryMethod = ({
   nextStep?: () => void;
 }) => {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.order.user);
+  const email = useSelector((state: RootState) => state.order.email);
+  const fullName = useSelector((state: RootState) => state.user.fullName);
+  const deliveryData = useSelector(
+    (state: RootState) => state.order.deliveryData
+  );
   const shipping = useSelector((state: RootState) => state.order.shipping);
 
   const toPrevStep = () => {
@@ -27,20 +31,24 @@ const DeliveryMethod = ({
     }
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      setShipping({
-        method: e.target.value,
-        cost: e.target.dataset.cost ? parseFloat(e.target.dataset.cost) : 0,
-      })
-    );
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = async (
+    values: { shippingMethod: string; shippingCost: number },
+    actions: FormikHelpers<{
+      shippingMethod: string;
+      shippingCost: number;
+    }>
+  ) => {
+    dispatch(setShipping(values));
     dispatch(setCartSummary(true));
     if (nextStep) {
       nextStep();
     }
+    // actions.resetForm();
+  };
+
+  const initialValues = {
+    shippingMethod: shipping.shippingMethod || "",
+    shippingCost: shipping.shippingCost || 0,
   };
 
   return (
@@ -50,71 +58,78 @@ const DeliveryMethod = ({
           <div className="mb-2">
             <div className={style.header}>Kontakt</div>
             <div className="flex justify-between">
-              <span>{user.email}</span>
+              <span>{email}</span>
               <Button onClick={toPrevStep}>Zmień</Button>
             </div>
           </div>
 
           <div>
-            <div className={style.header}>Adres dostawy</div>
+            <div className={style.header}>Dane odbiorcy:</div>
             <div className="flex justify-between">
-              <span>{`${user.address}, ${user.zipCode}, ${user.city}`}</span>
+              <div>
+                {fullName && `${fullName.firstName} ${fullName.lastName}`}
+              </div>
+              <div>{`${deliveryData.address}, ${deliveryData.zipCode}, ${deliveryData.city}`}</div>
               <Button onClick={toPrevStep}>Zmień</Button>
             </div>
           </div>
         </div>
 
-        <form className="mt-10">
-          <div id="delivery-group" className={style.header}>
-            Metoda dostawy
-          </div>
-          <div role="group" aria-labelledby="delivery-group">
-            <div className="flex justify-between items-center pb-2">
-              <label>
-                <InputItem
-                  type="radio"
-                  name="shipping"
-                  value="Transport z wniesieniem"
-                  data-cost="200"
-                  onChange={handleChange}
-                  className="mr-1.5 w-4 h-4"
-                  checked={shipping.method === "Transport z wniesieniem"}
-                />
-                Transport z wniesieniem i ustawieniem mebla
-              </label>
-              <span>200 zł</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <label>
-                <InputItem
-                  type="radio"
-                  name="shipping"
-                  value="Wysyłka paletowa"
-                  data-cost="300"
-                  onChange={handleChange}
-                  className="mr-1.5 w-4 h-4"
-                  checked={shipping.method === "Wysyłka paletowa"}
-                />
-                Wysyłka paletowa
-              </label>
-              <span>300 zł</span>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div className="flex justify-around">
-        <div
-          onClick={toPrevStep}
-          className="bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white"
+        <Formik
+          initialValues={initialValues}
+          validationSchema={shippingSchema}
+          onSubmit={handleSubmit}
+          enableReinitialize
         >
-          Powrót do informacji
-        </div>
-        <Button
-          onClick={handleSubmit}
-          className="bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white"
-        >
-          Przejdz do podsumowania
-        </Button>
+          {({ setFieldValue, values, errors, touched }) => (
+            <Form className="mt-10">
+              <h2 id="delivery-group" className={style.header}>
+                Metoda dostawy
+              </h2>
+              <div role="group" aria-labelledby="delivery-group">
+                <label>
+                  <Field
+                    type="radio"
+                    name="shippingMethod"
+                    value="Transport z wniesieniem"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setFieldValue("shippingMethod", e.target.value);
+                      setFieldValue("shippingCost", 200);
+                    }}
+                  />
+                  Transport z wniesieniem i ustawieniem mebla - 200 zł
+                </label>
+
+                <label>
+                  <Field
+                    type="radio"
+                    name="shippingMethod"
+                    value="Wysyłka paletowa"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setFieldValue("shippingMethod", e.target.value);
+                      setFieldValue("shippingCost", 300);
+                    }}
+                  />
+                  Wysyłka paletowa - 300 zł
+                </label>
+              </div>
+              {touched.shippingMethod && errors.shippingMethod && (
+                <div>{errors.shippingMethod}</div>
+              )}
+
+              <div className="flex justify-around">
+                <Button
+                  type="button"
+                  onClick={toPrevStep}
+                  className="bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white"
+                >
+                  Powrót do informacji
+                </Button>
+                <button type="submit">Przejdz do podsumowania</button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </>
   );

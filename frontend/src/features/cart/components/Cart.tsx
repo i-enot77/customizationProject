@@ -15,13 +15,8 @@ const Cart = () => {
       <div className="bg-white  overflow-y-auto">
         {cartArr.map((item) => (
           <CartItem
-            key={item.id}
-            id={item.id}
-            small={item.small}
-            medium={item.medium}
-            category={item.category}
-            name={item.name}
-            price={item.price}
+            key={item.product._id}
+            product={item.product}
             baseMaterial={item.baseMaterial}
             legsMaterial={item.legsMaterial}
             quantity={item.quantity}

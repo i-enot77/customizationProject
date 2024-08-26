@@ -1,66 +1,147 @@
-import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../services/store";
-import { useRegistrationForm } from "../hooks/useRegistrationForm";
-import InputItem from "../../../components/InputItem";
-import Button from "../../../components/Button";
+import { Field, Form, Formik } from "formik";
+import { formStyle } from "@/assets/formStyle";
+import { useRegistrationForm } from "../hooks/useRegistrationForm"; // Create this custom hook similar to useLoginForm
+import { registrationSchema } from "../schemaYup/registrationSchema";
 
 const RegistrationForm = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisible = () => setIsVisible(!isVisible);
-  const errMsg = useSelector((state: RootState) => state.auth.errMsg);
+  const { registerSubmit } = useRegistrationForm();
 
-  const { emailValue, passwordValue, handleEmail, handlePwd, handleSubmit } =
-    useRegistrationForm();
   return (
-    <div className="w-[80%]">
-      <h1 className="text-3xl font-semibold mb-3 text-center">
-        Zarejestruj się
-      </h1>
-      {errMsg && <div className="text-[#f45151] text-3xl">{errMsg}</div>}
+    <div className="w-full">
+      <Formik
+        initialValues={{
+          // username: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          // country: "",
+          // firstName: "",
+          // lastName: "",
+          // address: "",
+          // zipCode: "",
+          // city: "",
+          // phone: "",
+        }}
+        validationSchema={registrationSchema}
+        onSubmit={registerSubmit}
+        enableReinitialize
+      >
+        {({ errors, touched }) => (
+          <Form className="">
+            <div className={formStyle.field}>
+              <label htmlFor="email">Adres e-mail:</label>
+              <Field
+                id="email"
+                name="email"
+                type="email"
+                className={formStyle.input}
+              />
+              {errors.email && touched.email ? (
+                <div className={formStyle.error}>{errors.email}</div>
+              ) : null}
+            </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-col">
-          <label className="text-[#5A5A5D] mb-1" htmlFor="email">
-            Adres email:{" "}
-          </label>
-          <InputItem
-            id="email"
-            type="email"
-            name="email"
-            value={emailValue}
-            onChange={handleEmail}
-            placeholder={"adres email"}
-            className="p-1.5 border border-gray-400 rounded-md focus:outline-none"
-          />
-        </div>
+            <div className={formStyle.field}>
+              <label htmlFor="password">Hasło:</label>
+              <Field
+                id="password"
+                name="password"
+                type="password"
+                className={formStyle.input}
+              />
+              {errors.password && touched.password ? (
+                <div className={formStyle.error}>{errors.password}</div>
+              ) : null}
+            </div>
 
-        <div className="flex flex-col my-2 relative">
-          <label className="text-[#5A5A5D] mb-1" htmlFor="password">
-            Hasło:{" "}
-          </label>
-          <InputItem
-            id="password"
-            type={isVisible ? "text" : "password"}
-            name="password"
-            value={passwordValue}
-            onChange={handlePwd}
-            className="p-1.5 border border-gray-400 rounded-md focus:outline-none"
-          />
-          <FontAwesomeIcon
-            className="absolute bottom-[10px] right-[10px]"
-            icon={isVisible ? faEyeSlash : faEye}
-            style={{ color: "#000000" }}
-            onClick={toggleVisible}
-          />
-        </div>
+            <div className={formStyle.field}>
+              <label htmlFor="confirmPassword">Potwierdź hasło:</label>
+              <Field
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                className={formStyle.input}
+              />
+              {errors.confirmPassword && touched.confirmPassword ? (
+                <div className={formStyle.error}>{errors.confirmPassword}</div>
+              ) : null}
+            </div>
 
-        <Button className="flex justify-center items-center py-2 w-full bg-cyan-400 rounded-md my-2">
-          Zarejestruj się
-        </Button>
-      </form>
+            {/* <div className={formStyle.field}>
+              <label htmlFor="firstName">Imię:</label>
+              <Field
+                id="firstName"
+                name="firstName"
+                className={formStyle.input}
+              />
+              {errors.firstName && touched.firstName ? (
+                <div className={formStyle.error}>{errors.firstName}</div>
+              ) : null}
+            </div>
+
+            <div className={formStyle.field}>
+              <label htmlFor="lastName">Nazwisko:</label>
+              <Field
+                id="lastName"
+                name="lastName"
+                className={formStyle.input}
+              />
+              {errors.lastName && touched.lastName ? (
+                <div className={formStyle.error}>{errors.lastName}</div>
+              ) : null}
+            </div>
+
+            <div className={formStyle.field}>
+              <label htmlFor="country">Kraj:</label>
+              <Field id="country" name="country" className={formStyle.input} />
+              {errors.country && touched.country ? (
+                <div className={formStyle.error}>{errors.country}</div>
+              ) : null}
+            </div>
+
+            <div className={formStyle.field}>
+              <label htmlFor="address">Adres (mieszkanie):</label>
+              <Field id="address" name="address" className={formStyle.input} />
+              {errors.address && touched.address ? (
+                <div className={formStyle.error}>{errors.address}</div>
+              ) : null}
+            </div>
+
+            <div className={formStyle.field}>
+              <label htmlFor="zipCode">Kod pocztowy:</label>
+              <Field id="zipCode" name="zipCode" className={formStyle.input} />
+              {errors.zipCode && touched.zipCode ? (
+                <div className={formStyle.error}>{errors.zipCode}</div>
+              ) : null}
+            </div>
+
+            <div className={formStyle.field}>
+              <label htmlFor="city">Miasto:</label>
+              <Field id="city" name="city" className={formStyle.input} />
+              {errors.city && touched.city ? (
+                <div className={formStyle.error}>{errors.city}</div>
+              ) : null}
+            </div>
+
+            <div className={formStyle.field}>
+              <label htmlFor="phone">Numer telefonu:</label>
+              <Field id="phone" name="phone" className={formStyle.input} />
+              {errors.phone && touched.phone ? (
+                <div className={formStyle.error}>{errors.phone}</div>
+              ) : null}
+            </div> */}
+
+            <div className="flex justify-between">
+              <button
+                type="submit"
+                className="bg-[#2A254B] rounded px-8 py-2 uppercase font-medium text-white mx-auto mt-4"
+              >
+                Zarejestruj się
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };

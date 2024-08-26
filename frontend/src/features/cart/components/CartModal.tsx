@@ -38,31 +38,33 @@ const CartModal = () => {
       isOpen={isOpen}
       innerClass={`${
         isOpen ? "animate-slideIn" : "animate-slideOut"
-      } bg-white w-[50%] h-full z-[11] flex flex-col justify-center py-4`}
+      } bg-white w-[50%] h-full  z-[11] flex flex-col justify-center py-4`}
       onClick={() => dispatch(setShowCart(false))}
       className="fixed z-10 inset-0  w-full h-screen bg-[#bdbdbd8f] flex justify-end items-center"
     >
-      <div className="flex justify-between items-center  px-6 mb-5">
-        <h2 className="text-2xl font-semibold">Koszyk</h2>
-        <Button onClick={() => dispatch(setShowCart(false))}>
-          <FontAwesomeIcon icon={faXmark} size="2xl" />
-        </Button>
-      </div>
-      {cart.length ? (
-        <>
-          <Cart />
-          <Button
-            className="mt-10 self-center bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white"
-            onClick={() => handleClick()}
-          >
-            Dalej
+      <div className="w-full h-full overflow-y-auto">
+        <div className="flex justify-between items-center  px-6 mb-5">
+          <h2 className="text-2xl font-semibold">Koszyk</h2>
+          <Button onClick={() => dispatch(setShowCart(false))}>
+            <FontAwesomeIcon icon={faXmark} size="2xl" />
           </Button>
-        </>
-      ) : (
-        <div className="w-full px-6 grow flex flex-col justify-center items-center">
-          <CartEmpty />
         </div>
-      )}
+        {cart.length ? (
+          <div className="flex flex-col">
+            <Cart />
+            <Button
+              className="mt-10 self-center bg-[#2A254B] rounded px-8 py-2  uppercase font-medium text-white"
+              onClick={() => handleClick()}
+            >
+              Dalej
+            </Button>
+          </div>
+        ) : (
+          <div className="w-full px-6 grow flex flex-col justify-center items-center">
+            <CartEmpty />
+          </div>
+        )}
+      </div>
     </Modal>
   );
 };

@@ -1,6 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faBagShopping } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faBagShopping,
+  faArrowRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
 import { Fragment } from "react";
 import {
   Menu,
@@ -14,10 +18,12 @@ import { useAppDispatch } from "../services/hooks";
 import { setCategory } from "../services/productSlice";
 import Button from "./Button";
 import { menuConfig } from "../configs/menuConfig";
+import { useLogout } from "@/features/auth/hooks/useLogout";
 
 const Header = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { handleLogout } = useLogout();
 
   const style = {
     item: `mr-7 last:mr-0 uppercase font-semibold text-lg`,
@@ -79,9 +85,17 @@ const Header = () => {
             style={{ color: "#000000" }}
           />
         </Link>
-        <Button onClick={() => dispatch(toggleShowCart())}>
+        <Button className="mr-4" onClick={() => dispatch(toggleShowCart())}>
           <FontAwesomeIcon
             icon={faBagShopping}
+            size="xl"
+            style={{ color: "#000000" }}
+          />
+        </Button>
+
+        <Button onClick={handleLogout}>
+          <FontAwesomeIcon
+            icon={faArrowRightFromBracket}
             size="xl"
             style={{ color: "#000000" }}
           />

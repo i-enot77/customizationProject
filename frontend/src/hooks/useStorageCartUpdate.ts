@@ -9,6 +9,12 @@ export const useStorageCartUpdate = () => {
   const cartArr = useSelector((state: RootState) => state.cart.cart);
 
   useEffect(() => {
+    if (cartArr.length === 0) {
+      // Clear cart from local storage when the cart is empty
+      localStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+
     // Retrieve existing cart from local storage
     const existingCart = localStorage.getItem(STORAGE_KEY);
     let expDate = Date.now() + EXPIRATION_TIME;

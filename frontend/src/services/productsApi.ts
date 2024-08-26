@@ -84,7 +84,7 @@ export const productsApi = customizationApi.injectEndpoints({
       string
     >({
       query: (category) => ({
-        url: `api/${category}`,
+        url: `/${category}`,
         method: "GET",
       }),
     }),
@@ -105,7 +105,7 @@ export const productsApi = customizationApi.injectEndpoints({
         }
 
         return {
-          url: `api/${category}/${_id}?${queryParams.toString()}`,
+          url: `/${category}/${_id}?${queryParams.toString()}`,
           method: "GET",
         };
       },

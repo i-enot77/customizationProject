@@ -2,15 +2,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Sofa, Armchair, Chair, Lamp, Table } from "./productsApi";
 
 export interface CartState {
-  id: string;
-  small: string;
-  medium: string;
-  category: string;
-  name: string;
-  price: number;
+  product: Sofa | Armchair | Chair | Table | Lamp;
+  baseMaterial: {
+    _id: string;
+    name: string;
+  };
+  legsMaterial: {
+    _id: string;
+    name: string;
+  } | null;
   quantity: number;
-  baseMaterial: string;
-  legsMaterial?: string;
 }
 
 interface Cart {
@@ -34,49 +35,44 @@ const cartSlice = createSlice({
     setCart(state, action: PayloadAction<CartState[]>) {
       state.cart = action.payload;
     },
-    addToCart(
-      state,
-      action: PayloadAction<{
-        productItem: Sofa | Armchair | Chair | Table | Lamp;
-        baseMtl: string;
-        legsMtl?: string;
-        amount: number;
-      }>
-    ) {
-      const { productItem, baseMtl, legsMtl, amount } = action.payload;
+    addToCart(state, action: PayloadAction<CartState>) {
+      const { product, baseMaterial, legsMaterial, quantity } = action.payload;
 
       const existingItem = state.cart.find(
-        (cartItem) => cartItem.id === productItem._id
+        (cartItem) => cartItem.product._id === product._id
       );
       if (existingItem) {
-        existingItem.quantity += amount;
+        existingItem.quantity += quantity;
       } else {
         state.cart.push({
-          id: productItem._id,
-          small: productItem.img.small,
-          medium: productItem.img.medium,
-          category: productItem.category,
-          name: productItem.name,
-          price: productItem.price,
-          baseMaterial: baseMtl,
-          legsMaterial: legsMtl,
-          quantity: amount,
+          product: product,
+          baseMaterial: baseMaterial,
+          legsMaterial: legsMaterial ? legsMaterial : null,
+          quantity: quantity,
         });
       }
     },
-    updateCartItemAmount(
+    updateCartItemQuantity(
       state,
-      action: PayloadAction<{ id: string; amount: number }>
+      action: PayloadAction<{ id: string; quantity: number }>
     ) {
-      const { id, amount } = action.payload;
-      const cartItemIndex = state.cart.findIndex((item) => item.id === id);
+      const { id, quantity } = action.payload;
+      const cartItemIndex = state.cart.findIndex(
+        (item) => item.product._id === id
+      );
       if (cartItemIndex !== -1) {
-        state.cart[cartItemIndex].quantity = amount;
+        state.cart[cartItemIndex].quantity = quantity;
       }
     },
     deleteCartItem(state, action: PayloadAction<string>) {
       const itemIdToDelete = action.payload;
-      state.cart = state.cart.filter((item) => item.id !== itemIdToDelete);
+      state.cart = state.cart.filter(
+        (item) => item.product._id !== itemIdToDelete
+      );
+    },
+    clearCart(state) {
+      state.cart = [];
+      state.totalPrice = null;
     },
     toggleShowCart(state) {
       state.showCart = !state.showCart;
@@ -89,7 +85,7 @@ const cartSlice = createSlice({
     },
     calculateTotalPrice(state) {
       state.totalPrice = state.cart.reduce(
-        (total, item) => total + item.price * item.quantity,
+        (total, item) => total + item.product.price * item.quantity,
         0
       );
     },
@@ -99,8 +95,9 @@ const cartSlice = createSlice({
 export const {
   setCart,
   addToCart,
-  updateCartItemAmount,
+  updateCartItemQuantity,
   deleteCartItem,
+  clearCart,
   toggleShowCart,
   setShowCart,
   setCartSummary,

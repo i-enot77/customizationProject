@@ -1,15 +1,37 @@
+import { clearUserData, setAuth } from "@/services/authenticationSlice";
+import { useAppDispatch } from "@/services/hooks";
+import { useLazyRefreshTokenQuery } from "@/services/refreshTokenApi";
 import { useEffect } from "react";
-import { useAppDispatch } from "../../../services/hooks";
-import { setPersist } from "../../../services/authenticationSlice";
+import { getPersistFromLocalStorage } from "../utils/persistFromLocalStorage";
+import { setDeliveryData, setFullName } from "@/services/userSlice";
 
-export const usePersistLogin = (persist: boolean) => {
+const useAuthRefresh = () => {
   const dispatch = useAppDispatch();
-
-  const setPersistValue = () => dispatch(setPersist(!persist));
+  const persist = getPersistFromLocalStorage();
+  const [triggerRefreshToken, { data, isSuccess, isError, error }] =
+    useLazyRefreshTokenQuery();
 
   useEffect(() => {
-    localStorage.setItem("persist", JSON.stringify(persist));
-  }, [persist]);
+    if (persist) {
+      triggerRefreshToken();
+    }
+  }, [triggerRefreshToken, persist]);
 
-  return setPersistValue;
+  useEffect(() => {
+    if (isSuccess && data) {
+      dispatch(
+        setAuth({
+          userData: data.userData,
+          isAuthenticated: true,
+        })
+      );
+      dispatch(setFullName(data.fullName));
+      dispatch(setDeliveryData(data.deliveryData));
+    } else if (isError) {
+      console.error("Error during token refresh:", error);
+      dispatch(clearUserData());
+    }
+  }, [dispatch, isSuccess, data, isError, error]);
 };
+
+export default useAuthRefresh;

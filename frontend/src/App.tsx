@@ -16,10 +16,13 @@ import CartSummaryForm from "./features/cart/pages/CartSummaryForm";
 import ProductDescription from "./features/product/pages/ProductDescription";
 import Success from "./features/cart/pages/Success";
 import Cancel from "./features/cart/pages/Cancel";
-import PersistLogin from "./features/auth/pages/PersistLogin";
+// import PersistLogin from "./features/auth/pages/PersistLogin";
 import Inspirations from "./pages/Inspirations";
+import useAuthRefresh from "./features/auth/hooks/usePersistLogin";
 
 const App = () => {
+  useAuthRefresh();
+
   return (
     <div className="App">
       <Header />
@@ -44,7 +47,7 @@ const App = () => {
         <Route path="/success" element={<Success />} />
         <Route path="/cancel" element={<Cancel />} />
 
-        <Route element={<PersistLogin />}></Route>
+        {/* <Route element={<PersistLogin />}></Route> */}
       </Routes>
     </div>
   );
