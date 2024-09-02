@@ -16,15 +16,18 @@ export const useRegistrationForm = () => {
   ) => {
     try {
       const { confirmPassword, ...userData } = values;
-      const response = await registerUser(userData).unwrap();
-      console.log(response);
-      dispatch(
-        setAuth({
-          userData: response.userData,
-          isAuthenticated: true,
-        })
-      );
-      actions.resetForm(); // Reset form fields after successful registration
+      registerUser(userData)
+        .unwrap()
+        .then((response) => {
+          dispatch(
+            setAuth({
+              userData: response.userData,
+              isAuthenticated: true,
+            })
+          );
+          actions.resetForm();
+        });
+
       // navigate("/");
     } catch (error) {
       console.error("Registration failed", error);

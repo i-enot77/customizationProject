@@ -7,8 +7,6 @@ import ResetPassword from "./features/auth/pages/ResetPassword";
 import SendEmailInfo from "./features/auth/pages/SendEmailInfo";
 import Account from "./pages/Account";
 import Home from "./pages/Home";
-import RegistrationForm from "./features/auth/pages/RegistrationForm";
-import LoginForm from "./features/auth/pages/LoginForm";
 import Contact from "./pages/Contact";
 import Returns from "./pages/Returns";
 import Products from "./features/product/pages/Products";
@@ -16,9 +14,9 @@ import CartSummaryForm from "./features/cart/pages/CartSummaryForm";
 import ProductDescription from "./features/product/pages/ProductDescription";
 import Success from "./features/cart/pages/Success";
 import Cancel from "./features/cart/pages/Cancel";
-// import PersistLogin from "./features/auth/pages/PersistLogin";
 import Inspirations from "./pages/Inspirations";
 import useAuthRefresh from "./features/auth/hooks/usePersistLogin";
+import UserAccount from "./features/user/pages/UserAccount";
 
 const App = () => {
   useAuthRefresh();
@@ -30,13 +28,15 @@ const App = () => {
       <Routes>
         <Route path="/request-reset" element={<ResetPwdRequest />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+
         <Route path="/sended-email" element={<SendEmailInfo />} />
+
         <Route path="/account" element={<Account />} />
+        <Route path="/user-account" element={<UserAccount />} />
+
         <Route path="/" element={<Home />} />
         <Route path="/inspiration" element={<Inspirations />} />
 
-        <Route path="/register" element={<RegistrationForm />} />
-        <Route path="/login" element={<LoginForm />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/returns" element={<Returns />} />
 
@@ -46,8 +46,6 @@ const App = () => {
         <Route path="/cart-sum" element={<CartSummaryForm />} />
         <Route path="/success" element={<Success />} />
         <Route path="/cancel" element={<Cancel />} />
-
-        {/* <Route element={<PersistLogin />}></Route> */}
       </Routes>
     </div>
   );

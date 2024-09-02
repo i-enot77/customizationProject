@@ -1,6 +1,6 @@
 import { RegistrationSchema } from "@/features/auth/schemaYup/registrationSchema";
 import { customizationApi } from "./api";
-import { FullName } from "./userSlice";
+import { FullName, UserAddressData } from "./userSlice";
 import { DeliveryData } from "./orderSlice";
 
 type RegisterUserRequest = Omit<RegistrationSchema, "confirmPassword">;
@@ -26,11 +26,13 @@ interface LoginUserArgs {
 export interface LoggedUser {
   userData: AuthData;
   fullName: FullName | null;
+  userPhone: string | null;
+  userAddress: UserAddressData | null;
   deliveryData: DeliveryData | null;
 }
 
 interface ResetPwdRequestArgs {
-  username: string;
+  email: string;
 }
 
 interface ResetPasswordArgs {
@@ -70,10 +72,10 @@ export const authApi = customizationApi.injectEndpoints({
       }),
     }),
     resetPwdRequest: build.mutation<string, ResetPwdRequestArgs>({
-      query: ({ username }) => ({
+      query: ({ email }) => ({
         url: "/reset-email",
         method: "POST",
-        body: { username },
+        body: { email },
         headers: {
           "Content-Type": "application/json",
         },

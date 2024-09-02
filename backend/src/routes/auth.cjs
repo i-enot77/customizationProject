@@ -51,7 +51,7 @@ router.post("/auth", async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Secure only in production
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-      maxAge: persist ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000,
+      maxAge: persist ? 24 * 60 * 60 * 1000 : 60 * 60 * 1000,
     });
 
     const response = {
@@ -60,10 +60,15 @@ router.post("/auth", async (req, res) => {
         email: foundUser.email,
       },
       fullName: foundUser.fullName || null,
+      userPhone: foundUser.userPhone || null,
     };
 
-    if (foundUser.address) {
-      response.deliveryData = foundUser.address | null;
+    if (foundUser.userAddress) {
+      response.userAddress = foundUser.userAddress || null;
+    }
+
+    if (foundUser.deliveryAddress) {
+      response.deliveryData = foundUser.deliveryAddress || null;
     }
 
     console.log(response);

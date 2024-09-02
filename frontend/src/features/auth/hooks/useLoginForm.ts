@@ -3,20 +3,17 @@ import { useLoginUserMutation } from "../../../services/authApi";
 import { useAppDispatch } from "../../../services/hooks";
 import { setAuth, setPersist } from "../../../services/authenticationSlice";
 import { FormikHelpers } from "formik";
-import { useSelector } from "react-redux";
-import { RootState } from "@/services/store";
 import {
-  setDeliveryData,
+  setUserDeliveryAddress,
   setFullName,
-  setUserEmail,
+  setUserPhone,
+  setUserAddress,
 } from "@/services/userSlice";
 
 export const useLoginForm = () => {
   const [loginUser] = useLoginUserMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  const auth = useSelector((state: RootState) => state.auth.auth);
 
   const loginSubmit = async (
     values: { email: string; password: string; persist: boolean },
@@ -27,27 +24,28 @@ export const useLoginForm = () => {
     }>
   ) => {
     try {
-      const response = await loginUser({
+      loginUser({
         userEmail: values.email,
         pwd: values.password,
         persist: values.persist,
-      }).unwrap();
+      })
+        .unwrap()
+        .then((response) => {
+          dispatch(
+            setAuth({
+              userData: response.userData,
+              isAuthenticated: true,
+            })
+          );
+          dispatch(setFullName(response.fullName));
+          dispatch(setUserPhone(response.userPhone));
+          dispatch(setUserAddress(response.userAddress));
+          dispatch(setUserDeliveryAddress(response.deliveryData));
+          actions.resetForm();
 
-      console.log(response);
+          dispatch(setPersist(values.persist));
+        });
 
-      dispatch(
-        setAuth({
-          userData: response.userData,
-          isAuthenticated: true,
-        })
-      );
-      dispatch(setUserEmail(response.userData._id));
-      dispatch(setFullName(response.fullName));
-      dispatch(setDeliveryData(response.deliveryData));
-      actions.resetForm();
-
-      dispatch(setPersist(values.persist));
-      console.log(auth, "login");
       // navigate("/");
     } catch (error) {
       console.error("Login failed", error);

@@ -23,10 +23,6 @@ const CartModal = () => {
   const navigate = useNavigate();
 
   useCartFromLocalStorage();
-  // useEffect(() => {
-  //   const savedCart = localStorage.getItem("cart");
-  //   dispatch(setCart(savedCart ? JSON.parse(savedCart) : []));
-  // }, []);
 
   const handleClick = () => {
     dispatch(setCartSummary(true));

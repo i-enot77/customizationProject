@@ -5,9 +5,8 @@ import Button from "../../../components/Button";
 
 const SummaryCheckout = ({ prevStep }: { prevStep?: () => void }) => {
   const userEmail = useSelector((state: RootState) => state.order.email);
-  const fullName = useSelector((state: RootState) => state.user.fullName);
   const deliveryData = useSelector(
-    (state: RootState) => state.user.userDeliveryData
+    (state: RootState) => state.order.deliveryData
   );
   const shipping = useSelector((state: RootState) => state.order.shipping);
   const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
@@ -29,8 +28,8 @@ const SummaryCheckout = ({ prevStep }: { prevStep?: () => void }) => {
                 <div>
                   <h2 className={style.header}>Dane odbiorcy:</h2>
                   <div>{userEmail}</div>
-                  <div>{fullName?.firstName}</div>
-                  <div>{fullName?.lastName}</div>
+                  <div>{deliveryData.firstName}</div>
+                  <div>{deliveryData.lastName}</div>
                 </div>
                 {deliveryData && (
                   <div>

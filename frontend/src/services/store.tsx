@@ -10,6 +10,7 @@ import userSlice from "./userSlice";
 import { Provider } from "react-redux";
 import { ReactNode } from "react";
 import { render } from "@testing-library/react";
+import userAccountSlice from "./userAccountSlice";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     cart: cartSlice.reducer,
     order: orderSlice.reducer,
     user: userSlice.reducer,
+    userAccount: userAccountSlice.reducer,
     [customizationApi.reducerPath]: customizationApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

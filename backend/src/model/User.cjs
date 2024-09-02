@@ -2,12 +2,21 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Order = require("./Order.cjs");
 
-const addressSchema = new Schema({
+const userAddressSchema = new Schema({
   country: { type: String, default: "" },
   address: { type: String, default: "" },
   zipCode: { type: String, default: "" },
   city: { type: String, default: "" },
-  phone: { type: String, default: "" },
+});
+
+const deliveryAddressSchema = new Schema({
+  firstName: { type: String, default: "" },
+  lastName: { type: String, default: "" },
+  country: { type: String, default: "" },
+  address: { type: String, default: "" },
+  zipCode: { type: String, default: "" },
+  city: { type: String, default: "" },
+  phoneNumber: { type: String, default: "" },
 });
 
 const fullNameSchema = new Schema({
@@ -18,6 +27,7 @@ const fullNameSchema = new Schema({
 const userSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, required: true },
   email: { type: String, required: true, unique: true },
+  userPhone: { type: String, default: "" },
   fullName: fullNameSchema,
   password: { type: String, required: true },
   created_at: { type: Date, required: true },
@@ -29,7 +39,8 @@ const userSchema = new Schema({
     default: "user",
     required: true,
   },
-  address: addressSchema,
+  userAddress: userAddressSchema,
+  deliveryAddress: deliveryAddressSchema,
 });
 
 module.exports = mongoose.model("User", userSchema);

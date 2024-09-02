@@ -1,7 +1,33 @@
 const express = require("express");
 const router = express.Router();
-const resetPasswordController = require("../controllers/resetPasswordController.cjs");
+const jwt = require("jsonwebtoken");
+const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+const User = require("../model/User.cjs");
 
-router.post("/", resetPasswordController.resetPwdToken);
+const app = express();
+app.use(bodyParser.json());
+
+router.post("/reset-password", async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const user = await User.findOne({ username: decoded.username }).exec();
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const hashedPwd = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPwd;
+    await user.save();
+
+    res.json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error("Password reset failed", error);
+    res.status(400).json({ message: "Invalid or expired token" });
+  }
+});
 
 module.exports = router;

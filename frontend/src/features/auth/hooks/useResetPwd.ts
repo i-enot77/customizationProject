@@ -1,39 +1,34 @@
-import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch } from "../../../services/hooks";
 import { useResetPasswordMutation } from "../../../services/authApi";
+import { ResetPassword } from "../schemaYup/resetPassword";
+import { FormikHelpers } from "formik";
 
 export const useResetPwd = () => {
-  const [newPassword, setNewPassword] = useState("");
-
-  const handlePwdInput = (e: ChangeEvent<HTMLInputElement>) =>
-    setNewPassword(e.target.value);
-
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { token } = useParams();
   const [resetPassword] = useResetPasswordMutation();
 
-  const handleResetPassword = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = (
+    values: ResetPassword,
+    actions: FormikHelpers<ResetPassword>
+  ) => {
+    try {
+      if (!token) return;
 
-    if (!token) return;
-
-    resetPassword({
-      token,
-      newPassword,
-    })
-      .unwrap()
-      .then((response) => {
-        if (response) {
-          setNewPassword("");
-          navigate("/login");
-        }
+      resetPassword({
+        token,
+        newPassword: values.password,
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .unwrap()
+        .then(() => {
+          navigate("/account");
+          actions.resetForm();
+        });
+    } catch (error) {
+      console.error("Password changing failed", error);
+      actions.setSubmitting(false);
+    }
   };
 
-  return { newPassword, handlePwdInput, handleResetPassword };
+  return { onSubmit };
 };

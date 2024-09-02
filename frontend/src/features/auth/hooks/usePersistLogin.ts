@@ -3,7 +3,12 @@ import { useAppDispatch } from "@/services/hooks";
 import { useLazyRefreshTokenQuery } from "@/services/refreshTokenApi";
 import { useEffect } from "react";
 import { getPersistFromLocalStorage } from "../utils/persistFromLocalStorage";
-import { setDeliveryData, setFullName } from "@/services/userSlice";
+import {
+  setUserDeliveryAddress,
+  setFullName,
+  setUserPhone,
+  setUserAddress,
+} from "@/services/userSlice";
 
 const useAuthRefresh = () => {
   const dispatch = useAppDispatch();
@@ -26,7 +31,9 @@ const useAuthRefresh = () => {
         })
       );
       dispatch(setFullName(data.fullName));
-      dispatch(setDeliveryData(data.deliveryData));
+      dispatch(setUserPhone(data.userPhone));
+      dispatch(setUserAddress(data.userAddress));
+      dispatch(setUserDeliveryAddress(data.deliveryData));
     } else if (isError) {
       console.error("Error during token refresh:", error);
       dispatch(clearUserData());

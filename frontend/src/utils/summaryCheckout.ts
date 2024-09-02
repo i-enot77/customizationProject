@@ -1,13 +1,13 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../services/store";
-import { Order, setInitShipping } from "@/services/orderSlice";
-import { clearCart } from "@/services/cartSlice"; // Import the clearCart action
 import {
-  setDeliveryData,
-  setFullName,
-  setUserEmail,
-} from "@/services/userSlice";
+  Order,
+  initOrderDeliveryData,
+  setInitShipping,
+} from "@/services/orderSlice";
+import { clearCart } from "@/services/cartSlice"; // Import the clearCart action
+import { setFullName, setUserEmail } from "@/services/userSlice";
 
 export const summaryCheckout = () => {
   const isLogged = useSelector(
@@ -17,9 +17,8 @@ export const summaryCheckout = () => {
     (state: RootState) => state.auth.auth.userData?._id
   );
   const email = useSelector((state: RootState) => state.user.userEmail);
-  const fullName = useSelector((state: RootState) => state.user.fullName);
   const deliveryData = useSelector(
-    (state: RootState) => state.user.userDeliveryData
+    (state: RootState) => state.order.deliveryAddress
   );
   const products = useSelector((state: RootState) => state.cart.cart);
   const shipping = useSelector((state: RootState) => state.order.shipping);
@@ -28,21 +27,11 @@ export const summaryCheckout = () => {
   const makePayment = async () => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_SECRET);
 
-    // Set default values for ts
-    const defaultFullName = { firstName: "Default", lastName: "User" };
-    const defaultDeliveryData = {
-      country: "Default Country",
-      address: "Default Address",
-      zipCode: "00000",
-      city: "Default City",
-      phone: "0000000000",
-    };
-
     const orderData: Order = {
       userId: userId || null,
       email,
-      fullName: fullName || defaultFullName,
-      deliveryData: deliveryData || defaultDeliveryData,
+      // fullName: fullName || defaultFullName,
+      deliveryAddress: deliveryData,
       products,
       shipping,
     };
@@ -75,7 +64,7 @@ export const summaryCheckout = () => {
         if (!isLogged) {
           dispatch(setUserEmail(""));
           dispatch(setFullName(null));
-          dispatch(setDeliveryData(null));
+          dispatch(initOrderDeliveryData());
         }
       }
     } catch (error) {

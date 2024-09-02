@@ -1,56 +1,74 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useResetPwdRequestMutation } from "../../../services/authApi";
-import InputItem from "../../../components/InputItem";
+import { emailSchema } from "@/features/user/schemaYup/userAccountSchemas";
+import { formStyle } from "@/assets/formStyle";
 
 const ResetPwdRequest = () => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
   const [resetPwdRequest] = useResetPwdRequestMutation();
   const navigate = useNavigate();
 
-  const handleEmail = (e: ChangeEvent<HTMLInputElement>) =>
-    setEmail(e.target.value);
-
-  const handleRequestReset = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const onSubmit = (
+    values: { email: string },
+    actions: FormikHelpers<{
+      email: string;
+    }>
+  ) => {
     resetPwdRequest({
-      username: email,
+      email: values.email,
     })
       .unwrap()
       .then((response) => {
         if (response) {
           console.log(response);
-          setEmail("");
-          setMessage("");
+          actions.resetForm();
           navigate("/sended-email");
         }
       })
       .catch((error) => {
-        console.log(error);
-        setMessage("Resetowania hasła nie powiodło się");
+        console.error("Email sending failed", error);
+        actions.setSubmitting(false);
       });
   };
   return (
-    <div>
-      <h2>Nie pamiętasz hasła?</h2>
-      <p>
+    <div className="flex-grow self-center flex flex-col justify-center">
+      <h2 className="text-2xl">Nie pamiętasz hasła?</h2>
+      <h2 className="text-lg py-2">
         Wystarczy, że podasz swój e-mail, a my pomożemy Ci ustawić nowe hasło.
-      </p>
-      <form onSubmit={handleRequestReset}>
-        <InputItem
-          id="reset"
-          type="email"
-          value={email}
-          onChange={handleEmail}
-          placeholder={"e-mail adres"}
-          className=""
-        />
-        <InputItem className="" type="submit" value="Dalej" />
-      </form>
-
-      <p>{message}</p>
+      </h2>
+      <Formik
+        initialValues={{ email: "" }}
+        validationSchema={emailSchema}
+        onSubmit={onSubmit}
+        enableReinitialize
+      >
+        {({ errors, touched }) => (
+          <Form className="">
+            <div className={formStyle.field}>
+              <label className={formStyle.label} htmlFor="email">
+                Email:
+              </label>
+              <Field
+                id="email"
+                type="email"
+                name="email"
+                className={formStyle.input}
+              />
+              {errors.email && touched.email ? (
+                <div className={formStyle.error}>{errors.email}</div>
+              ) : null}
+            </div>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="bg-[#2A254B] rounded px-8 py-2 uppercase font-medium text-white my-8"
+              >
+                Wyslij
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };

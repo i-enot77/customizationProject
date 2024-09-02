@@ -1,35 +1,53 @@
 import { Field, Form, Formik, FormikHelpers } from "formik";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../services/store";
 import { userOrderDataSchema } from "../userOrderDataSchema";
 import { formStyle } from "@/assets/formStyle";
-import { setOrderUserEmail } from "@/services/orderSlice";
+import {
+  initOrderDeliveryData,
+  setOrderDeliveryData,
+  setOrderUserEmail,
+} from "@/services/orderSlice";
 import { OrderSchema } from "../schemaYup/orderFormSchema";
-import { setFullName, setDeliveryData } from "@/services/userSlice";
+import { usePhoneNumber } from "@/features/user/hooks/usePhoneNumber";
+import { useEffect } from "react";
 
 const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
-  const isLogged = useSelector(
-    (state: RootState) => state.auth.auth.isAuthenticated
-  );
   const userEmail = useSelector(
     (state: RootState) => state.auth.auth.userData?.email
   );
-  const fullName = useSelector((state: RootState) => state.user.fullName);
-  const deliveryAddress = useSelector(
-    (state: RootState) => state.user.userDeliveryData
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.auth.isAuthenticated
+  );
+  const userDeliveryAddress = useSelector(
+    (state: RootState) => state.user.userDeliveryAddress
+  );
+  const orderDeliveryAddress = useSelector(
+    (state: RootState) => state.order.deliveryAddress
   );
   const dispatch = useDispatch();
+
+  const { phone, country } = usePhoneNumber(orderDeliveryAddress?.phoneNumber);
+
+  useEffect(() => {
+    if (isAuthenticated && userDeliveryAddress) {
+      dispatch(setOrderDeliveryData(userDeliveryAddress));
+      console.log("setData");
+    } else {
+      dispatch(initOrderDeliveryData());
+      console.log("init Data");
+    }
+  }, [isAuthenticated, userDeliveryAddress]);
 
   const onSubmit = (
     values: OrderSchema,
     actions: FormikHelpers<OrderSchema>
   ) => {
-    console.log(values);
-    const { email, firstName, lastName, ...deliveryData } = values;
+    const { email, ...deliveryData } = values;
     dispatch(setOrderUserEmail(email));
-    dispatch(setFullName({ firstName, lastName }));
-    console.log(fullName);
-    dispatch(setDeliveryData(deliveryData));
+    dispatch(setOrderDeliveryData(deliveryData));
     actions.setSubmitting(false);
     if (nextStep) {
       nextStep();
@@ -38,13 +56,13 @@ const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
 
   const initialValues: OrderSchema = {
     email: userEmail || "",
-    firstName: fullName?.firstName || "",
-    lastName: fullName?.lastName || "",
-    country: deliveryAddress?.country || "",
-    address: deliveryAddress?.address || "",
-    zipCode: deliveryAddress?.zipCode || "",
-    city: deliveryAddress?.city || "",
-    phone: deliveryAddress?.phone || "",
+    firstName: orderDeliveryAddress.firstName || "",
+    lastName: orderDeliveryAddress.lastName || "",
+    country: orderDeliveryAddress?.country || "",
+    address: orderDeliveryAddress?.address || "",
+    zipCode: orderDeliveryAddress?.zipCode || "",
+    city: orderDeliveryAddress?.city || "",
+    phoneNumber: phone,
   };
   return (
     <>
@@ -54,7 +72,7 @@ const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
         onSubmit={onSubmit}
         enableReinitialize
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, setFieldValue }) => (
           <Form className="">
             <div className={formStyle.field}>
               <label htmlFor="email">Adres e-mail:</label>
@@ -71,9 +89,9 @@ const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
 
             <div>
               <div className="text-end">
-                {isLogged &&
-                  !fullName &&
-                  "Twoje konto jescze nie zawiera danych użytkownika"}
+                {isAuthenticated &&
+                  !userDeliveryAddress &&
+                  "Twoje konto jescze nie zawiera danych do wysyłki"}
               </div>
               <div className={formStyle.field}>
                 <label htmlFor="firstName">Imię:</label>
@@ -157,16 +175,18 @@ const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
             </div>
 
             <div className={formStyle.field}>
-              <label htmlFor="phone">Numer telefonu:</label>
-              <Field
-                id="phone"
-                type="tel"
-                name="phone"
-                className={formStyle.input}
+              <label htmlFor="phoneNumber">Numer telefonu:</label>
+              <PhoneInput
+                id="phoneNumber"
+                country={country}
+                defaultCountry="PL"
+                value={initialValues.phoneNumber}
+                international
+                onChange={(value) => setFieldValue("phoneNumber", value)}
               />
-              {errors.phone && touched.phone ? (
-                <div className={formStyle.error}>Pole jest wymagane</div>
-              ) : null}
+              {errors.phoneNumber && touched.phoneNumber && (
+                <div className={formStyle.error}>{errors.phoneNumber}</div>
+              )}
             </div>
             <div className="flex justify-between">
               <button

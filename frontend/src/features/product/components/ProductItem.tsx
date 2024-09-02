@@ -71,7 +71,6 @@ const ProductItem = () => {
 
   const handleAddToCart = () => {
     if (data && baseMtlTextures) {
-      console.log("test");
       dispatch(
         addToCart({
           product: data.product,
