@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { validationResult } = require("express-validator");
+const { body, validationResult } = require("express-validator");
 const User = require("../model/User.cjs");
 const verifyToken = require("../middleware/verifyToken.cjs");
 const emailUpdateValidation = require("../middleware/emailUpdateValidation.cjs");
@@ -9,11 +9,14 @@ router.post(
   "/change-email",
   verifyToken,
   emailUpdateValidation,
-  async (req, res) => {
-    // const errors = validationResult(req);
-    // if (!errors.isEmpty()) {
-    //   return res.status(400).json({ errors: errors.array() });
-    // }
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error("Validation failed");
+      error.status = 400;
+      error.data = { errors: errors.array() };
+      return next(error);
+    }
 
     const { newEmail } = req.body;
     const user = req.user;
@@ -30,7 +33,8 @@ router.post(
       });
     } catch (error) {
       console.error("Error updating email:", error);
-      return res.status(500).json({ message: "Internal Server Error" });
+      error.status = 500;
+      return next(error);
     }
   }
 );

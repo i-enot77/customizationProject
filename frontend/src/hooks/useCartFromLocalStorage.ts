@@ -8,19 +8,15 @@ export const useCartFromLocalStorage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    try {
-      const storedCart = localStorage.getItem(STORAGE_KEY);
-      if (storedCart) {
-        const parsedCart = JSON.parse(storedCart);
-        dispatch(setCart(parsedCart));
-        if (parsedCart.expDate > Date.now()) {
-          dispatch(setCart(parsedCart.cart));
-        } else {
-          localStorage.removeItem(STORAGE_KEY);
-        }
+    const storedCart = localStorage.getItem(STORAGE_KEY);
+    if (storedCart) {
+      const parsedCart = JSON.parse(storedCart);
+
+      if (parsedCart.expDate > Date.now()) {
+        dispatch(setCart(parsedCart.cart));
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
       }
-    } catch (error) {
-      console.error("Error retrieving cart from local storage", error);
     }
   }, []);
 };

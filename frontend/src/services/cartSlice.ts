@@ -39,8 +39,9 @@ const cartSlice = createSlice({
       const { product, baseMaterial, legsMaterial, quantity } = action.payload;
 
       const existingItem = state.cart.find(
-        (cartItem) => cartItem.product._id === product._id
+        (item) => item.product._id === product._id
       );
+
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
@@ -71,7 +72,7 @@ const cartSlice = createSlice({
       );
     },
     clearCart(state) {
-      state.cart = [];
+      state.cart = initialState.cart;
       state.totalPrice = null;
     },
     toggleShowCart(state) {

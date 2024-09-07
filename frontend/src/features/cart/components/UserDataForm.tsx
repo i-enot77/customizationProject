@@ -5,22 +5,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../services/store";
 import { userOrderDataSchema } from "../userOrderDataSchema";
 import { formStyle } from "@/assets/formStyle";
-import {
-  initOrderDeliveryData,
-  setOrderDeliveryData,
-  setOrderUserEmail,
-} from "@/services/orderSlice";
+import { setOrderDeliveryData, setOrderUserEmail } from "@/services/orderSlice";
 import { OrderSchema } from "../schemaYup/orderFormSchema";
 import { usePhoneNumber } from "@/features/user/hooks/usePhoneNumber";
 import { useEffect } from "react";
 
 const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
-  const userEmail = useSelector(
-    (state: RootState) => state.auth.auth.userData?.email
-  );
+  const userOrderEmail = useSelector((state: RootState) => state.order.email);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.auth.isAuthenticated
   );
+  const userData = useSelector((state: RootState) => state.auth.auth.userData);
   const userDeliveryAddress = useSelector(
     (state: RootState) => state.user.userDeliveryAddress
   );
@@ -32,12 +27,11 @@ const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
   const { phone, country } = usePhoneNumber(orderDeliveryAddress?.phoneNumber);
 
   useEffect(() => {
-    if (isAuthenticated && userDeliveryAddress) {
+    if (isAuthenticated && userData && userDeliveryAddress) {
+      dispatch(setOrderUserEmail(userData.email));
       dispatch(setOrderDeliveryData(userDeliveryAddress));
-      console.log("setData");
-    } else {
-      dispatch(initOrderDeliveryData());
-      console.log("init Data");
+    } else if (isAuthenticated && userData) {
+      dispatch(setOrderUserEmail(userData.email));
     }
   }, [isAuthenticated, userDeliveryAddress]);
 
@@ -48,24 +42,29 @@ const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
     const { email, ...deliveryData } = values;
     dispatch(setOrderUserEmail(email));
     dispatch(setOrderDeliveryData(deliveryData));
+    console.log(orderDeliveryAddress);
     actions.setSubmitting(false);
     if (nextStep) {
       nextStep();
     }
   };
 
+  useEffect(() => {
+    console.log(orderDeliveryAddress);
+  }, [orderDeliveryAddress]);
+
   const initialValues: OrderSchema = {
-    email: userEmail || "",
+    email: userOrderEmail || "",
     firstName: orderDeliveryAddress.firstName || "",
     lastName: orderDeliveryAddress.lastName || "",
-    country: orderDeliveryAddress?.country || "",
+    phoneNumber: phone,
     address: orderDeliveryAddress?.address || "",
     zipCode: orderDeliveryAddress?.zipCode || "",
     city: orderDeliveryAddress?.city || "",
-    phoneNumber: phone,
+    country: orderDeliveryAddress?.country || "",
   };
   return (
-    <>
+    <div>
       <Formik
         initialValues={initialValues}
         validationSchema={userOrderDataSchema}
@@ -199,7 +198,7 @@ const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
           </Form>
         )}
       </Formik>
-    </>
+    </div>
   );
 };
 

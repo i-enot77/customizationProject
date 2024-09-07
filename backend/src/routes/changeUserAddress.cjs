@@ -3,12 +3,7 @@ const router = express.Router();
 const User = require("../model/User.cjs");
 const verifyToken = require("../middleware/verifyToken.cjs");
 
-router.post("/update-address", verifyToken, async (req, res) => {
-  //   const errors = validationResult(req);
-  //   if (!errors.isEmpty()) {
-  //     return res.status(400).json({ errors: errors.array() });
-  //   }
-
+router.post("/update-address", verifyToken, async (req, res, next) => {
   const { country, address, zipCode, city } = req.body;
   const user = req.user;
 
@@ -25,11 +20,14 @@ router.post("/update-address", verifyToken, async (req, res) => {
     };
 
     await user.save();
-
-    return res.status(200).json(user.userAddress);
+    return res.status(200).json({
+      message: "Address updated successfully",
+      userAddress: user.userAddress,
+    });
   } catch (error) {
     console.error("Error updating address:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    error.status = 500;
+    next(error);
   }
 });
 

@@ -72,7 +72,7 @@ const CartSummaryForm = () => {
         <Cart />
       </div>
 
-      <div className="h-full w-[90%] md:w-[80%] p-2 flex flex-col justify-around mx-auto lg:w-[49%]">
+      <div className="h-full w-[90%] md:w-[80%] p-2 flex flex-col justify-between mx-auto lg:w-[49%]">
         {step === 1 && <UserCheckout nextStep={nextStep} />}
         {step === 2 && (
           <DeliveryMethod prevStep={prevStep} nextStep={nextStep} />

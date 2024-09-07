@@ -3,7 +3,7 @@ const router = express.Router();
 const verifyToken = require("../middleware/verifyToken.cjs");
 const User = require("../model/User.cjs");
 
-router.post("/change-full-name", verifyToken, async (req, res) => {
+router.post("/change-full-name", verifyToken, async (req, res, next) => {
   const { firstName, lastName } = req.body;
   const user = req.user;
 
@@ -18,8 +18,8 @@ router.post("/change-full-name", verifyToken, async (req, res) => {
 
     return res.status(200).json(user.fullName);
   } catch (error) {
-    console.error("Error updating full name:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    error.status = 500;
+    next(error);
   }
 });
 

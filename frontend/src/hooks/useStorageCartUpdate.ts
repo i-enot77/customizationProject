@@ -15,10 +15,9 @@ export const useStorageCartUpdate = () => {
       return;
     }
 
-    // Retrieve existing cart from local storage
-    const existingCart = localStorage.getItem(STORAGE_KEY);
     let expDate = Date.now() + EXPIRATION_TIME;
 
+    const existingCart = localStorage.getItem(STORAGE_KEY);
     if (existingCart) {
       const parsedCart = JSON.parse(existingCart);
       // Use existing expiration date if it's still valid
@@ -33,11 +32,7 @@ export const useStorageCartUpdate = () => {
     };
 
     const saveCartToLocalStorage = () => {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(cartItem));
-      } catch (error) {
-        console.error("Error saving cart to local storage", error);
-      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cartItem));
     };
 
     saveCartToLocalStorage();

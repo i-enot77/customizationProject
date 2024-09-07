@@ -1,20 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const { body, validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 const User = require("../model/User.cjs");
 const verifyToken = require("../middleware/verifyToken.cjs");
 
-// Phone number validation middleware
-// const phoneValidation = [
-//   body("phoneNumber")
-//     .matches(/^\+?([0-9]{10,16})$/, "Invalid phone number format")
-//     .withMessage("Invalid phone number format"),
-// ];
-
-router.post("/change-phone-number", verifyToken, async (req, res) => {
+router.post("/change-phone-number", verifyToken, async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    const error = new Error("Validation failed");
+    error.status = 400;
+    error.data = { errors: errors.array() };
+    return next(error);
   }
 
   const { phoneNumber } = req.body;
@@ -28,10 +24,14 @@ router.post("/change-phone-number", verifyToken, async (req, res) => {
     user.userPhone = phoneNumber;
     await user.save();
 
-    return res.status(200).json(user.userPhone);
+    return res.status(200).json({
+      message: "Phone number updated successfully",
+      phoneNumber: user.userPhone,
+    });
   } catch (error) {
     console.error("Error updating phone number:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    error.status = 500;
+    next(error);
   }
 });
 

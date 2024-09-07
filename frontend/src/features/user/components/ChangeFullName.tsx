@@ -10,21 +10,24 @@ import Button from "@/components/Button";
 import { useAppDispatch } from "@/services/hooks";
 import { setFullNameChange } from "@/services/userAccountSlice";
 import { setFullName } from "@/services/userSlice";
+import { useToast } from "@/hooks/use-toast";
 
 function ChangeFullName() {
   const [fullNameUpdate] = useLazyFullNameUpdateQuery();
+
   const fullName = useSelector((state: RootState) => state.user.fullName);
   const user = useSelector((state: RootState) => state.auth.auth.userData);
 
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
 
-  const onSubmit = (
+  const onSubmit = async (
     values: { firstName: string; lastName: string },
     actions: FormikHelpers<{ firstName: string; lastName: string }>
   ) => {
     try {
       if (user) {
-        fullNameUpdate({
+        await fullNameUpdate({
           userId: user._id,
           firstName: values.firstName,
           lastName: values.lastName,
@@ -33,10 +36,18 @@ function ChangeFullName() {
           .then((data) => {
             dispatch(setFullName(data));
             dispatch(setFullNameChange(false));
+            toast({
+              title: "Update Successful",
+              description: "Your full name has been updated successfully.",
+            });
           });
       }
     } catch (error) {
-      console.error("Email update failed", error);
+      console.error("Update failed", error);
+      toast({
+        title: "Error",
+        description: "Failed to update full name",
+      });
       actions.setSubmitting(false);
     }
   };

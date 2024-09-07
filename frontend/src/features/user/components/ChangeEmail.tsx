@@ -11,14 +11,14 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Button from "@/components/Button";
 import { useAppDispatch } from "@/services/hooks";
 import { setEmailChange } from "@/services/userAccountSlice";
+import { useToast } from "@/hooks/use-toast";
 
 function ChangeEmail() {
   const [emailUpdate, { isSuccess }] = useLazyEmailUpdateQuery();
   const user = useSelector((state: RootState) => state.auth.auth.userData);
-
   const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const onSubmit = (
     values: { email: string },
@@ -35,6 +35,10 @@ function ChangeEmail() {
       }
     } catch (error) {
       console.error("Email update failed", error);
+      toast({
+        title: "Error",
+        description: "Email update failed",
+      });
       actions.setSubmitting(false);
     }
   };

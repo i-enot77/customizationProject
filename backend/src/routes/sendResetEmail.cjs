@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
-
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-
 const User = require("../model/User.cjs");
-// disable certificate verification in a development environment
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
+// Setup for mail transporter
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -16,26 +13,21 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-router.post("/reset-email", async (req, res) => {
+router.post("/reset-email", async (req, res, next) => {
   const { email } = req.body;
 
   try {
     const user = await User.findOne({ email }).exec();
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throw { status: 404, message: "User not found" };
     }
 
-    // Generate a JWT token with user email as payload
-    const generateToken = (email) => {
-      return jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "1h",
-      });
-    };
+    // Generate JWT token with user email as payload
+    const resetToken = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "1h",
+    });
 
-    // Generate JWT token with user email
-    const resetToken = generateToken(email);
-
-    // Send email with password reset link
+    // Construct password reset link
     const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
 
     const mailOptions = {
@@ -48,7 +40,9 @@ router.post("/reset-email", async (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error("Error sending email", error);
-        return res.status(500).json({ message: "Error sending email" });
+        error.status = 500;
+        error.message = "Error sending email";
+        return next(error);
       }
 
       console.log("Email sent: " + info.response);
@@ -56,7 +50,7 @@ router.post("/reset-email", async (req, res) => {
     });
   } catch (error) {
     console.error("Password reset request failed", error);
-    res.status(500).json({ message: "Password reset request failed" });
+    next(error);
   }
 });
 

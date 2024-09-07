@@ -10,13 +10,15 @@ import Button from "@/components/Button";
 import { useAppDispatch } from "@/services/hooks";
 import { setUserAddressChange } from "@/services/userAccountSlice";
 import { setUserAddress } from "@/services/userSlice";
+import { useToast } from "@/hooks/use-toast";
 
 function UserAddressChange() {
   const user = useSelector((state: RootState) => state.auth.auth.userData);
-  const [userAddressUpdate, { isError }] = useLazyUserAddresUpdateQuery();
+  const [userAddressUpdate] = useLazyUserAddresUpdateQuery();
   const userAddress = useSelector((state: RootState) => state.user.userAddress);
 
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
 
   const onSubmit = (
     values: { address: string; zipCode: string; city: string; country: string },
@@ -40,10 +42,18 @@ function UserAddressChange() {
           .then((data) => {
             dispatch(setUserAddress(data));
             dispatch(setUserAddressChange(false));
+            toast({
+              title: "Update Successful",
+              description: "Your address has been updated successfully.",
+            });
           });
       }
     } catch (error) {
       console.error("Email update failed", error);
+      toast({
+        title: "Error",
+        description: "Failed to update address",
+      });
       actions.setSubmitting(false);
     }
   };

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../../../services/store";
 import {
@@ -13,10 +13,10 @@ import {
 import ProductSkeleton from "../components/ProductSkeleton";
 import ThumbnailProduct from "../components/ThumbnailProduct";
 import Footer from "../../../components/Footer";
+import { useCartFromLocalStorage } from "@/hooks/useCartFromLocalStorage";
 
 const Products = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const productItem = useSelector(
     (state: RootState) => state.products.productItem
   );
@@ -46,6 +46,8 @@ const Products = () => {
     console.log(url);
     navigate(url);
   };
+
+  useCartFromLocalStorage();
 
   const style = {
     product: ` w-full`,

@@ -10,8 +10,8 @@ import {
   setUserAddress,
 } from "@/services/userSlice";
 
-export const useLoginForm = () => {
-  const [loginUser] = useLoginUserMutation();
+export const useLoginForm = (isCart: boolean) => {
+  const [loginUser, { isSuccess, error }] = useLoginUserMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -40,18 +40,17 @@ export const useLoginForm = () => {
           dispatch(setFullName(response.fullName));
           dispatch(setUserPhone(response.userPhone));
           dispatch(setUserAddress(response.userAddress));
-          dispatch(setUserDeliveryAddress(response.deliveryData));
+          dispatch(setUserDeliveryAddress(response.deliveryAddress));
           actions.resetForm();
 
           dispatch(setPersist(values.persist));
+          !isCart && navigate(-1);
         });
-
-      // navigate("/");
     } catch (error) {
       console.error("Login failed", error);
       actions.setSubmitting(false);
     }
   };
 
-  return { loginSubmit };
+  return { loginSubmit, isSuccess, error };
 };

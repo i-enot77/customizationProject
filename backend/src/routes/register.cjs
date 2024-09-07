@@ -4,66 +4,46 @@ const mongoose = require("mongoose");
 const User = require("../model/User.cjs");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
-router.post("/register", async (req, res) => {
-  const {
-    // username,
-    email,
-    password,
-    // country,
-    // firstName,
-    // lastName,
-    // address,
-    // zipCode,
-    // city,
-    // phone,
-  } = req.body;
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL_USERNAME,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
-  if (!email || !password)
-    return res
-      .status(400)
-      .json({ message: "All required fields must be provided." });
-
-  const duplicate = await User.findOne({ email }).exec();
-  if (duplicate)
-    return res
-      .status(409)
-      .json({ message: "Uzytkownik pod tym adresem email już istnieje" });
-
+router.post("/register", async (req, res, next) => {
   try {
-    const hashedPwd = await bcrypt.hash(password, 10);
+    const { email, password } = req.body;
+    if (!email || !password) {
+      throw { status: 400, message: "All required fields must be provided." };
+    }
 
-    const userId = new mongoose.Types.ObjectId();
+    const duplicate = await User.findOne({ email });
+    if (duplicate) {
+      throw {
+        status: 409,
+        message: "Uzytkownik pod tym adresem email już istnieje.",
+      };
+    }
+
+    const hashedPwd = await bcrypt.hash(password, 10);
     const newUser = new User({
-      _id: userId,
-      // username,
+      _id: new mongoose.Types.ObjectId(),
       email,
       password: hashedPwd,
-      // address: {
-      //   country,
-      //   firstName,
-      //   lastName,
-      //   address,
-      //   zipCode,
-      //   city,
-      //   phone,
-      // },
       created_at: new Date(),
     });
-    await newUser.save();
 
-    const accessToken = jwt.sign(
-      { UserInfo: { id: newUser._id } },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
-    );
+    await newUser.save();
 
     const refreshToken = jwt.sign(
       { id: newUser._id },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "1d" } //
+      { expiresIn: "1d" }
     );
-
     newUser.refreshToken = refreshToken;
     await newUser.save();
 
@@ -71,25 +51,34 @@ router.post("/register", async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "None",
-      maxAge: 60 * 60 * 1000,
+      maxAge: 60 * 60 * 1000, // 1 hour
     });
 
-    return res.json({
-      success: `New user created and logged in!`,
-      userData: {
-        id: newUser._id,
-        email: newUser.email,
-        // country: newUser.address.country,
-        // firstName: newUser.address.firstName,
-        // lastName: newUser.address.lastName,
-        // address: newUser.address.address,
-        // zipCode: newUser.address.zipCode,
-        // city: newUser.address.city,
-        // phone: newUser.address.phone,
-      },
+    // Send confirmation email
+    const mailOptions = {
+      from: process.env.EMAIL_USERNAME,
+      to: newUser.email,
+      subject: "Account Creation Success",
+      text: `Witamy w gronie naszych użytkowników! Twoje konto zostało pomyślnie stworzone.`,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.error("Email sending failed:", error);
+        error.status = 500;
+        return next(error);
+      }
+      console.log("Email sent: " + info.response);
+      return res.json({
+        success: `New user created, logged in, and email sent!`,
+        userData: {
+          id: newUser._id,
+          email: newUser.email,
+        },
+      });
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 });
 

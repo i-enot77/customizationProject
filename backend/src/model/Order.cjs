@@ -4,7 +4,7 @@ const User = require("./User.cjs");
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId, required: true, auto: true },
+  _id: { type: Schema.Types.ObjectId, required: true },
   user_id: { type: Schema.Types.ObjectId, ref: "User", required: false }, // Optional reference to User
   order_date: { type: Date, default: Date.now },
   status: {
@@ -20,7 +20,7 @@ const orderSchema = new Schema({
       productType: {
         type: String,
         required: true,
-        enum: ["Sofa", "Armchair", "Chair", "Table", "Lamp"],
+        enum: ["sofy", "fotele", "krzesła", "stoły", "lampy"],
       }, //handle saving product type
       quantity: { type: Number, required: true },
       baseMaterialId: {

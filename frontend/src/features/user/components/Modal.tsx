@@ -4,15 +4,12 @@ type ModalProps = {
   isOpen: boolean;
   onClick: () => void;
   children: ReactNode;
-  //   innerClass: string;
 } & HTMLAttributes<HTMLDivElement>;
 
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClick,
   children,
-  //   innerClass,
-  //   className,
   ...rest
 }) => {
   return (

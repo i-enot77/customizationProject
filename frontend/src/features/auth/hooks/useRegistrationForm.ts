@@ -6,7 +6,7 @@ import { RegistrationSchema } from "../schemaYup/registrationSchema";
 import { FormikHelpers } from "formik";
 
 export const useRegistrationForm = () => {
-  const [registerUser] = useRegisterUserMutation();
+  const [registerUser, { isSuccess, error }] = useRegisterUserMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -28,12 +28,12 @@ export const useRegistrationForm = () => {
           actions.resetForm();
         });
 
-      // navigate("/");
+      navigate("/user-account");
     } catch (error) {
       console.error("Registration failed", error);
       actions.setSubmitting(false);
     }
   };
 
-  return { registerSubmit };
+  return { registerSubmit, isSuccess, error };
 };

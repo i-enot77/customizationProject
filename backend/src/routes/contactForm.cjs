@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-router.post("/submit-form", async (req, res) => {
+router.post("/submit-form", async (req, res, next) => {
   try {
     const { firstName, lastName, userEmail, phoneNumber, city, message } =
       req.body;
@@ -33,11 +33,13 @@ router.post("/submit-form", async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-
     res.status(200).json({ message: "Form submission successful" });
   } catch (error) {
     console.error("Error processing form submission:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+
+    const err = new Error("Internal Server Error");
+    err.status = 500;
+    next(err);
   }
 });
 

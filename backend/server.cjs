@@ -57,7 +57,6 @@ app.use("/api", paymentStatus);
 
 app.use(express.json());
 // routes
-// app.use("/materials", express.static(path.join(__dirname, "materials")));
 
 app.use("/api", auth);
 app.use("/api", register);

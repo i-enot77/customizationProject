@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   CartState,
@@ -11,7 +10,7 @@ import {
 import { RootState } from "../../../services/store";
 import { useAppDispatch } from "../../../services/hooks";
 import { useCartItem } from "../../../hooks/useCartItem";
-import { useStorageCartUpdate } from "../../../hooks/useStorageCartUpdate";
+
 import Button from "../../../components/Button";
 import ProductAmount from "../../product/components/ProductAmount";
 
@@ -20,14 +19,12 @@ const CartItem = (props: CartState) => {
   const [selectedAmount, setSelectedAmount] = useState(props.quantity);
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const itemPriceTotal = useCartItem(
     selectedAmount,
     props.product.price,
     props.product._id
   );
-  // useStorageCartUpdate();
 
   const handleDelete = (id: string) => {
     dispatch(deleteCartItem(id));

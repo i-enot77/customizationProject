@@ -12,6 +12,7 @@ import {
   setUserDeliveryAddressChange,
 } from "@/services/userAccountSlice";
 import ChangeUserData from "../components/ChangeUserData";
+import { Toaster } from "@/components/ui/toaster";
 
 function UserAccount() {
   const auth = useSelector((state: RootState) => state.auth.auth.userData);
@@ -152,6 +153,8 @@ function UserAccount() {
       </section>
 
       <ChangeUserData />
+
+      <Toaster />
     </>
   );
 }

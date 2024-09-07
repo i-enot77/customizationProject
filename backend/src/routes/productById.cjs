@@ -21,8 +21,7 @@ router.get(
       .optional()
       .withMessage("Legs material should be a string if provided"),
   ],
-  async (req, res) => {
-    // Validate the query parameters
+  async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -30,61 +29,51 @@ router.get(
 
     const { category, id } = req.params;
     const baseMaterial = req.query.base;
-    const legsMaterial = req.query.legs ? req.query.legs : null;
-
-    console.log(req.params, req.query); // Logging for debugging
-    console.log(baseMaterial, legsMaterial); // Logging for debugging
+    const legsMaterial = req.query.legs || null;
 
     try {
-      let product, baseMtl, legsMtl;
-
+      let productModel;
       switch (category) {
         case "sofy":
-          product = await Sofa.findById(id);
-          baseMtl = await Material.findById(baseMaterial);
-          legsMtl = legsMaterial ? await Material.findById(legsMaterial) : null;
+          productModel = Sofa;
           break;
         case "fotele":
-          product = await Armchair.findById(id);
-          baseMtl = await Material.findById(baseMaterial);
-          legsMtl = legsMaterial ? await Material.findById(legsMaterial) : null;
+          productModel = Armchair;
           break;
         case "krzesła":
-          product = await Chair.findById(id);
-          baseMtl = await Material.findById(baseMaterial);
-          legsMtl = legsMaterial ? await Material.findById(legsMaterial) : null;
+          productModel = Chair;
           break;
         case "stoły":
-          product = await Table.findById(id);
-          baseMtl = await Material.findById(baseMaterial);
-          legsMtl = legsMaterial ? await Material.findById(legsMaterial) : null;
+          productModel = Table;
           break;
         case "lampy":
-          product = await Lamp.findById(id);
-          baseMtl = await Material.findById(baseMaterial);
+          productModel = Lamp;
           break;
         default:
-          return res.status(400).json({ message: "Invalid category" });
+          throw { status: 400, message: "Invalid category" };
       }
 
+      const product = await productModel.findById(id);
       if (!product) {
-        console.log("Product not found");
-        return res.status(404).json({ message: "Product not found" });
+        throw { status: 404, message: "Product not found" };
       }
 
+      const baseMtl = await Material.findById(baseMaterial);
       if (!baseMtl) {
-        console.log("Base not found");
-        return res.status(404).json({ message: "Base material not found" });
+        throw { status: 404, message: "Base material not found" };
       }
 
-      if (category !== "lampy" && legsMaterial && !legsMtl) {
-        return res.status(404).json({ message: "Legs material not found" });
+      let legsMtl = null;
+      if (legsMaterial) {
+        legsMtl = await Material.findById(legsMaterial);
+        if (!legsMtl) {
+          throw { status: 404, message: "Legs material not found" };
+        }
       }
-      console.log({ product, baseMtl, legsMtl });
+
       return res.status(200).json({ product, baseMtl, legsMtl });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Internal Server Error" });
+    } catch (err) {
+      next(err);
     }
   }
 );

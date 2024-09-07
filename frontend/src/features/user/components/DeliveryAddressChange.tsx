@@ -14,17 +14,18 @@ import { setUserDeliveryAddressChange } from "@/services/userAccountSlice";
 import { setUserDeliveryAddress } from "@/services/userSlice";
 import { usePhoneNumber } from "../hooks/usePhoneNumber";
 import { DeliveryData } from "@/services/orderSlice";
+import { useToast } from "@/hooks/use-toast";
 
 function UserDeliveryAddressChange() {
   const user = useSelector((state: RootState) => state.auth.auth.userData);
   const userDeliveryAddress = useSelector(
     (state: RootState) => state.user.userDeliveryAddress
   );
-  const [userDeliveryAddressUpdate, { isError }] =
-    useLazyUserDeliveryAddresUpdateQuery();
+  const [userDeliveryAddressUpdate] = useLazyUserDeliveryAddresUpdateQuery();
   const dispatch = useAppDispatch();
 
   const { phone, country } = usePhoneNumber(userDeliveryAddress?.phoneNumber);
+  const { toast } = useToast();
 
   const onSubmit = (
     values: DeliveryData,
@@ -38,13 +39,20 @@ function UserDeliveryAddressChange() {
         })
           .unwrap()
           .then((data) => {
-            console.log(data);
             dispatch(setUserDeliveryAddress(data));
             dispatch(setUserDeliveryAddressChange(false));
+            toast({
+              title: "Update Successful",
+              description: "Your delivery data has been updated successfully.",
+            });
           });
       }
     } catch (error) {
       console.error("Email update failed", error);
+      toast({
+        title: "Error",
+        description: "Failed to update delivery data",
+      });
       actions.setSubmitting(false);
     }
   };

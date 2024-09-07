@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import LoginForm from "@/features/auth/pages/LoginForm";
+import LoginForm from "@/features/auth/components/LoginForm";
 import UserDataForm from "./UserDataForm";
 import { Link } from "react-router-dom";
 
@@ -23,7 +23,7 @@ function UserCheckout({ nextStep }: { nextStep?: () => void }) {
             Zaloguj się
           </AccordionTrigger>
           <AccordionContent>
-            <LoginForm />
+            <LoginForm isCart={true} />
             <Link
               to="/account"
               className="block text-center underline underline-offset-2 font-medium"

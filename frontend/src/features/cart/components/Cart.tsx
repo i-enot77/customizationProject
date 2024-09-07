@@ -11,7 +11,7 @@ const Cart = () => {
     (state: RootState) => state.cart.totalPrice
   );
   return (
-    <div className="w-full h-full flex flex-col flex-grow justify-between">
+    <div className="w-full h-full flex flex-col justify-between">
       <div className="bg-white  overflow-y-auto">
         {cartArr.map((item) => (
           <CartItem
@@ -24,9 +24,9 @@ const Cart = () => {
         ))}
       </div>
 
-      <div className="flex justify-between text-xl py-4  pl-6 pr-12 font-medium">
+      <div className="flex text-xl py-4  pl-6 pr-12 font-medium">
         <div>Wartość koszyka</div>
-        <div>{cartTotalPrice}</div>
+        <div className="flex-grow text-end">{cartTotalPrice} zł</div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
-import LoginForm from "../features/auth/pages/LoginForm";
-import RegistrationForm from "../features/auth/pages/RegistrationForm";
+import LoginForm from "../features/auth/components/LoginForm";
+import RegistrationForm from "../features/auth/components/RegistrationForm";
 import Button from "../components/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/services/store";
@@ -21,7 +21,7 @@ const Account = () => {
           <h1 className="text-lg font-semibold mb-8 text-center">
             {isLogin ? "Logowanie" : "Rejestracja"}
           </h1>
-          {isLogin ? <LoginForm /> : <RegistrationForm />}
+          {isLogin ? <LoginForm isCart={false} /> : <RegistrationForm />}
         </div>
         <div className="w-full flex flex-col items-center">
           <h1 className="text-lg font-semibold mb-8">

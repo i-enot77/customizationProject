@@ -5,9 +5,10 @@ import {
   Order,
   initOrderDeliveryData,
   setInitShipping,
+  setOrderUserEmail,
 } from "@/services/orderSlice";
-import { clearCart } from "@/services/cartSlice"; // Import the clearCart action
-import { setFullName, setUserEmail } from "@/services/userSlice";
+import { clearCart } from "@/services/cartSlice";
+import { STORAGE_KEY } from "@/hooks/useStorageCartUpdate";
 
 export const summaryCheckout = () => {
   const isLogged = useSelector(
@@ -16,8 +17,8 @@ export const summaryCheckout = () => {
   const userId = useSelector(
     (state: RootState) => state.auth.auth.userData?._id
   );
-  const email = useSelector((state: RootState) => state.user.userEmail);
-  const deliveryData = useSelector(
+  const email = useSelector((state: RootState) => state.order.email);
+  const deliveryAddress = useSelector(
     (state: RootState) => state.order.deliveryAddress
   );
   const products = useSelector((state: RootState) => state.cart.cart);
@@ -30,8 +31,7 @@ export const summaryCheckout = () => {
     const orderData: Order = {
       userId: userId || null,
       email,
-      // fullName: fullName || defaultFullName,
-      deliveryAddress: deliveryData,
+      deliveryAddress,
       products,
       shipping,
     };
@@ -49,26 +49,21 @@ export const summaryCheckout = () => {
       const session = await response.json();
       console.log("Checkout Session Response:", session);
 
+      // Clear cart after a successful checkout session
+      dispatch(clearCart());
+      localStorage.removeItem(STORAGE_KEY);
+      dispatch(setInitShipping());
+      // Clear user data after successful checkout session if user not logged in
+      if (!isLogged) {
+        dispatch(setOrderUserEmail(""));
+        dispatch(initOrderDeliveryData());
+      }
+
       const result = await stripe?.redirectToCheckout({
         sessionId: session.id,
       });
-
-      if (result?.error) {
-        console.error("Stripe Error:", result.error.message);
-      } else {
-        // Clear cart after a successful checkout session
-        dispatch(clearCart());
-        dispatch(setInitShipping());
-
-        // Clear user data after successful checkout session if user not logged in
-        if (!isLogged) {
-          dispatch(setUserEmail(""));
-          dispatch(setFullName(null));
-          dispatch(initOrderDeliveryData());
-        }
-      }
     } catch (error) {
-      console.log("Payment Error:", error);
+      console.error("Stripe Error:", error);
     }
   };
 

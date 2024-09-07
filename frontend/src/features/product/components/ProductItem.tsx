@@ -4,10 +4,7 @@ import ProductAmount from "./ProductAmount";
 import Dimensions from "./Dimensions";
 import ProductItemSkeleton from "./ProductItemSkeleton";
 import { useAppDispatch } from "../../../services/hooks";
-import {
-  useGetProductByIdQuery,
-  ProductById,
-} from "../../../services/productsApi";
+import { useGetProductByIdQuery } from "../../../services/productsApi";
 import { addToCart } from "../../../services/cartSlice";
 import Button from "../../../components/Button";
 import Scene from "../../model/components/Scene";
@@ -28,7 +25,7 @@ const ProductItem = () => {
   const baseMtlParam = searchParams.get("base") as string;
   const legsMtlParam = searchParams.get("legs");
 
-  const { data, isLoading, isFetching, isSuccess, isError, refetch } =
+  const { data, isLoading, isSuccess, isError, refetch } =
     useGetProductByIdQuery({
       category,
       _id,

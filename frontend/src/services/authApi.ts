@@ -28,7 +28,7 @@ export interface LoggedUser {
   fullName: FullName | null;
   userPhone: string | null;
   userAddress: UserAddressData | null;
-  deliveryData: DeliveryData | null;
+  deliveryAddress: DeliveryData | null;
 }
 
 interface ResetPwdRequestArgs {

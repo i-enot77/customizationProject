@@ -1,15 +1,10 @@
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Cart from "./Cart";
 import CartEmpty from "./CartEmpty";
 import { RootState } from "../../../services/store";
 import { useAppDispatch } from "../../../services/hooks";
-import {
-  setCart,
-  setCartSummary,
-  setShowCart,
-} from "../../../services/cartSlice";
+import { setCartSummary, setShowCart } from "../../../services/cartSlice";
 import Button from "../../../components/Button";
 import Modal from "../../../components/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

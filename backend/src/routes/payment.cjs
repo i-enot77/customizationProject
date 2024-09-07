@@ -2,6 +2,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require("uuid");
 const Order = require("../model/Order.cjs");
 const Sofa = require("../model/Sofa.cjs");
 const Lamp = require("../model/Lamp.cjs");
@@ -45,18 +46,17 @@ const getProductByCategory = async (item) => {
   };
 };
 
-router.post("/create-checkout-session", async (req, res) => {
+router.post("/create-checkout-session", async (req, res, next) => {
   try {
     const newOrderId = new mongoose.Types.ObjectId();
-    const { userId, user, products, shipping } = req.body;
+    console.log(newOrderId);
+    const { userId, email, deliveryAddress, products, shipping } = req.body;
 
-    if (!user || !products || products.length === 0 || !shipping) {
-      return res
-        .status(400)
-        .send({ error: { message: "Invalid request data" } });
+    if (!email || !products || products.length === 0 || !shipping) {
+      throw new Error("Invalid request data");
     }
 
-    console.log("User:", user);
+    console.log("email:", email);
     console.log("Products:", products);
     console.log("Shipping:", shipping);
 
@@ -79,20 +79,21 @@ router.post("/create-checkout-session", async (req, res) => {
 
       productOrderData.push({
         _id: product.product._id,
+        productType: product.product.category,
         quantity: product.quantity,
         baseMaterialId: product.baseMaterial ? product.baseMaterial._id : null,
         legsMaterialId: product.legsMaterial ? product.legsMaterial._id : null,
       });
     }
 
-    if (shipping && shipping.cost) {
+    if (shipping && shipping.shippingCost) {
       lineItems.push({
         price_data: {
           currency: "pln",
           product_data: {
             name: "Shipping Cost",
           },
-          unit_amount: Math.round(shipping.cost * 100),
+          unit_amount: Math.round(shipping.shippingCost * 100),
         },
         quantity: 1,
       });
@@ -113,17 +114,17 @@ router.post("/create-checkout-session", async (req, res) => {
       total_price: totalPrice,
       products: productOrderData,
       user_order_data: {
-        email: user.email,
-        country: user.country,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        address: user.address,
-        zipCode: user.zipCode,
-        city: user.city,
-        phone: user.phone,
+        email: email,
+        phone: deliveryAddress.phoneNumber,
+        firstName: deliveryAddress.firstName,
+        lastName: deliveryAddress.lastName,
+        address: deliveryAddress.address,
+        zipCode: deliveryAddress.zipCode,
+        city: deliveryAddress.city,
+        country: deliveryAddress.country,
       },
       updated_at: new Date(),
-      shipping: shipping.method,
+      shipping: shipping.shippingMethod,
     });
 
     await newOrder.save();
@@ -132,7 +133,7 @@ router.post("/create-checkout-session", async (req, res) => {
     // Create the Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      customer_email: user.email,
+      customer_email: email,
       line_items: lineItems,
       mode: "payment",
       currency: "pln",
@@ -147,13 +148,8 @@ router.post("/create-checkout-session", async (req, res) => {
 
     console.log(session);
     res.json({ id: session.id });
-  } catch (e) {
-    console.error("Error creating payment intent:", e);
-    res.status(400).send({
-      error: {
-        message: e.message,
-      },
-    });
+  } catch (error) {
+    next(error);
   }
 });
 

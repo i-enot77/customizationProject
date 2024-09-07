@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const router = express.Router();
 
 const Material = require("../model/Material.cjs");
@@ -9,9 +8,7 @@ router.post("/textures", async (req, res) => {
 
   try {
     if (!materialIdsString) {
-      return res
-        .status(400)
-        .json({ message: "Invalid or missing materialIds" });
+      throw { status: 400, message: "Invalid or missing materialIds" };
     }
     const materialIdsArray = materialIdsString.split(",");
 
@@ -19,8 +16,7 @@ router.post("/textures", async (req, res) => {
     console.log(materials);
     res.json(materials);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    next(error);
   }
 });
 

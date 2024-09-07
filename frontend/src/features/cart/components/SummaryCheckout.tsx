@@ -6,7 +6,7 @@ import Button from "../../../components/Button";
 const SummaryCheckout = ({ prevStep }: { prevStep?: () => void }) => {
   const userEmail = useSelector((state: RootState) => state.order.email);
   const deliveryData = useSelector(
-    (state: RootState) => state.order.deliveryData
+    (state: RootState) => state.order.deliveryAddress
   );
   const shipping = useSelector((state: RootState) => state.order.shipping);
   const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);

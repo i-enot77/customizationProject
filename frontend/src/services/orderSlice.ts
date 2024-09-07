@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartState } from "./cartSlice";
-import { FullName, UserAddressData } from "./userSlice";
+import { UserAddressData } from "./userSlice";
 
 export interface DeliveryData extends UserAddressData {
   firstName: string;
@@ -17,7 +17,6 @@ export interface Order {
   _id?: string;
   userId: string | null; // For logged-in users
   email: string;
-  // fullName: FullName;
   deliveryAddress: DeliveryData;
   products: CartState[];
   shipping: Shipping;
@@ -30,11 +29,11 @@ const initialState: Order = {
   deliveryAddress: {
     firstName: "",
     lastName: "",
+    phoneNumber: "",
     country: "",
     address: "",
     zipCode: "",
     city: "",
-    phoneNumber: "",
   },
   products: [],
   shipping: {
