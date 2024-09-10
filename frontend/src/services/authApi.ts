@@ -1,9 +1,12 @@
-import { RegistrationSchema } from "@/features/auth/schemaYup/registrationSchema";
 import { customizationApi } from "./api";
 import { FullName, UserAddressData } from "./userSlice";
 import { DeliveryData } from "./orderSlice";
 
-type RegisterUserRequest = Omit<RegistrationSchema, "confirmPassword">;
+interface RegisterUserRequest {
+  email: string;
+  password: string;
+}
+
 export interface AuthData {
   _id: string;
   email: string;
@@ -106,7 +109,6 @@ export const {
   useResetPwdRequestMutation,
   useResetPasswordMutation,
   useLogoutMutation,
-  // useSendContactFormMutation,
 } = authApi;
 // sendContactForm: build.mutation<string, ContactFormArgs>({
 //   query: ({

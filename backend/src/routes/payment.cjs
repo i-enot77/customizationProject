@@ -2,7 +2,6 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const { v4: uuidv4 } = require("uuid");
 const Order = require("../model/Order.cjs");
 const Sofa = require("../model/Sofa.cjs");
 const Lamp = require("../model/Lamp.cjs");
@@ -132,7 +131,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
 
     // Create the Stripe checkout session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ["card"], //"p24", "blik","google_pay", "apple_pay"
       customer_email: email,
       line_items: lineItems,
       mode: "payment",

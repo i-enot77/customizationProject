@@ -56,6 +56,7 @@ const LoginForm = ({ isCart }: { isCart: boolean }) => {
                   />
 
                   <Button
+                    type="button"
                     className="absolute right-2 top-2.5 z-10"
                     onClick={() => setShowPassword(!showPassword)}
                   >

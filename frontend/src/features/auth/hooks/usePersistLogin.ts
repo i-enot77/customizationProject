@@ -33,7 +33,7 @@ const useAuthRefresh = () => {
       dispatch(setFullName(data.fullName));
       dispatch(setUserPhone(data.userPhone));
       dispatch(setUserAddress(data.userAddress));
-      dispatch(setUserDeliveryAddress(data.deliveryData));
+      dispatch(setUserDeliveryAddress(data.deliveryAddress));
     } else if (isError) {
       console.error("Error during token refresh:", error);
       dispatch(clearUserData());

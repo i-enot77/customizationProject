@@ -15,7 +15,7 @@ export const useRegistrationForm = () => {
     actions: FormikHelpers<RegistrationSchema>
   ) => {
     try {
-      const { confirmPassword, ...userData } = values;
+      const { confirmPassword, acceptTerms, ...userData } = values;
       registerUser(userData)
         .unwrap()
         .then((response) => {

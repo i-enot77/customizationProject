@@ -20,7 +20,6 @@ const ResetPwdRequest = () => {
       .unwrap()
       .then((response) => {
         if (response) {
-          console.log(response);
           actions.resetForm();
           navigate("/sended-email");
         }

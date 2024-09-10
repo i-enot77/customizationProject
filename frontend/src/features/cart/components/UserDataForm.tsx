@@ -49,10 +49,6 @@ const UserDataForm = ({ nextStep }: { nextStep?: () => void }) => {
     }
   };
 
-  useEffect(() => {
-    console.log(orderDeliveryAddress);
-  }, [orderDeliveryAddress]);
-
   const initialValues: OrderSchema = {
     email: userOrderEmail || "",
     firstName: orderDeliveryAddress.firstName || "",
