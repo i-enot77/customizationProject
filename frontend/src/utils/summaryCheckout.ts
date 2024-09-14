@@ -1,19 +1,9 @@
 import { loadStripe } from "@stripe/stripe-js";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../services/store";
-import {
-  Order,
-  initOrderDeliveryData,
-  setInitShipping,
-  setOrderUserEmail,
-} from "@/services/orderSlice";
-import { clearCart } from "@/services/cartSlice";
-import { STORAGE_KEY } from "@/hooks/useStorageCartUpdate";
+import { Order } from "@/services/orderSlice";
 
 export const summaryCheckout = () => {
-  const isLogged = useSelector(
-    (state: RootState) => state.auth.auth.isAuthenticated
-  );
   const userId = useSelector(
     (state: RootState) => state.auth.auth.userData?._id
   );
@@ -23,7 +13,6 @@ export const summaryCheckout = () => {
   );
   const products = useSelector((state: RootState) => state.cart.cart);
   const shipping = useSelector((state: RootState) => state.order.shipping);
-  const dispatch = useDispatch();
 
   const makePayment = async () => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_SECRET);
@@ -48,16 +37,6 @@ export const summaryCheckout = () => {
 
       const session = await response.json();
       console.log("Checkout Session Response:", session);
-
-      // Clear cart after a successful checkout session
-      dispatch(clearCart());
-      localStorage.removeItem(STORAGE_KEY);
-      dispatch(setInitShipping());
-      // Clear user data after successful checkout session if user not logged in
-      if (!isLogged) {
-        dispatch(setOrderUserEmail(""));
-        dispatch(initOrderDeliveryData());
-      }
 
       const result = await stripe?.redirectToCheckout({
         sessionId: session.id,

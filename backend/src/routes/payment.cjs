@@ -55,10 +55,6 @@ router.post("/create-checkout-session", async (req, res, next) => {
       throw new Error("Invalid request data");
     }
 
-    console.log("email:", email);
-    console.log("Products:", products);
-    console.log("Shipping:", shipping);
-
     const lineItems = [];
     const productOrderData = [];
 
@@ -148,6 +144,7 @@ router.post("/create-checkout-session", async (req, res, next) => {
     console.log(session);
     res.json({ id: session.id });
   } catch (error) {
+    console.error("failed:", error);
     next(error);
   }
 });
