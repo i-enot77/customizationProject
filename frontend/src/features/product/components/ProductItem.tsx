@@ -133,7 +133,11 @@ const ProductItem = () => {
                   onAmountChange={setSelectedAmount}
                 />
               </div>
-              <Button className={style.btn} onClick={handleAddToCart}>
+              <Button
+                data-testid="add_btn"
+                className={style.btn}
+                onClick={handleAddToCart}
+              >
                 Dodaj do koszyka
               </Button>
             </div>

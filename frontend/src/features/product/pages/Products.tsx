@@ -1,7 +1,5 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { RootState } from "../../../services/store";
 import {
   Sofa,
   Armchair,
@@ -17,9 +15,6 @@ import { useCartFromLocalStorage } from "@/hooks/useCartFromLocalStorage";
 
 const Products = () => {
   const navigate = useNavigate();
-  const productItem = useSelector(
-    (state: RootState) => state.products.productItem
-  );
 
   const { category }: { category: string } = useParams() as {
     category: string;
@@ -28,16 +23,13 @@ const Products = () => {
   const {
     data: dataArr,
     isFetching,
+    isError,
     refetch,
   } = useGetItemsByCategoryQuery(category);
 
   useEffect(() => {
     refetch();
   }, [category, refetch]);
-
-  useEffect(() => {
-    console.log(productItem);
-  }, [productItem]);
 
   const handleClick = (item: Sofa | Armchair | Chair | Table | Lamp) => {
     const url = `/${category}/${item._id}?base=${item.baseMaterial}${
@@ -59,11 +51,13 @@ const Products = () => {
       <div className="w-full grow">
         <h2 className="text-4xl text-center uppercase my-8">{category}</h2>
         <div className={style.wrapper}>
+          {isError && <div data-testid="error">Something went wrong...</div>}
           {isFetching ? (
             <ProductSkeleton products={6} />
           ) : (
             dataArr?.map((item) => (
               <div
+                data-testid="product-name"
                 key={item._id}
                 className="w-full  cursor-pointer"
                 onClick={() => handleClick(item)}

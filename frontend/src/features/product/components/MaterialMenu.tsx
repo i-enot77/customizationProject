@@ -3,8 +3,6 @@ import Button from "../../../components/Button";
 import { Material } from "../../../services/materialSlice";
 import Modal from "../../../components/Modal";
 import { useGetAssignedMtlMutation } from "../../../services/materialApi";
-import mtlSmall from "/img/productImg/small.jpg";
-import mtlMedium from "/img/productImg/medium.jpg";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -59,7 +57,10 @@ const MaterialMenu = ({
           <div>{mtlName}</div>
         </div>
         {assignedMtl && assignedMtl.length > 0 && (
-          <Button onClick={() => handleClick(assignedMtl)}>
+          <Button
+            data-testid="modal_btn"
+            onClick={() => handleClick(assignedMtl)}
+          >
             <span className="font-semibold pr-2">Zmień</span>
             <FontAwesomeIcon icon={faChevronRight} />
           </Button>
@@ -76,8 +77,9 @@ const MaterialMenu = ({
         >
           <div className="flex justify-between items-center px-1 py-7 sticky top-0 bg-[#e2e2e2] z-10">
             <h2 className="text-3xl font-semibold ">Zmień material</h2>
-            <Button onClick={closeModal}>
-              <FontAwesomeIcon icon={faXmark} size="2xl" />
+            <Button data-testid="close" onClick={closeModal}>
+              close
+              {/* <FontAwesomeIcon icon={faXmark} size="2xl" /> */}
             </Button>
           </div>
 

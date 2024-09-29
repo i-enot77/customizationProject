@@ -3,7 +3,7 @@ const router = express.Router();
 
 const Material = require("../model/Material.cjs");
 
-router.post("/textures", async (req, res) => {
+router.post("/textures", async (req, res, next) => {
   const materialIdsString = req.body.materialIds;
 
   try {

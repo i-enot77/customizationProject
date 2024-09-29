@@ -35,7 +35,6 @@ const ContactForm = () => {
 
   const onSubmit = async (values: ContactFormArgs, actions: any) => {
     sendForm(values);
-    console.log(values);
     actions.setSubmitting(false);
     actions.resetForm();
   };

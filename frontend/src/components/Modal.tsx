@@ -30,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <>
       {isVisible && (
-        <div className={clsx(className)} {...rest}>
+        <div className={clsx(className)} {...rest} data-testid="modal">
           <div className={innerClass} onClick={(e) => e.stopPropagation()}>
             {children}
           </div>

@@ -32,14 +32,19 @@ const ProductAmount: React.FC<AmountProps> = ({
   return (
     <div>
       <Button
+        data-testid="minus_btn"
         className="px-4"
         onClick={decrementAmount}
         disabled={amountProp === 1}
       >
-        <FontAwesomeIcon icon={faMinus} style={{ color: minusIconColor }} />
+        <FontAwesomeIcon
+          data-testid="img"
+          icon={faMinus}
+          style={{ color: minusIconColor }}
+        />
       </Button>
       <span className="text-xl font-medium">{amountProp}</span>
-      <Button className="px-4" onClick={incrementAmount}>
+      <Button data-testid="plus_btn" className="px-4" onClick={incrementAmount}>
         <FontAwesomeIcon icon={faPlus} style={{ color: "#000000" }} />
       </Button>
     </div>
