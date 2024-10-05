@@ -19,6 +19,7 @@ import useAuthRefresh from "./features/auth/hooks/usePersistLogin";
 import UserAccount from "./features/user/pages/UserAccount";
 
 const App = () => {
+  //comment for review
   useAuthRefresh();
 
   const location = useLocation();
